@@ -2,8 +2,14 @@ import numpy as np
 import qutip as qt
 from math import sqrt
 import matplotlib.pyplot as plt
+from customutils import *
+from state_configurations import single_photon, plot_state
 
+# Scheme has only two channels in first area
+# four in the middle and two in the end.
 
+# Set up default scheme parameters.
+# These r and t are from 0 to 1. Condition: t^2 + r^2 = 1
 t1 = sqrt(0.5)
 r1 = sqrt(0.5)
 
@@ -16,46 +22,21 @@ r3 = sqrt(0.5)
 t4 = sqrt(0.5)
 r4 = sqrt(0.5)
 
-
-# 1st detector was hit
-# first coef.
-def click1_prob1(t1, t4):
-    r1 = 1 - t1
-    r4 = 1 - t4
-    return pow(abs((t1*t1 - r1*r1)*(t2*t3 + 1j*t3*t2)*t4 - t1*r1*(t3*t3 + 1j*2*t3*r3)*r4), 2)
-
-# dependence on t1
-t1_list = np.linspace(0.5, 1, 100)
-p1_list = click1_prob1(t1_list, t4)
-
-plt.plot(t1_list, p1_list)
-plt.show()
-
-# dependence on t4
-t4_list = np.linspace(0.5, 1, 100)
-p1_list = click1_prob1(t1, t4_list)
-
-plt.plot(t4_list, p1_list)
-plt.show()
+# can be set small for simple configurations
+series_length = 20
 
 
-# 3rd detector was hit
-# first coef
-def click3_prob1(r1, t4):
-    r1 = 1 - t1
-    r4 = 1 - t4
-    return pow(abs((t1*t1 - r1*r1)*(t2*t3 + 1j*t2*t3)*t4 - t1*r1*(t2*t2 + 1j*2*t2*r2)*r4), 2)
+# set up input state as a Taylor series
+input_st = single_photon(series_length)
+# plot_state(input_st)
 
-# dependence on t1
-t1_list = np.linspace(0.5, 1, 100)
-p1_list = click3_prob1(t1_list, t4)
+# set up auxiliary state as a Taylor series
+auxiliary_st = single_photon(series_length)
 
-plt.plot(t1_list, p1_list)
-plt.show()
+# Calculating state after first BS.
 
-# dependence on t4
-t4_list = np.linspace(0.5, 1, 100)
-p1_list = click3_prob1(t1, t4_list)
 
-plt.plot(t4_list, p1_list)
-plt.show()
+
+
+
+
