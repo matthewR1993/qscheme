@@ -29,16 +29,16 @@ t4 = sqrt(0.5)
 r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 
 # can be set small for simple configurations
-series_length = 20
+series_length = 7
 
 
 # set up input state as a Taylor series
-input_st = single_photon(series_length)
-# input_st = coherent_state(series_length, 1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(series_length, 1)
 # plot_state(input_st)
 
 # set up auxiliary state as a Taylor series
-auxiliary_st = single_photon(series_length)
+auxiliary_st = single_photon(2)
 
 
 # Setting up state before first BS.
@@ -148,7 +148,7 @@ for arg in state5.args:
                 pows[1] = x.args[1]
 
     if pows[0] + pows[1] > 0:
-        print('powers: ', pows[0], pows[1])
+        # print('powers: ', pows[0], pows[1])
         state5_coef[pows[0], pows[1]] = complex(sp.Poly(arg, domain='CC').coeffs()[0])
 
 
