@@ -3,7 +3,7 @@ import qutip as qt
 from math import sqrt, factorial
 import matplotlib.pyplot as plt
 from customutils.utils import *
-from state_configurations import single_photon
+from state_configurations import single_photon, coherent_state
 import sympy as sp
 
 
@@ -34,6 +34,7 @@ series_length = 20
 
 # set up input state as a Taylor series
 input_st = single_photon(series_length)
+# input_st = coherent_state(series_length, 1)
 # plot_state(input_st)
 
 # set up auxiliary state as a Taylor series
@@ -89,8 +90,6 @@ print('State 3:', state3)
 
 # Calculation of all probabilities of detector to catch all possible numbers of photons TODO
 
-# sp.expand(state3)
-
 # Consider ideal detectors first
 # First detector clicked - Det1.
 
@@ -117,7 +116,7 @@ for arg in state_4pre.args:
 print('State 4:', state4)
 
 # Now mixing state in a  fourth BS
-# Final state - state5
+# Final state is state5
 # b2 -> t4*a1 + 1j*t4*a2
 # b4 -> t4*a2 + 1j*t4*a1
 state5 = state4
@@ -129,4 +128,55 @@ state5 = sp.expand(state5)
 
 print('State 5:', state5)
 
-# plot final state TODO:
+# Plotting final state.
+# Matrix of coefficients.
+
+state5_coef = np.zeros((2*series_length, 2*series_length), dtype=complex)
+
+for arg in state5.args:
+    pows = [0] * 2
+    for x in list(arg.args):
+        if a1 in x.free_symbols:
+            if x == a1:
+                pows[0] = 1
+            else:
+                pows[0] = x.args[1]
+        if a2 in x.free_symbols:
+            if x == a2:
+                pows[1] = 1
+            else:
+                pows[1] = x.args[1]
+
+    if pows[0] + pows[1] > 0:
+        print('powers: ', pows[0], pows[1])
+        state5_coef[pows[0], pows[1]] = complex(sp.Poly(arg, domain='CC').coeffs()[0])
+
+
+coef_abs = np.absolute(state5_coef)
+coef_real = np.real(state5_coef)
+coef_imag = np.imag(state5_coef)
+
+
+# Abs
+plt.matshow(coef_abs)
+plt.title('Abs value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
+
+# Real
+plt.matshow(coef_real)
+plt.title('Real value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
+
+# Imag
+plt.matshow(coef_imag)
+plt.title('Imag value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
