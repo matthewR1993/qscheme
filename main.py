@@ -29,24 +29,20 @@ t4 = sqrt(0.5)
 r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 
 # can be set small for simple configurations
-series_length = 7
+series_length = 8
 
 
 # set up input state as a Taylor series
-# input_st = single_photon(series_length)
+# input_st = single_photon(2)
 input_st = coherent_state(series_length, 1)
 # plot_state(input_st)
 
 # set up auxiliary state as a Taylor series
 auxiliary_st = single_photon(2)
-
+# auxiliary_st = coherent_state(series_length, 1)
+# plot_state(auxiliary_st)
 
 # Setting up state before first BS.
-# state1 = np.empty((series_length, series_length), dtype=object)
-
-# for i in range(len(auxiliary_st)):
-#     for j in range(len(auxiliary_st)):
-#         state1[i, j] = [auxiliary_st[i], input_st[j]]
 
 # Method with symbolic expressions
 a1, a2 = sp.symbols('a1 a2')
@@ -88,10 +84,8 @@ state3 = sp.expand(state3)
 
 print('State 3:', state3)
 
-# Calculation of all probabilities of detector to catch all possible numbers of photons TODO
-
 # Consider ideal detectors first
-# First detector clicked - Det1.
+# First detector was clicked - Det1.
 
 # state4 is a state after measurement
 state_4pre = 0
@@ -103,9 +97,17 @@ for arg in state3.args:
         for item in arg.args:
             if item == b1:
                 b1_power = 1
-            elif item.is_Pow:
+            elif item.is_Pow and b1 in item.free_symbols:
                 b1_power = item.args[1]
-        state_4pre = state_4pre + sqrt(factorial(b1_power)) * arg / sp.Pow(b1, b1_power)
+        # finding power of b3
+        b3_power = 0
+        if b3 in arg.free_symbols:
+            for item in arg.args:
+                if item == b3:
+                    b3_power = 1
+                elif item.is_Pow and b3 in item.free_symbols:
+                    b3_power = item.args[1]
+        state_4pre = state_4pre + arg * sqrt(factorial(b1_power)) * sqrt(factorial(b3_power)) / (b1**b1_power * b3**b3_power)
 
 state4 = 0
 # filter constants
@@ -152,13 +154,13 @@ for arg in state5.args:
         state5_coef[pows[0], pows[1]] = complex(sp.Poly(arg, domain='CC').coeffs()[0])
 
 
-coef_abs = np.absolute(state5_coef)
+coef_abs = np.abs(state5_coef)
 coef_real = np.real(state5_coef)
 coef_imag = np.imag(state5_coef)
 
 
 # Abs
-plt.matshow(coef_abs)
+plt.matshow(coef_abs[0:2*series_length, 0:2*series_length])
 plt.title('Abs value')
 plt.xlabel('a2')
 plt.ylabel('a1')
@@ -166,7 +168,7 @@ plt.colorbar()
 plt.show()
 
 # Real
-plt.matshow(coef_real)
+plt.matshow(coef_real[0:2*series_length, 0:2*series_length])
 plt.title('Real value')
 plt.xlabel('a2')
 plt.ylabel('a1')
@@ -174,9 +176,10 @@ plt.colorbar()
 plt.show()
 
 # Imag
-plt.matshow(coef_imag)
+plt.matshow(coef_imag[0:2*series_length, 0:2*series_length])
 plt.title('Imag value')
 plt.xlabel('a2')
 plt.ylabel('a1')
 plt.colorbar()
 plt.show()
+
