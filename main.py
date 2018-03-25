@@ -29,18 +29,19 @@ t4 = sqrt(0.5)
 r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 
 # can be set small for simple configurations
-series_length = 8
+input_series_length = 8
+auxiliary_series_length = 8
+max_power = input_series_length + auxiliary_series_length
 
 
 # set up input state as a Taylor series
-# input_st = single_photon(2)
-input_st = coherent_state(series_length, 1)
-# plot_state(input_st)
+# input_st[n] = state with 'n' photons !!!
+input_st = single_photon(2)
+# input_st = coherent_state(input_series_length, alpha=1)
 
 # set up auxiliary state as a Taylor series
-auxiliary_st = single_photon(2)
-# auxiliary_st = coherent_state(series_length, 1)
-# plot_state(auxiliary_st)
+# auxiliary_st = single_photon(2)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 
 # Setting up state before first BS.
 
@@ -48,10 +49,10 @@ auxiliary_st = single_photon(2)
 a1, a2 = sp.symbols('a1 a2')
 g = 0
 for i in range(len(input_st)):
-    g = g + input_st[i]*(a1**(i+1))
+    g = g + input_st[i]*(a1**(i))
 f = 0
 for i in range(len(auxiliary_st)):
-    f = f + auxiliary_st[i]*(a2**(i+1))
+    f = f + auxiliary_st[i]*(a2**(i))
 
 # state = g(a1) * f(a2)
 state1 = g * f
@@ -63,11 +64,36 @@ b1, b2 = sp.symbols('b1 b2')
 state2 = state2.subs(a1, (t1*b1 + 1j*t1*b2))
 state2 = state2.subs(a2, (t1*b2 + 1j*t1*b1))
 
-# put 'a' back
+# put 'a' operators back
 state2 = state2.subs(b1, a1)
 state2 = state2.subs(b2, a2)
 
-print('State 2:', sp.expand(state2))
+state2 = sp.expand(state2)
+print('State 2:', state2)
+
+# Plot state2
+state2_coeffs = get_state_coeffs(state2, max_power + 1)
+
+plt.matshow(np.abs(state2_coeffs)[0:8, 0:8])
+plt.title('State2, Abs value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
+
+plt.matshow(np.real(state2_coeffs)[0:8, 0:8])
+plt.title('State2, Real value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
+
+plt.matshow(np.imag(state2_coeffs)[0:8, 0:8])
+plt.title('State2, Imag value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
 
 # 'state2' is a state after BS
 
@@ -85,7 +111,7 @@ state3 = sp.expand(state3)
 print('State 3:', state3)
 
 # Consider ideal detectors first
-# First detector was clicked - Det1.
+# Both detector were clicked - Det1 and Det2.
 
 # state4 is a state after measurement
 state_4pre = 0
@@ -133,7 +159,7 @@ print('State 5:', state5)
 # Plotting final state.
 # Matrix of coefficients.
 
-state5_coef = np.zeros((2*series_length, 2*series_length), dtype=complex)
+state5_coef = np.zeros((max_power, max_power), dtype=complex)
 
 for arg in state5.args:
     pows = [0] * 2
@@ -160,26 +186,41 @@ coef_imag = np.imag(state5_coef)
 
 
 # Abs
-plt.matshow(coef_abs[0:2*series_length, 0:2*series_length])
-plt.title('Abs value')
+plt.matshow(coef_abs[0:8, 0:8])
+plt.title('Output state, Abs value')
 plt.xlabel('a2')
 plt.ylabel('a1')
 plt.colorbar()
 plt.show()
 
 # Real
-plt.matshow(coef_real[0:2*series_length, 0:2*series_length])
-plt.title('Real value')
+plt.matshow(coef_real[0:8, 0:8])
+plt.title('Output state, Real value')
 plt.xlabel('a2')
 plt.ylabel('a1')
 plt.colorbar()
 plt.show()
 
 # Imag
-plt.matshow(coef_imag[0:2*series_length, 0:2*series_length])
-plt.title('Imag value')
+plt.matshow(coef_imag[0:8, 0:8])
+plt.title('Output state, Imag value')
 plt.xlabel('a2')
 plt.ylabel('a1')
 plt.colorbar()
 plt.show()
 
+
+# plot input states
+#plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
+plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
+plt.title('Input state')
+plt.xlabel('Number of photons')
+plt.show()
+
+plt.bar(list(range(len(auxiliary_st))), auxiliary_st, color='g', width=1, edgecolor='c')
+# plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], color='g', width=1, edgecolor='c')
+plt.title('Auxiliary state')
+plt.xlabel('Number of photons')
+plt.show()
+
+# save setup configuration in file TODO
