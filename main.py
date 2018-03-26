@@ -36,8 +36,8 @@ max_power = input_series_length + auxiliary_series_length
 
 # set up input state as a Taylor series
 # input_st[n] = state with 'n' photons !!!
-input_st = single_photon(2)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(2)
+input_st = coherent_state(input_series_length, alpha=1)
 
 # set up auxiliary state as a Taylor series
 # auxiliary_st = single_photon(2)
@@ -57,12 +57,22 @@ for i in range(len(auxiliary_st)):
 # state = g(a1) * f(a2)
 state1 = g * f
 
+state1_coeffs = get_state_coeffs(sp.expand(state1), max_power + 1)
+
+plt.matshow(np.abs(state1_coeffs)[0:8, 0:8])
+plt.title('State1, Abs value')
+plt.xlabel('a2')
+plt.ylabel('a1')
+plt.colorbar()
+plt.show()
+
 # State after mixing at first BS
 state2 = state1
 b1, b2 = sp.symbols('b1 b2')
 
-state2 = state2.subs(a1, (t1*b1 + 1j*t1*b2))
-state2 = state2.subs(a2, (t1*b2 + 1j*t1*b1))
+# a1 -> t1*a1 + 1j*r1*a2
+state2 = state2.subs(a1, (t1*b1 + 1j*r1*b2))
+state2 = state2.subs(a2, (t1*b2 + 1j*r1*b1))
 
 # put 'a' operators back
 state2 = state2.subs(b1, a1)
@@ -97,14 +107,14 @@ plt.show()
 
 # 'state2' is a state after BS
 
-# a1 goes to 2nd BS with t2, r2 and split into b1 and b2. Therefore: a1 -> t2*b1 + 1j*t2*b2
-# a2 goes to 3rd BS with t3, r3 and split into b3 and b4. Therefore: a2 -> t3*b3 + 1j*t3*b4
+# a1 goes to 2nd BS with t2, r2 and split into b1 and b2. Therefore: a1 -> t2*b1 + 1j*r2*b2
+# a2 goes to 3rd BS with t3, r3 and split into b3 and b4. Therefore: a2 -> t3*b3 + 1j*r3*b4
 # state3 is a state after these two BSs
 state3 = state2
 b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
 
-state3 = state3.subs(a1, (t2*b1 + 1j*t2*b2))
-state3 = state3.subs(a2, (t3*b3 + 1j*t3*b4))
+state3 = state3.subs(a1, (t2*b1 + 1j*r2*b2))
+state3 = state3.subs(a2, (t3*b3 + 1j*r3*b4))
 
 state3 = sp.expand(state3)
 
@@ -149,8 +159,8 @@ print('State 4:', state4)
 # b4 -> t4*a2 + 1j*t4*a1
 state5 = state4
 
-state5 = state5.subs(b2, (t4*a1 + 1j*t4*a2))
-state5 = state5.subs(b4, (t4*a2 + 1j*t4*a1))
+state5 = state5.subs(b2, (t4*a1 + 1j*r4*a2))
+state5 = state5.subs(b4, (t4*a2 + 1j*r4*a1))
 
 state5 = sp.expand(state5)
 
@@ -211,8 +221,8 @@ plt.show()
 
 
 # plot input states
-#plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
-plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
+plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
+# plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
 plt.title('Input state')
 plt.xlabel('Number of photons')
 plt.show()
