@@ -21,7 +21,7 @@ def get_state_coeffs(state, max_power):
                     pows[1] = x.args[1]
 
         if pows[0] + pows[1] > 0:
-            state_coeffs[pows[0], pows[1]] = complex(sp.Poly(arg, domain='CC').coeffs()[0])
+            state_coeffs[pows[0], pows[1]] = state_coeffs[pows[0], pows[1]] + complex(sp.Poly(arg, domain='CC').coeffs()[0])
         else:
             state_coeffs[0, 0] = arg
 

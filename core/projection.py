@@ -29,14 +29,13 @@ def measure_state(state_before, clicked):
                             b1 ** b1_power * b3 ** b3_power)
 
         state_after = 0
-        # filter constants
+        # filter constants ??? TODO
         for arg in state_after_pre.args:
             if b2 in list(arg.free_symbols) or b4 in list(arg.free_symbols):
                 state_after = state_after + arg
+        return state_after
     # TODO
     if clicked is 'FIRST':
         return
     else:
         raise ValueError('Wrong configuration')
-
-    return state_after

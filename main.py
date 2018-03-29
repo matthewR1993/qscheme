@@ -7,8 +7,8 @@ from setup_parameters import *
 
 
 # Parameters for states
-input_series_length = 8
-auxiliary_series_length = 8
+input_series_length = 9
+auxiliary_series_length = 9
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
