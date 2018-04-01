@@ -21,6 +21,6 @@ a4 = 0
 t4 = sqrt(0.5)
 r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 
-# Measurement detectors configuration
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector clicked
+# Types of detector
+DET_TYPE = 'IDEAL'
+# DET_TYPE = 'REAL'

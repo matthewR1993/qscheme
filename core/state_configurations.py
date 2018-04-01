@@ -2,7 +2,6 @@
 import numpy as np
 from math import factorial, exp
 
-
 DEF_SERIES_LEN = 100
 
 

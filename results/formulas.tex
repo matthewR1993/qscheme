@@ -1,0 +1,105 @@
+
+\title{\LaTeXe{} Template}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{color, soul}
+
+\usepackage{amsmath}
+
+\usepackage{xcolor}
+\newcommand{\highlight}[1]{%
+  \colorbox{yellow!50}{$\displaystyle#1$}}
+
+\begin{document}
+\maketitle
+
+\begin{equation}
+u_{p}^{l}(r, \phi) \propto r^{l} L_{p}^{l} (2r^2/w^2) e^{-r^2/w^2} \highlight{e^{-il\phi}}
+\end{equation}
+
+
+\begin{enumerate}
+\item Low gain.
+\item  $$ H \sim \int d^3\mathbf{r} \chi^{(2)}(\mathbf{r}) E_{p}^{(+)}(\mathbf{r},t) E_{s}^{(-)}(\mathbf{r},t) E_{i}^{(-)}(\mathbf{r},t)   + H.c.$$
+\item  $$ H = i \hbar \Gamma \int d\mathbf{q}_{s}d\mathbf{q}_{i}F(\mathbf{q}_{s},\mathbf{q}_{i})a_{\mathbf{q}_{s}}^{\dag}a_{\mathbf{q}_{i}}^{\dag} + H.c.$$
+\item  $$F(\mathbf{q}_{s},\mathbf{q}_{i}) = C\exp\big\{-\sigma^2\frac{(\mathbf{q}_{s} + \mathbf{q}_{i})^2}{2}  \big\} \textrm{sinc}\Big(\frac{L(\mathbf{q}_{s} - \mathbf{q}_{i})^2}{4k_{p}}\Big)\exp\big\{i\frac{L(\mathbf{q}_{s} - \mathbf{q}_{i})^2}{4k_{p}}\big\}  $$
+\item $$ |\psi\rangle = \exp\big\{-\frac{i}{\hbar}\int_{-\infty}^{\infty} dtH(t)\big\} |0\rangle  \approx  - \frac{i}{\hbar} \int_{-\infty}^{\infty} dtH|0\rangle $$
+
+\item Shmidt decomposition 
+
+\item $$ F(q_{s}, q_{i}, \phi_{s} - \phi_{i}) = \sum_{n} \chi_{n}(q_{s}, q_{i})e^{in(\phi_{s} - \phi_{i})} $$
+
+\item $$ \chi_{n}(q_{s}, q_{i}) = \sum_{m} \sqrt{\lambda_{mn}} \frac{u_{mn}(q_{s})}{\sqrt{q_{s}}} \frac{v_{mn}(q_{i})}{\sqrt{q_{i}}}   $$
+
+\item $$ F(\mathbf{q}_{s}, \mathbf{q}_{i}) = \sum_{m,n} \sqrt{\lambda_{mn}} \frac{u_{mn}(q_{s})}{\sqrt{q_{s}}} \frac{v_{mn}(q_{i})}{\sqrt{q_{i}}} e^{in(\phi_{s} - \phi_{i})}  $$
+
+\item broadband modes and hign gain
+
+\item $$ A_{mn}^{\dag} = \int d\mathbf{q}_{s} \frac{u_{mn}(q_{s})}{\sqrt{q_{s}}} e^{in\phi_{s}} a_{\mathbf{q}_{s}}^{\dag} $$
+
+\item $$ B_{mn}^{\dag} = \int d\mathbf{q}_{i} \frac{v_{mn}(q_{i})}{\sqrt{q_{i}}} e^{-in\phi_{i}} a_{\mathbf{q}_{i}}^{\dag} $$
+
+\item $$ H = i \hbar \Gamma \sum_{m,n} \sqrt{\lambda_{mn}} (A_{mn}^{\dag} B_{mn}^{\dag} - A_{mn}B_{mn}) $$
+
+\item $$  \frac{dA_{mn}}{dt} = \frac{i}{\hbar}[H,A_{mn}] $$ 
+
+\item $$ A_{mn}^{out} = A_{mn}^{in}\cosh[G\sqrt{\lambda_{mn}}] + [B_{mn}^{in}]^{\dag}\sinh[G\sqrt{\lambda_{mn}}] $$
+
+\item $$ B_{mn}^{out} = B_{mn}^{in}\cosh[G\sqrt{\lambda_{mn}}] + [A_{mn}^{in}]^{\dag}\sinh[G\sqrt{\lambda_{mn}}] $$
+
+\item $$ \frac{d a_{\mathbf{q}_{s,i}}}{dt} = \Gamma \sum_{m,n} \sqrt{\lambda_{mn}} \frac{u_{mn}(q_{s})}{\sqrt{q_{s}}} [A_{mn}^{\dag} e^{-in\phi_{s,i}} + B_{mn}^{\dag} e^{in\phi_{s,i}}  ] $$
+
+\item $$ \langle N_{s}(\mathbf{q}_{s}) \rangle = \sum_{m,n} \frac{|u_{mn}(q_{s})|^{2}}{q_{s}} (\sinh[G\sqrt{\lambda_{mn}}])^{2}  $$
+
+\item three crystals
+
+\item 
+\begin{multline} 
+ F(\mathbf{q}_{s},\mathbf{q}_{i}) = C\exp\big\{-\sigma^2\frac{(\mathbf{q}_{s} + \mathbf{q}_{i})^2}{2}  \big\} \textrm{sinc}\Big(\frac{\Delta \widetilde{q} L}{2}\Big) \\
+ \times \Big( \exp\big\{\frac{i \Delta \widetilde{q} L}{2}\big\} +
+ \exp\big\{i(\Delta \widetilde{q}^{air} d_{1} + \frac{3}{2} \Delta \widetilde{q} L) \big\} + 
+ \exp\big\{i(\Delta \widetilde{q}^{air} (d_{1} + d_{2}) + \frac{5}{2} \Delta \widetilde{q} L) \big\} 
+  \Big) 
+\end{multline}
+
+\item $$ \Delta\widetilde{q} = \frac{(\mathbf{q}_{s} - \mathbf{q}_{i})^2}{2k_{p}} $$
+
+\item $$ \Delta\widetilde{q}^{air} = \frac{(\mathbf{q}_{s} - \mathbf{q}_{i})^2}{2k_{p}}n_s + \frac{2\delta n^{air}k_s}{n_s} $$
+
+
+\item splitters
+
+\item $$  |\psi_{in}\rangle = g(a_{1}^{\dag})|0\rangle  = \sum_{n=0} g_{n} (a_{1}^{\dag})^{n} |0\rangle  $$
+\item $$  |\psi_{aux}\rangle = f(a_{2}^{\dag})|0\rangle  = \sum_{n=0} f_{n} (a_{2}^{\dag})^{n} |0\rangle  $$
+
+\item $$ |\psi\rangle = |\psi_{in}\rangle   \otimes   |\psi_{aux}\rangle = \sum_{m,n=0} \alpha_{m,n} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  $$
+
+\item $$ r_{j}^2 + t_{j}^2 + a_{j}^2 = 1 $$
+
+\item $$  a_{1}^{\dag} \rightarrow  r_{j}a_{1}^{\dag} + it_{j}a_{2}^{\dag} $$
+
+\item $$  a_{2}^{\dag} \rightarrow  r_{j}a_{2}^{\dag} + it_{j}a_{1}^{\dag} $$
+
+\item 4 channels
+
+\item $$ |\psi_4\rangle = \sum_{i,j,k,m} \beta_{i,j,k,m} (a_{1}^{\dag})^{i} (a_{2}^{\dag})^{j} (a_{3}^{\dag})^{k} (a_{4}^{\dag})^{m} |0\rangle^{\otimes 4}  $$
+
+\item both ideal detectors were clicked
+\item $$ |\psi_{after}\rangle = 0 $$
+
+\item First and only one ideal detector was clicked
+
+
+\item final state
+
+\item $$ |\psi_{out}\rangle = \sum_{m,n} \alpha_{m,n} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  $$
+
+\item example with two coherent states - alpha=1
+
+\item $$ |\alpha\rangle \otimes |\alpha\rangle \approx  e^{-1} (1 + 1)  $$
+
+\end{enumerate}
+
+
+\end{document}
