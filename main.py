@@ -20,13 +20,13 @@ input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(2)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(2)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement detectors configuration
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'FIRST'  # 1st detector clicked
 
 
 # Setting up state before first BS.
