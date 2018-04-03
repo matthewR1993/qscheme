@@ -114,6 +114,7 @@ plot_state(state5_coeffs, 'Final State',  size=8, value='real')
 plot_state(state5_coeffs, 'Final State',  size=8, value='imag')
 
 '''
+
 # plot input states
 plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
 # plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
@@ -125,6 +126,7 @@ plt.bar(list(range(len(auxiliary_st))), auxiliary_st, color='g', width=1, edgeco
 plt.title('Auxiliary state')
 plt.xlabel('Number of photons')
 plt.show()
+
 '''
 
 # save setup configuration in file TODO
