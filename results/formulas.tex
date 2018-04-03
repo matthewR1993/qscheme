@@ -73,7 +73,13 @@ u_{p}^{l}(r, \phi) \propto r^{l} L_{p}^{l} (2r^2/w^2) e^{-r^2/w^2} \highlight{e^
 \item $$  |\psi_{in}\rangle = g(a_{1}^{\dag})|0\rangle  = \sum_{n=0} g_{n} (a_{1}^{\dag})^{n} |0\rangle  $$
 \item $$  |\psi_{aux}\rangle = f(a_{2}^{\dag})|0\rangle  = \sum_{n=0} f_{n} (a_{2}^{\dag})^{n} |0\rangle  $$
 
-\item $$ |\psi\rangle = |\psi_{in}\rangle   \otimes   |\psi_{aux}\rangle = \sum_{m,n=0} \alpha_{m,n} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  $$
+\item $$ |\psi\rangle = |\psi_{in}\rangle   \otimes   |\psi_{aux}\rangle = \sum_{m,n} \alpha_{m,n} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  $$
+
+\item loseless BS
+
+\item $$ \sum_{m,n} |\alpha_{m,n}|^2 = 1 $$
+
+\item $$ \sum_{m,n} |\alpha_{m,n}^{(2)}|^2 = 1 $$
 
 \item $$ r_{j}^2 + t_{j}^2 + a_{j}^2 = 1 $$
 
@@ -81,14 +87,22 @@ u_{p}^{l}(r, \phi) \propto r^{l} L_{p}^{l} (2r^2/w^2) e^{-r^2/w^2} \highlight{e^
 
 \item $$  a_{2}^{\dag} \rightarrow  r_{j}a_{2}^{\dag} + it_{j}a_{1}^{\dag} $$
 
+\item state in area 2 after first BS
+
+\item $$ |\psi_{2}\rangle = \sum_{m,n} \alpha_{m,n}^{(2)} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  $$
+
 \item 4 channels
 
-\item $$ |\psi_4\rangle = \sum_{i,j,k,m} \beta_{i,j,k,m} (a_{1}^{\dag})^{i} (a_{2}^{\dag})^{j} (a_{3}^{\dag})^{k} (a_{4}^{\dag})^{m} |0\rangle^{\otimes 4}  $$
+\item $$ |\psi_3\rangle = \sum_{p_{1},p_{2},p_{3},p_{4}} \beta_{p_{1},p_{2},p_{3},p_{4}} (a_{1}^{\dag})^{p_{1}} (a_{2}^{\dag})^{p_{2}} (a_{3}^{\dag})^{p_{3}} (a_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 4}  $$
 
-\item both ideal detectors were clicked
-\item $$ |\psi_{after}\rangle = 0 $$
 
 \item First and only one ideal detector was clicked
+
+\item $$ |\psi_4\rangle = \sum_{\substack{p_{1},p_{2},p_{4} \\ p_{1} > 0, p_{3}=0}} |\beta_{p_{1},p_{2},0,p_{4}} \sqrt{p_{1}!p_{2}!p_{4}!}|^2 |p_{2}, p_{4}\rangle $$
+
+\item First and third detectors were clicked
+
+\item $$ |\psi_4\rangle = \sum_{\substack{p_{1},p_{2},p_{3},p_{4} \\ p_{1} > 0, p_{3}>0}} |\beta_{p_{1},p_{2},p_{3},p_{4}} \sqrt{p_{1}!p_{2}!p_{3}!p_{4}!}|^2 |p_{2}, p_{4}\rangle $$
 
 
 \item final state
@@ -97,7 +111,11 @@ u_{p}^{l}(r, \phi) \propto r^{l} L_{p}^{l} (2r^2/w^2) e^{-r^2/w^2} \highlight{e^
 
 \item example with two coherent states - alpha=1
 
-\item $$ |\alpha\rangle \otimes |\alpha\rangle \approx  e^{-1} (1 + 1)  $$
+\item $$ |\psi\rangle = |\alpha\rangle \otimes |\alpha\rangle, \quad \alpha = 1 $$
+
+
+\item two coherent after BS
+\item $$ |\psi_{2}\rangle \approx  e^{-1} (1 + 1)  $$
 
 \end{enumerate}
 

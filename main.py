@@ -15,13 +15,13 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-input_st = single_photon(2)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(2)
+input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(2)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(2)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement detectors configuration
