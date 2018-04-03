@@ -7,8 +7,8 @@ from setup_parameters import *
 
 
 # Parameters for states
-input_series_length = 9
-auxiliary_series_length = 9
+input_series_length = 10
+auxiliary_series_length = 10
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
@@ -17,10 +17,16 @@ max_power = input_series_length + auxiliary_series_length
 # INPUT
 # input_st = single_photon(2)
 input_st = coherent_state(input_series_length, alpha=1)
+print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(2)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(2)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+print('Auxiliary state norm:', get_state_norm(auxiliary_st))
+
+# Measurement detectors configuration
+DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+# DET_CONF = 'FIRST'  # 1st detector clicked
 
 
 # Setting up state before first BS.
@@ -37,7 +43,7 @@ state1 = g * f
 
 state1_coeffs = get_state_coeffs(sp.expand(state1), max_power + 1)
 
-plot_state(state1_coeffs, 'Initial State',  size=8, value='abs')
+plot_state(state1_coeffs, 'Initial State',  size=8, value='real')
 
 # State after mixing at first BS
 state2 = state1
@@ -57,9 +63,9 @@ print('State 2:', state2)
 # Plot state2
 state2_coeffs = get_state_coeffs(state2, max_power + 1)
 
-plot_state(state2_coeffs, 'State2',  size=8, value='abs')
-plot_state(state2_coeffs, 'State2',  size=8, value='real')
-plot_state(state2_coeffs, 'State2',  size=8, value='imag')
+# plot_state(state2_coeffs, 'State2',  size=8, value='abs')
+# plot_state(state2_coeffs, 'State2',  size=8, value='real')
+# plot_state(state2_coeffs, 'State2',  size=8, value='imag')
 
 # 'state2' is a state after BS
 
@@ -107,18 +113,18 @@ plot_state(state5_coeffs, 'Final State',  size=8, value='abs')
 plot_state(state5_coeffs, 'Final State',  size=8, value='real')
 plot_state(state5_coeffs, 'Final State',  size=8, value='imag')
 
-
+'''
 # plot input states
 plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
 # plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
 plt.title('Input state')
 plt.xlabel('Number of photons')
 plt.show()
-
 plt.bar(list(range(len(auxiliary_st))), auxiliary_st, color='g', width=1, edgecolor='c')
 # plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], color='g', width=1, edgecolor='c')
 plt.title('Auxiliary state')
 plt.xlabel('Number of photons')
 plt.show()
+'''
 
 # save setup configuration in file TODO
