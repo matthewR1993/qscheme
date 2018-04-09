@@ -4,7 +4,7 @@ from math import sqrt, factorial
 
 
 def measure_state(state_before, clicked):
-    # Both detectors was clicked
+    # Both detectors were clicked
     if clicked is 'BOTH':
         b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
         state_after_pre = 0
@@ -46,9 +46,9 @@ def measure_state(state_before, clicked):
                             b4_power = 1
                         elif item.is_Pow and b4 in item.free_symbols:
                             b4_power = item.args[1]
-                # state_after_pre = state_after_pre + arg * sqrt(factorial(b1_power)) * sqrt(factorial(b3_power)) / (
-                #             b1 ** b1_power * b3 ** b3_power)
-                state_after_pre = state_after_pre + abs(beta)**2 * factorial(b1_power) * factorial(b3_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
+                state_after_pre = state_after_pre + arg * sqrt(factorial(b1_power) * factorial(b2_power) * factorial(b3_power) * factorial(b4_power)) / (
+                            b1 ** b1_power * b3 ** b3_power)
+                # state_after_pre = state_after_pre + abs(beta)**2 * factorial(b1_power) * factorial(b3_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
         state_after = state_after_pre
         # state_after = 0
         # Filtering elements from other channels (1st and 3rd).
@@ -89,7 +89,10 @@ def measure_state(state_before, clicked):
                             b4_power = 1
                         elif item.is_Pow and b4 in item.free_symbols:
                             b4_power = item.args[1]
-                state_after_pre = state_after_pre + (abs(beta)**2) * factorial(b1_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
+                state_after_pre = state_after_pre + 0
+                # state_after_pre = state_after_pre + (abs(beta)**2) * factorial(b1_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
+                state_after_pre = state_after_pre + arg * sqrt(factorial(b1_power) * factorial(b2_power) * factorial(b4_power)) / (
+                            b1 ** b1_power)
         state_after = state_after_pre
         # state_after = 0
         # Filtering elements from other channels (1st and 3rd).

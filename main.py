@@ -15,8 +15,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-# input_st = single_photon(2)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(2)
+# nput_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -25,8 +25,9 @@ auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement detectors configuration
-# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector clicked
+DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+# DET_CONF = 'FIRST'  # 1st detector clicked
+# NONE
 
 
 # Setting up state before first BS.
@@ -91,6 +92,13 @@ state_4pre = 0
 state4 = measure_state(state3, clicked=DET_CONF)
 
 print('State 4:', state4)
+
+# TODO
+# state4_coeffs = get_state_coeffs(state4, max_power)
+# plot_state(st ate4_coeffs, 'Final State',  size=8, value='abs')
+# plot_state(state4_coeffs, 'Final State',  size=8, value='real')
+# plot_state(state4_coeffs, 'Final State',  size=8, value='imag')
+
 
 # Now mixing state in a fourth BS
 # Final state is state5
