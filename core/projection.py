@@ -5,8 +5,8 @@ from math import sqrt, factorial
 
 def measure_state(state_before, clicked):
     # Both detectors were clicked
+    b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
     if clicked is 'BOTH':
-        b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
         state_after_pre = 0
 
         for arg in state_before.args:
@@ -48,17 +48,10 @@ def measure_state(state_before, clicked):
                             b4_power = item.args[1]
                 state_after_pre = state_after_pre + arg * sqrt(factorial(b1_power) * factorial(b3_power)) / (
                             b1 ** b1_power * b3 ** b3_power)
-                # state_after_pre = state_after_pre + abs(beta)**2 * factorial(b1_power) * factorial(b3_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
         state_after = state_after_pre
-        # state_after = 0
-        # Filtering elements from other channels (1st and 3rd).
-        # for arg in state_after_pre.args:
-        #     if b2 in list(arg.free_symbols) or b4 in list(arg.free_symbols):
-        #         state_after = state_after + arg
         return state_after
     # Only first detector was clicked
     if clicked is 'FIRST':
-        b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
         state_after_pre = 0
         for arg in state_before.args:
             if not arg.is_Mul and not arg.is_complex:
@@ -90,17 +83,19 @@ def measure_state(state_before, clicked):
                         elif item.is_Pow and b4 in item.free_symbols:
                             b4_power = item.args[1]
                 state_after_pre = state_after_pre + 0
-                # state_after_pre = state_after_pre + (abs(beta)**2) * factorial(b1_power) * sqrt(factorial(b2_power) * factorial(b4_power)) * b2**b2_power * b4**b4_power
                 state_after_pre = state_after_pre + arg * sqrt(factorial(b1_power)) / (
                             b1 ** b1_power)
         state_after = state_after_pre
-        # state_after = 0
-        # Filtering elements from other channels (1st and 3rd).
-        # for arg in state_after_pre.args:
-        #     if b2 in list(arg.free_symbols) or b4 in list(arg.free_symbols):
-        #         state_after = state_after + arg
         return state_after
     if clicked is 'NONE':
-        return
+        state_after_pre = 0
+
+        for arg in state_before.args:
+            if not arg.is_Mul and not arg.is_complex:
+                print('Det. Type is neither mul nor complex. Type : ', type(arg), arg)
+            # None of detectors were clicked
+            if b1 not in arg.free_symbols and b3 not in arg.free_symbols:
+                state_after_pre = state_after_pre + arg
+        return state_after_pre
     else:
         raise ValueError('Wrong configuration')

@@ -78,8 +78,6 @@ state2_coeffs = get_state_coeffs(state2, max_power + 1)
 state3 = state2
 b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
 
-# state3 = state3.subs(a1, (t2*b1 + 1j*r2*b2))
-# state3 = state3.subs(a2, (t3*b3 + 1j*r3*b4))
 state3 = state3.subs(a1, (t2*b2 + 1j*r2*b1))
 state3 = state3.subs(a2, (t3*b4 + 1j*r3*b3))
 
