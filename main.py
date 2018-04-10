@@ -15,8 +15,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-input_st = single_photon(2)
-# nput_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(2)
+input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -27,7 +27,7 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 # Measurement detectors configuration
 DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
-# NONE
+# DET_CONF = 'NONE'  # None of detectors was clicked
 
 
 # Setting up state before first BS.
@@ -39,12 +39,14 @@ f = 0
 for i in range(len(auxiliary_st)):
     f = f + auxiliary_st[i]*(a2**i)
 
+# g(a1) - input
+# f(a2) - auxiliary
 # Initial state = g(a1) * f(a2)
 state1 = g * f
 
 state1_coeffs = get_state_coeffs(sp.expand(state1), max_power + 1)
 
-plot_state(state1_coeffs, 'Initial State',  size=8, value='real')
+# plot_state(state1_coeffs, 'Initial State',  size=8, value='real')
 
 # State after mixing at first BS
 state2 = state1
@@ -76,8 +78,10 @@ state2_coeffs = get_state_coeffs(state2, max_power + 1)
 state3 = state2
 b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
 
-state3 = state3.subs(a1, (t2*b1 + 1j*r2*b2))
-state3 = state3.subs(a2, (t3*b3 + 1j*r3*b4))
+# state3 = state3.subs(a1, (t2*b1 + 1j*r2*b2))
+# state3 = state3.subs(a2, (t3*b3 + 1j*r3*b4))
+state3 = state3.subs(a1, (t2*b2 + 1j*r2*b1))
+state3 = state3.subs(a2, (t3*b4 + 1j*r3*b3))
 
 state3 = sp.expand(state3)
 
@@ -93,11 +97,11 @@ state4 = measure_state(state3, clicked=DET_CONF)
 
 print('State 4:', state4)
 
-# TODO
-# state4_coeffs = get_state_coeffs(state4, max_power)
-# plot_state(st ate4_coeffs, 'Final State',  size=8, value='abs')
-# plot_state(state4_coeffs, 'Final State',  size=8, value='real')
-# plot_state(state4_coeffs, 'Final State',  size=8, value='imag')
+# State 4 plots
+# state4_coeffs = get_state_coeffs(state4.subs(b2, a1).subs(b4, a2), max_power)
+# plot_state(state4_coeffs, 'State4',  size=8, value='abs', xlabel='b4 degree', ylabel='b2 degree')
+# plot_state(state4_coeffs, 'State4',  size=8, value='real', xlabel='b4 degree', ylabel='b2 degree')
+# plot_state(state4_coeffs, 'State4',  size=8, value='imag', xlabel='b4 degree', ylabel='b2 degree')
 
 
 # Now mixing state in a fourth BS

@@ -59,28 +59,34 @@ def get_state_coeffs(state, max_power):
     return state_coeffs
 
 
-def plot_state(state_coeffs, name, size=8, value='abs'):
+def plot_state(
+        state_coeffs,
+        name,
+        size=8,
+        value='abs',
+        xlabel='a2 degree',
+        ylabel='a1 degree'):
     if value is 'abs':
         plt.matshow(np.abs(state_coeffs)[0:size, 0:size])
         plt.title(name + ', Abs value')
-        plt.xlabel('a2 degree')
-        plt.ylabel('a1 degree')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.colorbar()
         plt.show()
         return
     if value is 'real':
         plt.matshow(np.real(state_coeffs)[0:size, 0:size])
         plt.title(name + ', Real value')
-        plt.xlabel('a2 degree')
-        plt.ylabel('a1 degree')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.colorbar()
         plt.show()
         return
     if value is 'imag':
         plt.matshow(np.imag(state_coeffs)[0:size, 0:size])
         plt.title(name + ', Imag value')
-        plt.xlabel('a2 degree')
-        plt.ylabel('a1 degree')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.colorbar()
         plt.show()
         return
