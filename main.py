@@ -4,6 +4,7 @@ from customutils.utils import *
 from core.projection import measure_state
 from core.state_configurations import coherent_state, single_photon
 from setup_parameters import *
+import tensorflow as tf
 
 
 # Parameters for states
@@ -140,3 +141,4 @@ plt.show()
 '''
 
 # save setup configuration in file TODO
+
