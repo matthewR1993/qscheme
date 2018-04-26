@@ -1,11 +1,16 @@
 import sys
+try:
+    sys.path.append('/usr/local/lib/python3.5/dist-packages')
+except: pass
 
 from customutils.utils import *
 from core.projection import measure_state
 from core.state_configurations import coherent_state, single_photon
 from setup_parameters import *
 import tensorflow as tf
+from qutip.operators import create
 
+sess = tf.Session()
 
 # Parameters for states
 input_series_length = 10
@@ -26,9 +31,46 @@ auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement detectors configuration
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
+
+create = create(input_series_length)
+
+in_state_tf = tf.constant(input_st, tf.float32)
+aux_state_tf = tf.constant(auxiliary_st, tf.float32)
+
+tens_mult = in_state_tf * aux_state_tf
+
+# tensor product
+tf.tensordot(
+    in_state_tf,
+    in_state_tf,
+    axes=0,
+    name=None
+).eval(session=sess)
+
+
+# Evaluate the tensor.
+c2 = sess.run(tens_mult)
+
+
+ccc = tf.multiply(
+    in_state_tf,
+    in_state_tf,
+    name=None
+).eval(session=sess)
+
+
+
+
+a = tf.constant(5.0)
+b = tf.constant(6.0)
+c = a * b
+
+
+# Evaluate the tensor `c`.
+print(sess.run(c))
 
 
 # Setting up state before first BS.
@@ -141,4 +183,3 @@ plt.show()
 '''
 
 # save setup configuration in file TODO
-

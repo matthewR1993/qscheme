@@ -14,6 +14,8 @@ class System(Layer):
         self.layers[0].dens_matrix = None
         self.layers[0].channels_num = None
         self.layers[0].channels_mapping = None
+        self.layers[0].to_calculate = ['state', 'dens_matrix']
+        self.layers[0].subsystems_num = 1
 
     def process(self):
         for i in self.params.layers_num:
