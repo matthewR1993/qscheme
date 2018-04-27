@@ -24,3 +24,5 @@ r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 # Types of detector
 DET_TYPE = 'IDEAL'
 # DET_TYPE = 'REAL'
+
+SPD = 1

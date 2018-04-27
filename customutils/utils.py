@@ -1,34 +1,36 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sp
-from math import factorial
+from math import factorial, sqrt
+
+a1, a2 = sp.symbols('a1 a2')
 
 
 # Works only for a state in two channels.
-def get_state_coeffs(state, max_power):
-    a1, a2 = sp.symbols('a1 a2')
+def get_state_coeffs(state, max_power, symbols=(a1, a2), operators_form='applied'):
+    symb1, symb2 = symbols
     state_coeffs = np.zeros((max_power, max_power), dtype=complex)
     # Cases of only one element in the series
     if state.is_Symbol:
-        if state is a1:
+        if state is symb1:
             state_coeffs[1, 0] = 1
-        if state is a2:
+        if state is symb2:
             state_coeffs[0, 1] = 1
     elif state.is_Pow:
-        if a1 in state.free_symbols:
+        if symb1 in state.free_symbols:
             state_coeffs[state.args[1], 0] = 1
-        if a2 in state.free_symbols:
+        if symb2 in state.free_symbols:
             state_coeffs[0, state.args[1]] = 1
     elif state.is_Mul:
         pows = [0] * 2
         for arg in list(state.args):
-            if arg is a1:
+            if arg is symb1:
                 pows[0] = 1
-            elif a1 in arg.free_symbols:
+            elif symb1 in arg.free_symbols:
                 pows[0] = arg.args[1]
-            if arg is a2:
+            if arg is symb2:
                 pows[1] = 1
-            elif a2 in arg.free_symbols:
+            elif symb2 in arg.free_symbols:
                 pows[1] = arg.args[1]
         state_coeffs[pows[0], pows[1]] = complex(list(state.args)[0])
     # Several elements in the sum
@@ -40,13 +42,13 @@ def get_state_coeffs(state, max_power):
                 print('Coeffs. Type is neither mul nor complex. Type: ', type(arg), arg)
             pows = [0] * 2
             for x in list(arg.args):
-                if a1 in x.free_symbols:
-                    if x == a1:
+                if symb1 in x.free_symbols:
+                    if x == symb1:
                         pows[0] = 1
                     else:
                         pows[0] = x.args[1]
-                if a2 in x.free_symbols:
-                    if x == a2:
+                if symb2 in x.free_symbols:
+                    if x == symb2:
                         pows[1] = 1
                     else:
                         pows[1] = x.args[1]
@@ -56,7 +58,15 @@ def get_state_coeffs(state, max_power):
     else:
         raise ValueError('Incorrect state type!')
 
-    return state_coeffs
+    if operators_form == 'unapplied':
+        return state_coeffs
+    elif operators_form == 'applied':
+        for i in range(len(state_coeffs)):
+            for j in range(len(state_coeffs)):
+                state_coeffs[i, j] = state_coeffs[i, j] * sqrt(factorial(i) * factorial(j))
+        return state_coeffs
+    else:
+        raise ValueError('Incorrect operators_form type!')
 
 
 def plot_state(

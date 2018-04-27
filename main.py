@@ -13,8 +13,8 @@ from qutip.operators import create
 sess = tf.Session()
 
 # Parameters for states
-input_series_length = 10
-auxiliary_series_length = 10
+input_series_length = 12
+auxiliary_series_length = 12
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
@@ -35,24 +35,47 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
-create = create(input_series_length)
+diagonal_factorials = np.identity(input_series_length) * np.array([sqrt(factorial(x)) for x in range(input_series_length)])
 
-in_state_tf = tf.constant(input_st, tf.float32)
-aux_state_tf = tf.constant(auxiliary_st, tf.float32)
+in_state_tf = tf.constant(input_st, tf.float64)
+aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
-tens_mult = in_state_tf * aux_state_tf
+diagonal_factorials_tf = tf.constant(diagonal_factorials, tf.float64)
 
-# tensor product
-tf.tensordot(
+
+in_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, in_state_tf)
+aux_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, aux_state_tf)
+
+prod_appl = tf.tensordot(
+    in_state_tf_appl,
+    aux_state_tf_appl,
+    axes=0,
+    name=None
+).eval(session=sess)
+
+plt.matshow(np.abs(prod_appl))
+plt.colorbar()
+plt.show()
+
+
+
+# print it
+# diagonal_factorials_tf.eval(session=sess)
+
+# simple multiplication
+tens_mult = (in_state_tf * aux_state_tf).eval(session=sess)
+
+# tensor product, return numpy array
+prod = tf.tensordot(
     in_state_tf,
     in_state_tf,
     axes=0,
     name=None
 ).eval(session=sess)
 
-
-# Evaluate the tensor.
-c2 = sess.run(tens_mult)
+plt.matshow(np.abs(prod))
+plt.colorbar()
+plt.show()
 
 
 ccc = tf.multiply(
@@ -60,17 +83,6 @@ ccc = tf.multiply(
     in_state_tf,
     name=None
 ).eval(session=sess)
-
-
-
-
-a = tf.constant(5.0)
-b = tf.constant(6.0)
-c = a * b
-
-
-# Evaluate the tensor `c`.
-print(sess.run(c))
 
 
 # Setting up state before first BS.
@@ -88,8 +100,10 @@ for i in range(len(auxiliary_st)):
 state1 = g * f
 
 state1_coeffs = get_state_coeffs(sp.expand(state1), max_power + 1)
+state1_coeffs_unapp = get_state_coeffs(sp.expand(state1), max_power + 1, operators_form='unapplied')
 
-# plot_state(state1_coeffs, 'Initial State',  size=8, value='real')
+plot_state(state1_coeffs_unapp, 'Initial State',  size=10, value='real')
+plot_state(state1_coeffs, 'Initial State',  size=10, value='real')
 
 # State after mixing at first BS
 state2 = state1
