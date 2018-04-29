@@ -7,7 +7,7 @@ a1, a2 = sp.symbols('a1 a2')
 
 
 # Works only for a state in two channels.
-def get_state_coeffs(state, max_power, symbols=(a1, a2), operators_form='applied'):
+def get_state_coeffs(state, max_power, symbols=(a1, a2), operators_form='unapplied'):
     symb1, symb2 = symbols
     state_coeffs = np.zeros((max_power, max_power), dtype=complex)
     # Cases of only one element in the series
