@@ -172,6 +172,7 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
     return output_state
 
+
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
 
@@ -205,6 +206,7 @@ def detection(input_state, detection_event='FIRST'):
 
     return output_state
 
+
 state_after_dett = detection(state_aft2bs_unappl, detection_event='FIRST')
 
 # Build  8D density matrix
@@ -212,7 +214,6 @@ state_after_dett_tf = tf.constant(state_after_dett, tf.complex128)
 state_before_dett_tf = tf.constant(state_aft2bs_unappl, tf.complex128)
 
 
-# TODO check it
 def build_dens_matrix(left_vector, right_vector):
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
@@ -227,26 +228,24 @@ def build_dens_matrix(left_vector, right_vector):
                         for p2_ in range(size):
                             for p3_ in range(size):
                                 for p4_ in range(size):
-                                    dens_matrix[p1, p2, p3, p4, p1_, p2_, p3_, p4_] = 0
+                                    dens_matrix[p1, p2, p3, p4, p1_, p2_, p3_, p4_] = left_vector[p1, p2, p3, p4] * np.conjugate(right_vector[p1_, p2_, p3_, p4_])
     return dens_matrix
 
 
-# dens_matr_aftdett = tf.tensordot(
-#     state_before_dett_tf,
-#     state_after_dett_tf,
-#     axes=0,
-#     name=None
-# ).eval(session=sess)
+dens_matr_aft_det = build_dens_matrix(state_after_dett, state_after_dett)
 
-# Consider ideal detectors first
-# Both detector were clicked - Det1 and Det2.
+
+# TODO
+def partial_trace():
+    pass
+
 
 # state4 is a state after measurement
-state_4pre = 0
+#state_4pre = 0
 
-state4 = measure_state(state3, clicked=DET_CONF)
+#state4 = measure_state(state3, clicked=DET_CONF)
 
-print('State 4:', state4)
+#print('State 4:', state4)
 
 # State 4 plots
 # state4_coeffs = get_state_coeffs(state4.subs(b2, a1).subs(b4, a2), max_power)
