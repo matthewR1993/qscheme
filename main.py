@@ -13,21 +13,21 @@ from qutip.operators import create
 sess = tf.Session()
 
 # Parameters for states
-series_length = 12
-input_series_length = 12
-auxiliary_series_length = 12
+series_length = 9
+input_series_length = series_length
+auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-input_st = single_photon(series_length)
+# input_st = single_photon(series_length)
 input_st = coherent_state(input_series_length, alpha=1)
-#print('Input state norm:', get_state_norm(input_st))
+print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(2)
+# auxiliary_st = single_photon(series_length)
 auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -36,66 +36,52 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
-diagonal_factorials = np.identity(input_series_length) * np.array([sqrt(factorial(x)) for x in range(input_series_length)])
+# diagonal_factorials = np.identity(input_series_length) * np.array([sqrt(factorial(x)) for x in range(input_series_length)])
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
-diagonal_factorials_tf = tf.constant(diagonal_factorials, tf.float64)
+# diagonal_factorials_tf = tf.constant(diagonal_factorials, tf.float64)
+# in_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, in_state_tf)
+# aux_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, aux_state_tf)
 
-in_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, in_state_tf)
-aux_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, aux_state_tf)
-
-
-# print it
-# diagonal_factorials_tf.eval(session=sess)
-
-# simple multiplication
-tens_mult = (in_state_tf * aux_state_tf).eval(session=sess)
 
 # tensor product, return numpy array
-prod_unappl = tf.tensordot(
+mut_state_unappl = tf.tensordot(
     in_state_tf,
     aux_state_tf,
     axes=0,
     name=None
 ).eval(session=sess)
 
-plt.matshow(np.abs(prod_unappl))
-plt.colorbar()
-plt.show()
-
-
-#ccc = tf.multiply(
-#    in_state_tf,
-#    in_state_tf,
-#    name=None
-#).eval(session=sess)
+# plt.matshow(np.abs(prod_unappl))
+# plt.colorbar()
+# plt.show()
 
 
 # Setting up state before first BS.
-a1, a2 = sp.symbols('a1 a2')
-g = 0
-for i in range(len(input_st)):
-    g = g + input_st[i]*(a1**i)
-f = 0
-for i in range(len(auxiliary_st)):
-    f = f + auxiliary_st[i]*(a2**i)
+# a1, a2 = sp.symbols('a1 a2')
+# g = 0
+# for i in range(len(input_st)):
+#     g = g + input_st[i]*(a1**i)
+# f = 0
+# for i in range(len(auxiliary_st)):
+#     f = f + auxiliary_st[i]*(a2**i)
 
 # g(a1) - input
 # f(a2) - auxiliary
 # Initial state = g(a1) * f(a2)
-state1 = g * f
+# state1 = g * f
 
-state1_coeffs_unapp = get_state_coeffs(sp.expand(state1), max_power + 1, operators_form='unapplied')
+#state1_coeffs_unapp = get_state_coeffs(sp.expand(state1), max_power + 1, operators_form='unapplied')
 
-plot_state(state1_coeffs_unapp, 'Initial State',  size=10, value='real')
+#plot_state(state1_coeffs_unapp, 'Initial State',  size=10, value='real')
 
 
 # returns 2x2 BS transformation matrix
 def bs2x2_transform(t, r, input_state):
     size = len(input_state)
-    output_state = np.zeros((size*2, size*2), dtype=complex)
+    output_state = np.zeros((size*2 - 1, size*2 - 1), dtype=complex)
 
     for m in range(size):
         for n in range(size):
@@ -110,7 +96,7 @@ def bs2x2_transform(t, r, input_state):
     return output_state
 
 # better
-state_after_bs_unappl = bs2x2_transform(t1, r1, prod_unappl)
+state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
 plot_state(state_after_bs_unappl, 'Initial State',  size=10, value='abs')
 
@@ -209,35 +195,52 @@ def detection(input_state, detection_event='FIRST'):
 
 state_after_dett = detection(state_aft2bs_unappl, detection_event='FIRST')
 
-# Build  8D density matrix
-state_after_dett_tf = tf.constant(state_after_dett, tf.complex128)
-state_before_dett_tf = tf.constant(state_aft2bs_unappl, tf.complex128)
 
-
-def build_dens_matrix(left_vector, right_vector):
+# TODO multiply to factorials!!!
+def dens_matrix_with_trace(left_vector, right_vector):
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
         raise ValueError('Incorrect dimensions')
 
-    dens_matrix = np.zeros((size,)*8, dtype=complex)
-    for p1 in range(size):
-        for p2 in range(size):
-            for p3 in range(size):
-                for p4 in range(size):
-                    for p1_ in range(size):
-                        for p2_ in range(size):
-                            for p3_ in range(size):
-                                for p4_ in range(size):
-                                    dens_matrix[p1, p2, p3, p4, p1_, p2_, p3_, p4_] = left_vector[p1, p2, p3, p4] * np.conjugate(right_vector[p1_, p2_, p3_, p4_])
+    right_vector_conj = np.conj(right_vector)
+    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p4 in range(size):
+                for p4_ in range(size):
+                    matrix_sum = 0
+                    for k1 in range(size):
+                        for k3 in range(size):
+                            matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_]
+                    dens_matrix[p2, p4, p2_, p4_] = matrix_sum
     return dens_matrix
 
 
-dens_matr_aft_det = build_dens_matrix(state_after_dett, state_after_dett)
+dens_matrix_2channels = dens_matrix_with_trace(state_after_dett, state_after_dett)
 
 
-# TODO
-def partial_trace():
-    pass
+# trace one channel
+def trace_channel(input_matrix, channel=4):
+    size = len(input_matrix)
+    reduced_matrix = np.zeros((size, size), dtype=complex)
+    if channel is 4:
+        for p2 in range(size):
+            for p2_ in range(size):
+                sum = 0
+                for n in range(size):
+                    sum = sum + input_matrix[p2, n, p2_, n]
+                reduced_matrix[p2, p2_] = sum
+    return reduced_matrix
+
+
+channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
+
+# calculate entropy through log
+entropy = - np.trace(np.multiply(channel2_densmatrix, np.log(np.real(channel2_densmatrix))))
+
+
+channel2_densmatrix
 
 
 # state4 is a state after measurement
