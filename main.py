@@ -23,8 +23,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -35,6 +35,7 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 # Measurement detectors configuration
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 DET_CONF = 'FIRST'  # 1st detector clicked
+# DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
 # diagonal_factorials = np.identity(input_series_length) * np.array([sqrt(factorial(x)) for x in range(input_series_length)])
@@ -212,15 +213,15 @@ def trace_channel(input_matrix, channel=4):
 
 channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
 
-plt.matshow(np.abs(channel2_densmatrix))
+plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
 plt.colorbar()
-plt.title(r'$\rho_{m,n}$')
+plt.title(r'$|\rho_{m n}| - after \ detection$')
 plt.xlabel('m')
 plt.ylabel('n')
 plt.show()
 
 # 3d picture
-data_array = np.array(np.abs(channel2_densmatrix))
+data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
@@ -228,16 +229,72 @@ x_data = x_data.flatten()
 y_data = y_data.flatten()
 z_data = data_array.flatten()
 ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-plt.title(r'$\rho_{m,n}$')
+plt.title(r'$|\rho_{m n}| - after \ detection$')
 plt.xlabel('m')
 plt.ylabel('n')
 plt.show()
+
 
 # TODO calculate entropy through log
 # entropy = - np.trace(np.multiply(channel2_densmatrix, np.log(np.real(channel2_densmatrix))))
 
 
 # Last beam splitter transformation of dens matrix.
+def last_bs(input_matrix, t4, r4):
+    size = len(input_matrix)
+    output_matrix = np.zeros((size*2,) * 4, dtype=complex)
+
+    for p2 in range(size):
+        for p4 in range(size):
+            for p2_ in range(size):
+                for p4_ in range(size):
+
+                    # two sums up to m and n
+                    for k in range(p2 + 1):
+                        for l in range(p4 + 1):
+                            for k_ in range(p2_ + 1):
+                                for l_ in range(p4_ + 1):
+                                    d1 = p2 - k + l
+                                    d2 = p4 - l + k
+                                    coeff1 = t4**(p2 - k + p4 - l) * (1j*r4)**(l+k) * sqrt(factorial(d1)*factorial(d2)) * factorial(p2)*factorial(p4)/(factorial(k)*factorial(p2-k)*factorial(l)*factorial(p4-l))
+
+                                    d1_ = p2_ - k_ + l_
+                                    d2_ = k_ + p4_ - l_
+                                    coeff2 = t4**(p2_ - k_ + p4_ - l_) * (-1j*r4)**(k_ + l_) * sqrt(factorial(d1_)*factorial(d2_)) * factorial(p2_)*factorial(p4_)/(factorial(k_)*factorial(p2_-k_)*factorial(l_)*factorial(p4_-l_))
+
+                                    output_matrix[d1, d2, d1_, d2_] = input_matrix[p2, p4, p2_, p4_] * 1/(sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))) * coeff1 * coeff2
+
+    return output_matrix
+
+
+trim_size = 8
+final_dens_matrix = last_bs(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+
+
+final_traced = trace_channel(final_dens_matrix, channel=4)
+
+
+# plots
+plt.matshow(np.abs(final_traced[:7, :7]))
+plt.colorbar()
+plt.title(r'$|\rho_{m n}| - output$')
+plt.xlabel('m')
+plt.ylabel('n')
+plt.show()
+
+# 3d picture
+data_array = np.array(np.abs(final_traced[:7, :7]))
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+x_data = x_data.flatten()
+y_data = y_data.flatten()
+z_data = data_array.flatten()
+ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+plt.title(r'$|\rho_{m n}| - output$')
+plt.xlabel('m')
+plt.ylabel('n')
+plt.show()
 
 
 
