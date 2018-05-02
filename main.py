@@ -9,6 +9,7 @@ from core.state_configurations import coherent_state, single_photon
 from setup_parameters import *
 import tensorflow as tf
 from qutip.operators import create
+from sklearn.preprocessing import normalize
 
 sess = tf.Session()
 
@@ -45,7 +46,6 @@ aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 # in_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, in_state_tf)
 # aux_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, aux_state_tf)
 
-
 # tensor product, return numpy array
 mut_state_unappl = tf.tensordot(
     in_state_tf,
@@ -58,24 +58,11 @@ mut_state_unappl = tf.tensordot(
 # plt.colorbar()
 # plt.show()
 
-
-# Setting up state before first BS.
-# a1, a2 = sp.symbols('a1 a2')
-# g = 0
-# for i in range(len(input_st)):
-#     g = g + input_st[i]*(a1**i)
-# f = 0
-# for i in range(len(auxiliary_st)):
-#     f = f + auxiliary_st[i]*(a2**i)
-
-# g(a1) - input
-# f(a2) - auxiliary
-# Initial state = g(a1) * f(a2)
-# state1 = g * f
-
-#state1_coeffs_unapp = get_state_coeffs(sp.expand(state1), max_power + 1, operators_form='unapplied')
-
-#plot_state(state1_coeffs_unapp, 'Initial State',  size=10, value='real')
+# norm, works, = 1
+# norm = 0
+# for p1 in range(len(mut_state_unappl)):
+#     for p2 in range(len(mut_state_unappl)):
+#         norm = norm + abs(mut_state_unappl[p1, p2])**2 * factorial(p1)*factorial(p2)
 
 
 # returns 2x2 BS transformation matrix
@@ -95,48 +82,12 @@ def bs2x2_transform(t, r, input_state):
 
     return output_state
 
+
 # better
 state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
+# normalised
 
-plot_state(state_after_bs_unappl, 'Initial State',  size=10, value='abs')
-
-
-# State after mixing at first BS
-#state2 = state1
-#b1, b2 = sp.symbols('b1 b2')
-
-# a1 -> t1*a1 + 1j*r1*a2
-#state2 = state2.subs(a1, (t1*b1 + 1j*r1*b2))
-#state2 = state2.subs(a2, (t1*b2 + 1j*r1*b1))
-
-# put 'a' operators back
-#state2 = state2.subs(b1, a1)
-#state2 = state2.subs(b2, a2)
-
-#state2 = sp.expand(state2)
-#print('State 2:', state2)
-
-# Plot state2
-#state2_coeffs = get_state_coeffs(state2, max_power + 1, operators_form='unapplied')
-
-#plot_state(state2_coeffs, 'State2',  size=8, value='abs')
-# plot_state(state2_coeffs, 'State2',  size=8, value='real')
-# plot_state(state2_coeffs, 'State2',  size=8, value='imag')
-
-# 'state2' is a state after BS
-
-# a1 goes to 2nd BS with t2, r2 and split into b1 and b2. Therefore: a1 -> t2*b1 + 1j*r2*b2
-# a2 goes to 3rd BS with t3, r3 and split into b3 and b4. Therefore: a2 -> t3*b3 + 1j*r3*b4
-# state3 is a state after these two BSs
-# state3 = state2
-# b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
-
-# state3 = state3.subs(a1, (t2*b2 + 1j*r2*b1))
-# state3 = state3.subs(a2, (t3*b4 + 1j*r3*b3))
-
-# state3 = sp.expand(state3)
-
-# print('State 3:', state3)
+# plot_state(state_after_bs_unappl, 'Initial State',  size=10, value='abs')
 
 
 # 2 channels : 2 BS : 4 channels
@@ -153,7 +104,7 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
                     ind2 = m - k
                     ind3 = l
                     ind4 = n - l
-                    coeff = input_state[m, n] * t1**(m - k) * (1j*r1)**k * t2**(n - l) * 1j*r2**l * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
+                    coeff = input_state[m, n] * t1**(m - k) * (1j*r1)**k * t2**(n - l) * (1j*r2)**l * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
                     output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
 
     return output_state
@@ -161,11 +112,18 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
+# norm = 0
+# for p1 in range(len(state_aft2bs_unappl)):
+#     for p2 in range(len(state_aft2bs_unappl)):
+#         for p3 in range(len(state_aft2bs_unappl)):
+#             for p4 in range(len(state_aft2bs_unappl)):
+#                 norm = norm + abs(state_aft2bs_unappl[p1, p2, p3, p4])**2 * factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
+
 
 # simple solution, 4 channels state
 def detection(input_state, detection_event='FIRST'):
     size = len(input_state)
-    output_state = input_state
+    output_state = np.array(input_state)
     if detection_event is 'BOTH':
         pass
     elif detection_event is 'NONE':
@@ -193,10 +151,28 @@ def detection(input_state, detection_event='FIRST'):
     return output_state
 
 
-state_after_dett = detection(state_aft2bs_unappl, detection_event='FIRST')
+# unnormalised
+state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event='FIRST')
 
 
-# TODO multiply to factorials!!!
+def state_norm(state):
+    # takes unapplied state
+    size = len(state)
+    norm_ = 0
+    for p1 in range(size):
+        for p2 in range(size):
+            for p3 in range(size):
+                for p4 in range(size):
+                    norm_ = norm_ + abs(state[p1, p2, p3, p4])**2 * factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
+    return sqrt(norm_)
+
+
+# norm_before_det = state_norm(state_aft2bs_unappl)
+norm_after_det = state_norm(state_after_dett_unappl)
+# normalised
+state_after_dett_unappl_norm = state_after_dett_unappl/norm_after_det
+
+
 def dens_matrix_with_trace(left_vector, right_vector):
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
@@ -212,12 +188,12 @@ def dens_matrix_with_trace(left_vector, right_vector):
                     matrix_sum = 0
                     for k1 in range(size):
                         for k3 in range(size):
-                            matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_]
+                            matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_] * factorial(k1) * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
                     dens_matrix[p2, p4, p2_, p4_] = matrix_sum
     return dens_matrix
 
 
-dens_matrix_2channels = dens_matrix_with_trace(state_after_dett, state_after_dett)
+dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm )
 
 
 # trace one channel
@@ -236,47 +212,35 @@ def trace_channel(input_matrix, channel=4):
 
 channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
 
-# calculate entropy through log
-entropy = - np.trace(np.multiply(channel2_densmatrix, np.log(np.real(channel2_densmatrix))))
+plt.matshow(np.abs(channel2_densmatrix))
+plt.colorbar()
+plt.title(r'$\rho_{m,n}$')
+plt.xlabel('m')
+plt.ylabel('n')
+plt.show()
+
+# 3d picture
+data_array = np.array(np.abs(channel2_densmatrix))
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+x_data = x_data.flatten()
+y_data = y_data.flatten()
+z_data = data_array.flatten()
+ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+plt.title(r'$\rho_{m,n}$')
+plt.xlabel('m')
+plt.ylabel('n')
+plt.show()
+
+# TODO calculate entropy through log
+# entropy = - np.trace(np.multiply(channel2_densmatrix, np.log(np.real(channel2_densmatrix))))
 
 
-channel2_densmatrix
+# Last beam splitter transformation of dens matrix.
 
 
-# state4 is a state after measurement
-#state_4pre = 0
 
-#state4 = measure_state(state3, clicked=DET_CONF)
-
-#print('State 4:', state4)
-
-# State 4 plots
-# state4_coeffs = get_state_coeffs(state4.subs(b2, a1).subs(b4, a2), max_power)
-# plot_state(state4_coeffs, 'State4',  size=8, value='abs', xlabel='b4 degree', ylabel='b2 degree')
-# plot_state(state4_coeffs, 'State4',  size=8, value='real', xlabel='b4 degree', ylabel='b2 degree')
-# plot_state(state4_coeffs, 'State4',  size=8, value='imag', xlabel='b4 degree', ylabel='b2 degree')
-
-
-# Now mixing state in a fourth BS
-# Final state is state5
-# b2 -> t4*a1 + 1j*t4*a2
-# b4 -> t4*a2 + 1j*t4*a1
-state5 = state4
-
-state5 = state5.subs(b2, (t4*a1 + 1j*r4*a2))
-state5 = state5.subs(b4, (t4*a2 + 1j*r4*a1))
-
-state5 = sp.expand(state5)
-
-print('State 5:', state5)
-
-# Plotting final state.
-# Matrix of coefficients.
-state5_coeffs = get_state_coeffs(state5, max_power)
-
-plot_state(state5_coeffs, 'Final State',  size=8, value='abs')
-plot_state(state5_coeffs, 'Final State',  size=8, value='real')
-plot_state(state5_coeffs, 'Final State',  size=8, value='imag')
 
 '''
 
@@ -294,4 +258,88 @@ plt.show()
 
 '''
 
-# save setup configuration in file TODO
+# old method
+
+# Setting up state before first BS.
+# a1, a2 = sp.symbols('a1 a2')
+# g = 0
+# for i in range(len(input_st)):
+#     g = g + input_st[i]*(a1**i)
+# f = 0
+# for i in range(len(auxiliary_st)):
+#     f = f + auxiliary_st[i]*(a2**i)
+
+# g(a1) - input
+# f(a2) - auxiliary
+# Initial state = g(a1) * f(a2)
+# state1 = g * f
+
+#state1_coeffs_unapp = get_state_coeffs(sp.expand(state1), max_power + 1, operators_form='unapplied')
+
+#plot_state(state1_coeffs_unapp, 'Initial State',  size=10, value='real')
+
+# State after mixing at first BS
+# state2 = state1
+# b1, b2 = sp.symbols('b1 b2')
+
+# a1 -> t1*a1 + 1j*r1*a2
+# state2 = state2.subs(a1, (t1*b1 + 1j*r1*b2))
+# state2 = state2.subs(a2, (t1*b2 + 1j*r1*b1))
+
+# put 'a' operators back
+# state2 = state2.subs(b1, a1)
+# state2 = state2.subs(b2, a2)
+
+# state2 = sp.expand(state2)
+# print('State 2:', state2)
+
+# Plot state2
+# state2_coeffs = get_state_coeffs(state2, max_power + 1, operators_form='unapplied')
+
+# plot_state(state2_coeffs, 'State2',  size=8, value='abs')
+# plot_state(state2_coeffs, 'State2',  size=8, value='real')
+# plot_state(state2_coeffs, 'State2',  size=8, value='imag')
+
+# 'state2' is a state after BS
+
+# a1 goes to 2nd BS with t2, r2 and split into b1 and b2. Therefore: a1 -> t2*b1 + 1j*r2*b2
+# a2 goes to 3rd BS with t3, r3 and split into b3 and b4. Therefore: a2 -> t3*b3 + 1j*r3*b4
+# state3 is a state after these two BSs
+# state3 = state2
+# b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')
+
+# state3 = state3.subs(a1, (t2*b2 + 1j*r2*b1))
+# state3 = state3.subs(a2, (t3*b4 + 1j*r3*b3))
+
+# state3 = sp.expand(state3)
+
+# print('State 3:', state3)
+
+
+# state4 is a state after measurement
+# state_4pre = 0
+# state4 = measure_state(state3, clicked=DET_CONF)
+# print('State 4:', state4)
+
+
+
+# Now mixing state in a fourth BS
+# Final state is state5
+# b2 -> t4*a1 + 1j*t4*a2
+# b4 -> t4*a2 + 1j*t4*a1
+#state5 = state4
+
+#state5 = state5.subs(b2, (t4*a1 + 1j*r4*a2))
+#state5 = state5.subs(b4, (t4*a2 + 1j*r4*a1))
+
+#state5 = sp.expand(state5)
+
+#print('State 5:', state5)
+
+# Plotting final state.
+# Matrix of coefficients.
+#state5_coeffs = get_state_coeffs(state5, max_power)
+
+#plot_state(state5_coeffs, 'Final State',  size=8, value='abs')
+#plot_state(state5_coeffs, 'Final State',  size=8, value='real')
+#plot_state(state5_coeffs, 'Final State',  size=8, value='imag')
