@@ -23,8 +23,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -297,6 +297,26 @@ plt.ylabel('n')
 plt.show()
 
 
+# TODO check it
+# photons distribution probability from final_dens_matrix
+def prob_distr(input_matrix):
+    size = len(input_matrix)
+    prob_matrix = np.zeros((size, size), dtype=complex)
+    for m in range(size):
+        for n in range(size):
+            prob_matrix[m, n] = input_matrix[m, n, m, n]
+
+    return prob_matrix
+
+
+prob_dist_matrix = prob_distr(final_dens_matrix)
+
+plt.matshow(np.real(prob_dist_matrix[:6, :6]))
+plt.colorbar()
+plt.title(r'$P_{m n}$')
+plt.xlabel('m')
+plt.ylabel('n')
+plt.show()
 
 
 '''
