@@ -23,8 +23,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -33,8 +33,8 @@ auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement detectors configuration
-# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector clicked
+DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+# DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
@@ -118,7 +118,8 @@ state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 #     for p2 in range(len(state_aft2bs_unappl)):
 #         for p3 in range(len(state_aft2bs_unappl)):
 #             for p4 in range(len(state_aft2bs_unappl)):
-#                 norm = norm + abs(state_aft2bs_unappl[p1, p2, p3, p4])**2 * factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
+#                 norm = norm + abs(state_aft2bs_unappl[p1, p2, p3, p4])**2 *
+#  factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
 
 
 # simple solution, 4 channels state
