@@ -112,6 +112,5 @@ def get_state_norm(state):
     return norm
 
 
-# TODO get norm from state in 2 channels
-def get_norm():
-    pass
+def diagonal_factorials(len):
+    return np.identity(len) * np.array([sqrt(factorial(x)) for x in range(len)])

@@ -4,12 +4,14 @@ try:
 except: pass
 
 from customutils.utils import *
-from core.projection import measure_state
+from core.basic import *
 from core.state_configurations import coherent_state, single_photon
 from setup_parameters import *
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
 import tensorflow as tf
-from qutip.operators import create
-from sklearn.preprocessing import normalize
+
 
 sess = tf.Session()
 
@@ -38,14 +40,14 @@ DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
-# diagonal_factorials = np.identity(input_series_length) * np.array([sqrt(factorial(x)) for x in range(input_series_length)])
+# diag_factorials = diagonal_factorials(input_series_length)
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
-# diagonal_factorials_tf = tf.constant(diagonal_factorials, tf.float64)
-# in_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, in_state_tf)
-# aux_state_tf_appl = tf.einsum('mn,n->n', diagonal_factorials_tf, aux_state_tf)
+# diag_factorials_tf = tf.constant(diag_factorials, tf.float64)
+# in_state_tf_appl = tf.einsum('mn,n->n', diag_factorials_tf, in_state_tf)
+# aux_state_tf_appl = tf.einsum('mn,n->n', diagl_factorials_tf, aux_state_tf)
 
 # tensor product, return numpy array
 mut_state_unappl = tf.tensordot(
@@ -55,222 +57,50 @@ mut_state_unappl = tf.tensordot(
     name=None
 ).eval(session=sess)
 
-# plt.matshow(np.abs(prod_unappl))
-# plt.colorbar()
-# plt.show()
-
-# norm, works, = 1
-# norm = 0
-# for p1 in range(len(mut_state_unappl)):
-#     for p2 in range(len(mut_state_unappl)):
-#         norm = norm + abs(mut_state_unappl[p1, p2])**2 * factorial(p1)*factorial(p2)
-
-
-# returns 2x2 BS transformation matrix
-def bs2x2_transform(t, r, input_state):
-    size = len(input_state)
-    output_state = np.zeros((size*2 - 1, size*2 - 1), dtype=complex)
-
-    for m in range(size):
-        for n in range(size):
-            # two sums up to m and n
-            for k in range(m + 1):
-                for l in range(n + 1):
-                    first_index = m - k + l  # first channel index
-                    second_index = k + n - l  # second channel index
-                    coeff = input_state[m, n] * (1j*r)**(k + l) * t**(m - k + n - l) * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
-                    output_state[first_index, second_index] = output_state[first_index, second_index] + coeff
-
-    return output_state
-
 
 # better
 state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
-# normalised
-
-# plot_state(state_after_bs_unappl, 'Initial State',  size=10, value='abs')
-
-
-# 2 channels : 2 BS : 4 channels
-def two_bs2x4_transform(t1, r1, t2, r2, input_state):
-    size = len(input_state)
-    output_state = np.zeros((size, size, size, size), dtype=complex)
-    for m in range(size):
-        for n in range(size):
-            # two sums up to m and n
-            for k in range(m + 1):
-                for l in range(n + 1):
-                    # channels indexes
-                    ind1 = k
-                    ind2 = m - k
-                    ind3 = l
-                    ind4 = n - l
-                    coeff = input_state[m, n] * t1**(m - k) * (1j*r1)**k * t2**(n - l) * (1j*r2)**l * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
-                    output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
-
-    return output_state
-
 
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
-
-# norm = 0
-# for p1 in range(len(state_aft2bs_unappl)):
-#     for p2 in range(len(state_aft2bs_unappl)):
-#         for p3 in range(len(state_aft2bs_unappl)):
-#             for p4 in range(len(state_aft2bs_unappl)):
-#                 norm = norm + abs(state_aft2bs_unappl[p1, p2, p3, p4])**2 *
-#  factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
-
-
-# simple solution, 4 channels state
-def detection(input_state, detection_event='FIRST'):
-    size = len(input_state)
-    output_state = np.array(input_state)
-    if detection_event is 'BOTH':
-        pass
-    elif detection_event is 'NONE':
-        output_state[0, :, :, :] = 0
-        output_state[:, :, 0, :] = 0
-    elif detection_event is 'FIRST':
-        output_state[0, :, :, :] = 0
-        for p1 in range(size):
-            for p2 in range(size):
-                for p3 in range(size):
-                    for p4 in range(size):
-                        if p3 > 0:
-                            output_state[p1, p2, p3, p4] = 0
-    elif detection_event is 'THIRD':
-        output_state[:, :, 0, :] = 0
-        for p1 in range(size):
-            for p2 in range(size):
-                for p3 in range(size):
-                    for p4 in range(size):
-                        if p1 > 0:
-                            output_state[p1, p2, p3, p4] = 0
-    else:
-        raise ValueError('Wrong configuration')
-
-    return output_state
 
 
 # unnormalised
 state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event='FIRST')
 
-
-def state_norm(state):
-    # takes unapplied state
-    size = len(state)
-    norm_ = 0
-    for p1 in range(size):
-        for p2 in range(size):
-            for p3 in range(size):
-                for p4 in range(size):
-                    norm_ = norm_ + abs(state[p1, p2, p3, p4])**2 * factorial(p1)*factorial(p2)*factorial(p3)*factorial(p4)
-    return sqrt(norm_)
-
-
 # norm_before_det = state_norm(state_aft2bs_unappl)
 norm_after_det = state_norm(state_after_dett_unappl)
+
 # normalised
 state_after_dett_unappl_norm = state_after_dett_unappl/norm_after_det
 
-
-def dens_matrix_with_trace(left_vector, right_vector):
-    size = len(left_vector)
-    if len(left_vector) != len(right_vector):
-        raise ValueError('Incorrect dimensions')
-
-    right_vector_conj = np.conj(right_vector)
-    dens_matrix = np.zeros((size,) * 4, dtype=complex)
-
-    for p2 in range(size):
-        for p2_ in range(size):
-            for p4 in range(size):
-                for p4_ in range(size):
-                    matrix_sum = 0
-                    for k1 in range(size):
-                        for k3 in range(size):
-                            matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_] * factorial(k1) * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
-                    dens_matrix[p2, p4, p2_, p4_] = matrix_sum
-    return dens_matrix
-
-
 dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm )
-
-
-# trace one channel
-def trace_channel(input_matrix, channel=4):
-    size = len(input_matrix)
-    reduced_matrix = np.zeros((size, size), dtype=complex)
-    if channel is 4:
-        for p2 in range(size):
-            for p2_ in range(size):
-                sum = 0
-                for n in range(size):
-                    sum = sum + input_matrix[p2, n, p2_, n]
-                reduced_matrix[p2, p2_] = sum
-    return reduced_matrix
-
 
 channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
 
-plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
-plt.colorbar()
-plt.title(r'$|\rho_{m n}| - after \ detection$')
-plt.xlabel('m')
-plt.ylabel('n')
-plt.show()
-
+# plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
+# plt.colorbar()
+# plt.title(r'$|\rho_{m n}| - after \ detection$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
+#
 # 3d picture
-data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
-x_data = x_data.flatten()
-y_data = y_data.flatten()
-z_data = data_array.flatten()
-ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-plt.title(r'$|\rho_{m n}| - after \ detection$')
-plt.xlabel('m')
-plt.ylabel('n')
-plt.show()
-
-
-# TODO calculate entropy through log
-# entropy = - np.trace(np.multiply(channel2_densmatrix, np.log(np.real(channel2_densmatrix))))
-
-
-# Last beam splitter transformation of dens matrix.
-def last_bs(input_matrix, t4, r4):
-    size = len(input_matrix)
-    output_matrix = np.zeros((size*2,) * 4, dtype=complex)
-
-    for p2 in range(size):
-        for p4 in range(size):
-            for p2_ in range(size):
-                for p4_ in range(size):
-
-                    # two sums up to m and n
-                    for k in range(p2 + 1):
-                        for l in range(p4 + 1):
-                            for k_ in range(p2_ + 1):
-                                for l_ in range(p4_ + 1):
-                                    d1 = p2 - k + l
-                                    d2 = p4 - l + k
-                                    coeff1 = t4**(p2 - k + p4 - l) * (1j*r4)**(l+k) * sqrt(factorial(d1)*factorial(d2)) * factorial(p2)*factorial(p4)/(factorial(k)*factorial(p2-k)*factorial(l)*factorial(p4-l))
-
-                                    d1_ = p2_ - k_ + l_
-                                    d2_ = k_ + p4_ - l_
-                                    coeff2 = t4**(p2_ - k_ + p4_ - l_) * (-1j*r4)**(k_ + l_) * sqrt(factorial(d1_)*factorial(d2_)) * factorial(p2_)*factorial(p4_)/(factorial(k_)*factorial(p2_-k_)*factorial(l_)*factorial(p4_-l_))
-
-                                    output_matrix[d1, d2, d1_, d2_] = input_matrix[p2, p4, p2_, p4_] * 1/(sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))) * coeff1 * coeff2
-
-    return output_matrix
+# data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+# x_data = x_data.flatten()
+# y_data = y_data.flatten()
+# z_data = data_array.flatten()
+# ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+# plt.title(r'$|\rho_{m n}| - after \ detection$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
 
 
 trim_size = 8
 final_dens_matrix = last_bs(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
-
 
 final_traced = trace_channel(final_dens_matrix, channel=4)
 
@@ -298,26 +128,36 @@ plt.ylabel('n')
 plt.show()
 
 
-# TODO check it
-# photons distribution probability from final_dens_matrix
-def prob_distr(input_matrix):
-    size = len(input_matrix)
-    prob_matrix = np.zeros((size, size), dtype=complex)
-    for m in range(size):
-        for n in range(size):
-            prob_matrix[m, n] = input_matrix[m, n, m, n]
+prob_distr_matrix = prob_distr(final_dens_matrix)
 
-    return prob_matrix
-
-
-prob_dist_matrix = prob_distr(final_dens_matrix)
-
-plt.matshow(np.real(prob_dist_matrix[:6, :6]))
+plt.matshow(np.real(prob_distr_matrix[:6, :6]))
 plt.colorbar()
 plt.title(r'$P_{m n}$')
 plt.xlabel('m')
 plt.ylabel('n')
 plt.show()
+
+
+log_entanglement = log_entropy(final_traced)
+print('Log. entropy: ', np.real(log_entanglement))
+
+
+# TODO
+# # Entanglement negativity, input - matrix of 2 channels
+# def calculate_negativity(dens_matrix):
+#     neg = 0
+#     part_transposed = partial_transpose(dens_matrix)
+#     w, v = np.linalg.eig(np.diag((1, 2, 3)))
+#     return neg
+#
+#
+# part_transposed = partial_transpose(final_dens_matrix)
+# w, v = np.linalg.eig(part_transposed)
+# w  # values
+
+
+# TODO calculate Wigner function
+
 
 
 '''
