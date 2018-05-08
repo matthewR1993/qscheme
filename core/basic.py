@@ -188,3 +188,13 @@ def partial_transpose(matrix):
                 for p2_ in range(size):
                     res_matrix[p1, p2, p1_, p2_] = res_matrix[p1, p2_, p1_, p2]
     return res_matrix
+
+
+def linear_entropy(dens_matrix):
+    entropy = 1 - np.trace(dens_matrix @ dens_matrix)
+    return entropy
+
+
+def negativity(dens_matrix):
+    neg = 0
+    return 0
