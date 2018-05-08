@@ -116,9 +116,14 @@ def trace_channel(input_matrix, channel=4):
                     sum = sum + input_matrix[p2, n, p2_, n]
                 reduced_matrix[p2, p2_] = sum
     elif channel is 2:
-        return 0
+        for p4 in range(size):
+            for p4_ in range(size):
+                sum = 0
+                for n in range(size):
+                    sum = sum + input_matrix[n, p4, n, p4_]
+                reduced_matrix[p4, p4_] = sum
     else:
-        raise('Invalid configuration')
+        raise ValueError('Invalid configuration')
     return reduced_matrix
 
 
@@ -165,13 +170,10 @@ def prob_distr(input_matrix):
 def log_entropy(dens_matrix):
     size = len(dens_matrix)
     entropy = 0
+    w, v = np.linalg.eig(dens_matrix)
     for n in range(size):
-        for j in range(size):
-            if np.abs(dens_matrix[n, j]) == 0:
-                sum = 0
-            else:
-                sum = dens_matrix[n, j]*cmath.log(dens_matrix[j, n])
-            entropy = entropy + sum
+        if w[n] != 0:
+            entropy = entropy + w[n] * np.log(w[n])
     entropy = - entropy
     return entropy
 

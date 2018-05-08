@@ -25,4 +25,5 @@ r4 = sqrt(1 - pow(t4, 2) - pow(a4, 2))
 DET_TYPE = 'IDEAL'
 # DET_TYPE = 'REAL'
 
+# Detector's single photon detection efficiency
 SPD = 1
