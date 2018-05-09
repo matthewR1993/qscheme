@@ -139,10 +139,15 @@ log_entanglement = log_entropy(final_traced)
 print('Log. entropy: ', np.real(log_entanglement))
 
 afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
+afterdet_traced_4 = trace_channel(dens_matrix_2channels, channel=2)
 
 # TODO check trace after last BS
 # np.trace(final_traced)
+# np.trace(final_traced_4)
+
+# This is ok, equals 1
 # np.trace(afterdet_traced)
+# np.trace(afterdet_traced_4)
 
 
 # afterdet_traced
