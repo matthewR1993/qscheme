@@ -195,6 +195,29 @@ def linear_entropy(dens_matrix):
     return entropy
 
 
-def negativity(dens_matrix):
+def reorganise_dens_matrix(rho):
+    size = len(rho)
+    rho_out = np.zeros((size**2,)*2, dtype=complex)
+    for m in range(size):
+        for n in range(size):
+            for m_ in range(size):
+                for n_ in range(size):
+                    k = m * size + n
+                    k_ = m_ * size + n_
+                    rho_out[k, k_] = rho[m, n, m_, n_]
+    return rho_out
+
+
+def negativity(rho, neg_type='logarithmic'):
+    reorg_rho = reorganise_dens_matrix(rho)
+    w, v = np.linalg.eig(reorg_rho)
     neg = 0
-    return 0
+    for eigval in w:
+        if np.real(eigval) < 0:
+            neg = neg + np.abs(np.real(eigval))
+    if neg_type is 'logarithmic':
+        return np.log2(2 * neg + 1)
+    elif neg_type is 'raw':
+        return neg
+    else:
+        raise ValueError('Incorrect configuration')

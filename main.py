@@ -66,7 +66,7 @@ state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 # Second and third BSs
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
-# Applying detection operator. Receiving unnormalised state.
+# Applying detection operator. Receiving unnormalized state.
 state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
 
 # Calculate norm
@@ -110,8 +110,6 @@ final_traced = trace_channel(final_dens_matrix, channel=4)
 
 final_traced_4 = trace_channel(final_dens_matrix, channel=2)
 
-# TODO trace 2d channel and compare matrix with traced from 4th
-
 # 2D bars picture
 # plt.matshow(np.abs(final_traced[:7, :7]))
 # plt.colorbar()
@@ -150,59 +148,26 @@ afterdet_traced_4 = trace_channel(dens_matrix_2channels, channel=2)
 # np.trace(afterdet_traced_4)
 
 
-# afterdet_traced
-# final_traced
+# negativity
+reorg_rho_beforebs = reorganise_dens_matrix(dens_matrix_2channels)
+w, v = np.linalg.eig(reorg_rho_beforebs)
 
-afterdet_qtip = Qobj(afterdet_traced)
+plt.plot(range(10), np.real(w[0:10]))
+plt.show()
 
-afterdet_sqrt = afterdet_qtip.sqrtm()
+# WRONG! Tace is not 1
+reorg_rho = reorganise_dens_matrix(final_dens_matrix)
 
-afterdet_sqrt_np = afterdet_sqrt.full()
+negativity(final_dens_matrix)
+negativity(dens_matrix_2channels)
 
-assembled_afterdet = afterdet_sqrt_np @ afterdet_sqrt_np
-
-mat_diff = afterdet_traced - assembled_afterdet
-
-mat_diff_norm = np.abs(mat_diff).sum()
-
-# for 4 tensor, not traced
-afterdet4_qtip = super_tensor(dens_matrix_2channels)
+# TODO check last BS transformation
 
 
-
-
-# TODO
-# # Entanglement negativity, input - matrix of 2 channels
-# def calculate_negativity(dens_matrix):
-#     neg = 0
-#     part_transposed = partial_transpose(dens_matrix)
-#     w, v = np.linalg.eig(np.diag((1, 2, 3)))
-#     return neg
-#
-#
-# part_transposed = partial_transpose(final_dens_matrix)
-# w, v = np.linalg.eig(part_transposed)
-# w  # values
-
-
-# Wigner function
-# xvec = np.linspace(-5, 5, 200)
-# wig_fun = wigner(Qobj(final_traced), xvec, xvec)
-
-# plt.plot_surface(xvec, xvec, wig_fun)
-# plt.colorbar()
-# plt.show()
-
-# fig = plt.figure()
-# ax = fig.gca(projection='3d')
-# X, Y = np.meshgrid(xvec, xvec)
-# surf = ax.plot_surface(X, Y, wig_fun, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-# fig.colorbar(surf, shrink=0.5, aspect=5)
-# plt.show()
-
-
+################################
+# TODO add checkpoint for dens matrices and print all values
 # Several params:
-grid = 20
+grid = 2
 
 log_entropy_array = np.zeros(grid, dtype=complex)
 lin_entropy = np.zeros(grid, dtype=complex)
@@ -255,6 +220,7 @@ for i in range(grid):
     log_entropy_array[i] = log_entanglement
 
     lin_entropy[i] = linear_entropy(final_traced)
+    log_negativity[i] = negativity(final_dens_matrix, neg_type='logarithmic')
 
 
 plt.plot(t4_array, np.real(log_entropy_array))
@@ -279,3 +245,18 @@ plt.xlabel('Number of photons')
 plt.show()
 
 '''
+
+# Wigner function
+# xvec = np.linspace(-5, 5, 200)
+# wig_fun = wigner(Qobj(final_traced), xvec, xvec)
+
+# plt.plot_surface(xvec, xvec, wig_fun)
+# plt.colorbar()
+# plt.show()
+
+# fig = plt.figure()
+# ax = fig.gca(projection='3d')
+# X, Y = np.meshgrid(xvec, xvec)
+# surf = ax.plot_surface(X, Y, wig_fun, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+# fig.colorbar(surf, shrink=0.5, aspect=5)
+# plt.show()
