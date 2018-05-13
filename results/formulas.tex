@@ -170,7 +170,44 @@ u_{p}^{l}(r, \phi) \propto r^{l} L_{p}^{l} (2r^2/w^2) e^{-r^2/w^2} \highlight{e^
 
 \item Projection operators
 
-\item $$  \hat{\Pi} = \Pi^{(1)} \otimes  \text{ {I^{(2)} } \otimes  \Pi^{(3)} \otimes  I^{(4)}    $$
+
+
+\begin{align*} 
+&  \hat{\Pi} = \Pi_{click}^{(1)} \otimes  \textrm{I}^{(2)}  \otimes  \Pi_{click}^{(3)} \otimes  \textrm{I}^{(4)}   \\
+&  \hat{\Pi} = \Pi_{click}^{(1)} \otimes  \textrm{I}^{(2)}  \otimes  \Pi_{no-click}^{(3)} \otimes  \textrm{I}^{(4)}  \\ 
+&  \hat{\Pi} = \Pi_{no-click}^{(1)} \otimes  \textrm{I}^{(2)}  \otimes  \Pi_{click}^{(3)} \otimes  \textrm{I}^{(4)} \\
+&    \hat{\Pi} = \Pi_{no-click}^{(1)} \otimes  \textrm{I}^{(2)}  \otimes  \Pi_{no-click}^{(3)} \otimes  \textrm{I}^{(4)}  
+\end{align*}
+
+\item state before detection
+
+\item $$ |\psi_4\rangle = \sum_{p_{1},p_{2},p_{3},p_{4}} \beta_{p_{1},p_{2},p_{3},p_{4}} (b_{1}^{\dag})^{p_{1}}  (b_{2}^{\dag})^{p_{2}} (b_{3}^{\dag})^{p_{3}}  (b_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 4} $$
+
+\item detection formulla
+
+\item $$  \rho =  Tr_{1,3}(\hat{\Pi} |\psi_{in}\rangle \langle \psi_{in}|   \hat{\Pi}^{\dag}) $$
+
+
+\item dens matrix after detection
+
+\item $$ \rho = \sum_{\substack{p_{2},p_{4} \\ p'_{2}, p'_{4}}}  \rho_{p_{2},p_{4}, p'_{2}, p'_{4}} |p_{2}\rangle \langle p'_{2}| \otimes |p_{4}\rangle \langle p'_{4}| $$
+
+\item last BS:
+
+\item $$   |p_{2},p_{4}\rangle \langle p'_{2},p'_{4}| = \frac{1}{\sqrt{p_{2}!p_{4}!p'_{2}!p'_{4}!}} (a_{2}^{\dag})^{p_{2}} (a_{4}^{\dag})^{p_{4}} |0,0\rangle \langle 0,0| (a_{2})^{p'_{2}} (a_{4})^{p'_{4}}   $$
+
+
+\item dens matrix after detection
+
+\item $$ \rho^{out} = \sum_{\substack{p_{1},p_{2} \\ p'_{1}, p'_{2}}}  \rho^{out}_{p_{1},p_{2}, p'_{1}, p'_{2}} |p_{1}\rangle \langle p'_{1}| \otimes |p_{2}\rangle \langle p'_{2}| $$
+
+\item dens matrix of subsystem
+
+\item $$ \rho_{1} = Tr_{2}(\rho_{12}) $$
+
+\item Entanglemen Von neiman entropy
+
+\item $$ S = 1 $$
 
 
 \end{enumerate}
