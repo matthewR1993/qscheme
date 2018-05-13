@@ -128,7 +128,7 @@ def trace_channel(input_matrix, channel=4):
 
 
 # Last beam splitter transformation of dens matrix.
-def last_bs(input_matrix, t4, r4):
+def bs_densmatrix_transform(input_matrix, t4, r4):
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)
 
@@ -150,7 +150,7 @@ def last_bs(input_matrix, t4, r4):
                                     d2_ = k_ + p4_ - l_
                                     coeff2 = t4**(p2_ - k_ + p4_ - l_) * (-1j*r4)**(k_ + l_) * sqrt(factorial(d1_)*factorial(d2_)) * factorial(p2_)*factorial(p4_)/(factorial(k_)*factorial(p2_-k_)*factorial(l_)*factorial(p4_-l_))
 
-                                    output_matrix[d1, d2, d1_, d2_] = input_matrix[p2, p4, p2_, p4_] * 1/(sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))) * coeff1 * coeff2
+                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p2, p4, p2_, p4_] * 1/(sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))) * coeff1 * coeff2
 
     return output_matrix
 
@@ -186,7 +186,7 @@ def partial_transpose(matrix):
         for p2 in range(size):
             for p1_ in range(size):
                 for p2_ in range(size):
-                    res_matrix[p1, p2, p1_, p2_] = res_matrix[p1, p2_, p1_, p2]
+                    res_matrix[p1, p2, p1_, p2_] = matrix[p1, p2_, p1_, p2]
     return res_matrix
 
 
@@ -209,7 +209,8 @@ def reorganise_dens_matrix(rho):
 
 
 def negativity(rho, neg_type='logarithmic'):
-    reorg_rho = reorganise_dens_matrix(rho)
+    part_transposed = partial_transpose(rho)
+    reorg_rho = reorganise_dens_matrix(part_transposed)
     w, v = np.linalg.eig(reorg_rho)
     neg = 0
     for eigval in w:

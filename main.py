@@ -28,8 +28,8 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -39,8 +39,8 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector clicked
-# DET_CONF = 'THIRD'  # 3rd detector clicked
+# DET_CONF = 'FIRST'  # 1st detector clicked
+DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors was clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
@@ -59,115 +59,92 @@ mut_state_unappl = tf.tensordot(
     name=None
 ).eval(session=sess)
 
+#
+# # First BS
+# state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
+#
+# # Second and third BSs
+# state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
+#
+# # Applying detection operator. Receiving unnormalized state.
+# state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
+#
+# # Calculate norm
+# norm_after_det = state_norm(state_after_dett_unappl)
+#
+# # Apply normalisation
+# state_after_dett_unappl_norm = state_after_dett_unappl/norm_after_det
+#
+# # Form dens matrix and trace. Dens. matrix for two channels
+# dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+#
+# channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
+#
+# # 2D  bars picture
+# # plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
+# # plt.colorbar()
+# # plt.title(r'$|\rho_{m n}| - after \ detection$')
+# # plt.xlabel('m')
+# # plt.ylabel('n')
+# # plt.show()
+#
+# # 3D bars picture
+# # data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
+# # fig = plt.figure()
+# # ax = fig.add_subplot(111, projection='3d')
+# # x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+# # x_data = x_data.flatten()
+# # y_data = y_data.flatten()
+# # z_data = data_array.flatten()
+# # ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+# # plt.title(r'$|\rho_{m n}| - after \ detection$')
+# # plt.xlabel('m')
+# # plt.ylabel('n')
+# # plt.show()
+#
+#
+# trim_size = 8
+# final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+#
+# final_traced = trace_channel(final_dens_matrix, channel=4)
+#
+# final_traced_4 = trace_channel(final_dens_matrix, channel=2)
+#
+# # 2D bars picture
+# # plt.matshow(np.abs(final_traced[:7, :7]))
+# # plt.colorbar()
+# # plt.title(r'$|\rho_{m n}| - output$')
+# # plt.xlabel('m')
+# # plt.ylabel('n')
+# # plt.show()
+#
+# # 3D bars picture
+# # data_array = np.array(np.abs(final_traced[:7, :7]))
+# # fig = plt.figure()
+# # ax = fig.add_subplot(111, projection='3d')
+# # x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+# # x_data = x_data.flatten()
+# # y_data = y_data.flatten()
+# # z_data = data_array.flatten()
+# # ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+# # plt.title(r'$|\rho_{m n}| - output$')
+# # plt.xlabel('m')
+# # plt.ylabel('n')
+# # plt.show()
+#
+#
+# print('Log. entropy: ', log_entropy(final_traced))
+#
+# print('Lin. entropy: ', np.real(linear_entropy(final_traced)))
+#
+# print('Log. negativity: ', negativity(final_dens_matrix, neg_type='logarithmic'))
+#
 
-# First BS
-state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
-
-# Second and third BSs
-state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
-
-# Applying detection operator. Receiving unnormalized state.
-state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
-
-# Calculate norm
-norm_after_det = state_norm(state_after_dett_unappl)
-
-# Apply normalisation
-state_after_dett_unappl_norm = state_after_dett_unappl/norm_after_det
-
-# Form dens matrix and trace. Dens. matrix for two channels
-dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-
-channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
-
-# 2D  bars picture
-# plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
-# plt.colorbar()
-# plt.title(r'$|\rho_{m n}| - after \ detection$')
-# plt.xlabel('m')
-# plt.ylabel('n')
-# plt.show()
-
-# 3D bars picture
-data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
-x_data = x_data.flatten()
-y_data = y_data.flatten()
-z_data = data_array.flatten()
-ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-plt.title(r'$|\rho_{m n}| - after \ detection$')
-plt.xlabel('m')
-plt.ylabel('n')
-plt.show()
-
-
-trim_size = 8
-final_dens_matrix = last_bs(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
-
-final_traced = trace_channel(final_dens_matrix, channel=4)
-
-final_traced_4 = trace_channel(final_dens_matrix, channel=2)
-
-# 2D bars picture
-# plt.matshow(np.abs(final_traced[:7, :7]))
-# plt.colorbar()
-# plt.title(r'$|\rho_{m n}| - output$')
-# plt.xlabel('m')
-# plt.ylabel('n')
-# plt.show()
-
-# 3D bars picture
-data_array = np.array(np.abs(final_traced[:7, :7]))
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
-x_data = x_data.flatten()
-y_data = y_data.flatten()
-z_data = data_array.flatten()
-ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-plt.title(r'$|\rho_{m n}| - output$')
-plt.xlabel('m')
-plt.ylabel('n')
-plt.show()
-
-
-log_entanglement = log_entropy(final_traced)
-print('Log. entropy: ', np.real(log_entanglement))
-
-afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
-afterdet_traced_4 = trace_channel(dens_matrix_2channels, channel=2)
-
-# TODO check trace after last BS
-# np.trace(final_traced)
-# np.trace(final_traced_4)
-
-# This is ok, equals 1
-# np.trace(afterdet_traced)
-# np.trace(afterdet_traced_4)
-
-
-# negativity
-reorg_rho_beforebs = reorganise_dens_matrix(dens_matrix_2channels)
-w, v = np.linalg.eig(reorg_rho_beforebs)
-
-plt.plot(range(10), np.real(w[0:10]))
-plt.show()
-
-# WRONG! Tace is not 1
-reorg_rho = reorganise_dens_matrix(final_dens_matrix)
-
-negativity(final_dens_matrix)
-negativity(dens_matrix_2channels)
-
-# TODO check last BS transformation
 
 
 ################################
-# TODO add checkpoint for dens matrices and print all values
 # Several params:
-grid = 2
+grid = 26
 
 log_entropy_array = np.zeros(grid, dtype=complex)
 lin_entropy = np.zeros(grid, dtype=complex)
@@ -203,15 +180,16 @@ for i in range(grid):
     # Dens matrix and trace
     dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
-    # traced matrix after detection
+    # Traced matrix after detection
     # afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
 
     # Transformation at last BS
     trim_size = 8
-    final_dens_matrix = last_bs(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+    final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
     # Trace one channel out of final state
     final_traced = trace_channel(final_dens_matrix, channel=4)
+    print('Final matrix trace:', np.trace(final_traced))
 
     # Calculate entropy
     log_entanglement = log_entropy(final_traced)
@@ -219,16 +197,36 @@ for i in range(grid):
     print('Log. entropy: ', np.real(log_entanglement))
     log_entropy_array[i] = log_entanglement
 
-    lin_entropy[i] = linear_entropy(final_traced)
+    lin_entropy[i] = np.real(linear_entropy(final_traced))
+    print('Lin. entropy: ',lin_entropy[i])
+
     log_negativity[i] = negativity(final_dens_matrix, neg_type='logarithmic')
+    print('Log. negativity: ', log_negativity[i])
 
 
-plt.plot(t4_array, np.real(log_entropy_array))
-plt.title(r'$S = -\sum_{n} \lambda_{n} ln(\lambda_{n})$')
-plt.xlabel(r'$t_{4}$')
-plt.ylabel('S')
+plt.plot(t4_array, np.real(log_entropy_array), label=r'$Log. entropy$')
+plt.plot(t4_array, np.real(lin_entropy), label=r'$Lin. entropy$')
+plt.plot(t4_array, np.real(log_negativity), label=r'$Log. negativity$')
+plt.title(r'Entanglement.')
+plt.xlabel(r'$t_{4}$', fontsize=16)
 plt.xlim([0, 1])
+plt.legend()
+plt.grid(True)
 plt.show()
+
+
+# mult = 1e-3
+#
+# plt.plot(t4_array, np.real(log_entropy_array), label=r'$Log. entropy$')
+# plt.plot(t4_array, np.real(lin_entropy), label=r'$Lin. entropy$')
+# plt.plot(t4_array, np.real(mult*log_negativity), label=r'$Log. negativity*10^{-3}$')
+# plt.title(r'Entanglement.')
+# plt.xlabel(r'$t_{4}$', fontsize=16)
+# plt.xlim([0, 1])
+# plt.legend()
+# plt.grid(True)
+# plt.show()
+
 
 '''
 
@@ -245,18 +243,3 @@ plt.xlabel('Number of photons')
 plt.show()
 
 '''
-
-# Wigner function
-# xvec = np.linspace(-5, 5, 200)
-# wig_fun = wigner(Qobj(final_traced), xvec, xvec)
-
-# plt.plot_surface(xvec, xvec, wig_fun)
-# plt.colorbar()
-# plt.show()
-
-# fig = plt.figure()
-# ax = fig.gca(projection='3d')
-# X, Y = np.meshgrid(xvec, xvec)
-# surf = ax.plot_surface(X, Y, wig_fun, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-# fig.colorbar(surf, shrink=0.5, aspect=5)
-# plt.show()
