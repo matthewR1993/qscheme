@@ -60,7 +60,7 @@ mut_state_unappl = tf.tensordot(
     name=None
 ).eval(session=sess)
 
-#
+
 # # First BS
 # state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 #
@@ -82,26 +82,26 @@ mut_state_unappl = tf.tensordot(
 # channel2_densmatrix = trace_channel(dens_matrix_2channels, channel=4)
 #
 # # 2D  bars picture
-# # plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
-# # plt.colorbar()
-# # plt.title(r'$|\rho_{m n}| - after \ detection$')
-# # plt.xlabel('m')
-# # plt.ylabel('n')
-# # plt.show()
+# plt.matshow(np.abs(channel2_densmatrix[:7, :7]))
+# plt.colorbar()
+# plt.title(r'$|\rho_{m n}| - after \ detection$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
 #
 # # 3D bars picture
-# # data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
-# # fig = plt.figure()
-# # ax = fig.add_subplot(111, projection='3d')
-# # x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
-# # x_data = x_data.flatten()
-# # y_data = y_data.flatten()
-# # z_data = data_array.flatten()
-# # ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-# # plt.title(r'$|\rho_{m n}| - after \ detection$')
-# # plt.xlabel('m')
-# # plt.ylabel('n')
-# # plt.show()
+# data_array = np.array(np.abs(channel2_densmatrix[:7, :7]))
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+# x_data = x_data.flatten()
+# y_data = y_data.flatten()
+# z_data = data_array.flatten()
+# ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+# plt.title(r'$|\rho_{m n}| - after \ detection$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
 #
 #
 # trim_size = 8
@@ -112,26 +112,26 @@ mut_state_unappl = tf.tensordot(
 # final_traced_4 = trace_channel(final_dens_matrix, channel=2)
 #
 # # 2D bars picture
-# # plt.matshow(np.abs(final_traced[:7, :7]))
-# # plt.colorbar()
-# # plt.title(r'$|\rho_{m n}| - output$')
-# # plt.xlabel('m')
-# # plt.ylabel('n')
-# # plt.show()
+# plt.matshow(np.abs(final_traced[:7, :7]))
+# plt.colorbar()
+# plt.title(r'$|\rho_{m n}| - output$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
 #
 # # 3D bars picture
-# # data_array = np.array(np.abs(final_traced[:7, :7]))
-# # fig = plt.figure()
-# # ax = fig.add_subplot(111, projection='3d')
-# # x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
-# # x_data = x_data.flatten()
-# # y_data = y_data.flatten()
-# # z_data = data_array.flatten()
-# # ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
-# # plt.title(r'$|\rho_{m n}| - output$')
-# # plt.xlabel('m')
-# # plt.ylabel('n')
-# # plt.show()
+# data_array = np.array(np.abs(final_traced[:7, :7]))
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# x_data, y_data = np.meshgrid(np.arange(data_array.shape[1]), np.arange(data_array.shape[0]))
+# x_data = x_data.flatten()
+# y_data = y_data.flatten()
+# z_data = data_array.flatten()
+# ax.bar3d(x_data, y_data, np.zeros(len(z_data)), 1, 1, z_data, color='#00ceaa', shade=True)
+# plt.title(r'$|\rho_{m n}| - output$')
+# plt.xlabel('m')
+# plt.ylabel('n')
+# plt.show()
 #
 #
 # print('Log. entropy: ', log_entropy(final_traced))
