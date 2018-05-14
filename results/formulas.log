@@ -1,14 +1,14 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.27)  14 MAY 2018 00:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.7.12)  14 MAY 2018 13:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **formulas.tex
 (./formulas.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+LaTeX2e <2017-04-15>
+Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -23,26 +23,26 @@ File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2016/01/03 v1.1b Standard LaTeX Color (DPC)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
 
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
-File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package color Info: Driver file: pdftex.def on input line 143.
+Package color Info: Driver file: pdftex.def on input line 147.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2017/01/12 v0.06k Graphics/color for pdfTeX
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+(/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/soul/soul.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/soul/soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@word=\toks14
 \SOUL@lasttoken=\toks15
@@ -54,41 +54,41 @@ Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@uldp=\dimen104
 \SOUL@ulht=\dimen105
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2016/03/03 v2.15a AMS math features
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2016/11/05 v2.16a AMS math features
 \@mathmargin=\skip44
 
 For additional information on amsmath, use the `?' option.
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01 AMS text
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks19
 \ex@=\dimen106
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen107
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
-Package: amsopn 1999/12/14 v2.01 operator names
+(/usr/local/texlive/2017/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
 )
 \inf@bad=\count88
-LaTeX Info: Redefining \frac on input line 199.
+LaTeX Info: Redefining \frac on input line 213.
 \uproot@=\count89
 \leftroot@=\count90
-LaTeX Info: Redefining \overline on input line 297.
+LaTeX Info: Redefining \overline on input line 375.
 \classnum@=\count91
 \DOTSCASE@=\count92
-LaTeX Info: Redefining \ldots on input line 394.
-LaTeX Info: Redefining \dots on input line 397.
-LaTeX Info: Redefining \cdots on input line 518.
+LaTeX Info: Redefining \ldots on input line 472.
+LaTeX Info: Redefining \dots on input line 475.
+LaTeX Info: Redefining \cdots on input line 596.
 \Mathstrutbox@=\box26
 \strutbox@=\box27
 \big@size=\dimen108
-LaTeX Font Info:    Redeclaring font encoding OML on input line 630.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
+LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 \macc@depth=\count93
 \c@MaxMatrixCols=\count94
 \dotsspace@=\muskip10
@@ -109,26 +109,26 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
 \multlinegap=\skip45
 \multlinetaggap=\skip46
 \mathdisplay@stack=\toks23
-LaTeX Info: Redefining \[ on input line 2735.
-LaTeX Info: Redefining \] on input line 2736.
+LaTeX Info: Redefining \[ on input line 2817.
+LaTeX Info: Redefining \] on input line 2818.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
-Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
 
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
-File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
-LaTeX Info: Redefining \color on input line 702.
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
-Package xcolor Info: Model `RGB' extended on input line 1353.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+LaTeX Info: Redefining \color on input line 709.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 )
 (./formulas.aux)
 \openout1 = `formulas.aux'.
@@ -145,7 +145,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
 LaTeX Font Info:    ... okay on input line 14.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
 LaTeX Font Info:    ... okay on input line 14.
- (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+
+(/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count100
 \scratchdimen=\dimen115
@@ -171,7 +172,7 @@ cmr/bx/n/12 q[]\OT1/cmr/m/n/12 ) = \OML/cmm/m/it/12 C [] [] \OMS/cmsy/m/n/12 ^^
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 Overfull \hbox (38.65056pt too wide) detected at line 64
  []$[] \OMS/cmsy/m/n/12 ^^B [] [] [][][] \OT1/cmr/m/n/12 + [] []\OML/cmm/m/it/1
 2 i\OT1/cmr/m/n/12 (^^A[]\OML/cmm/m/it/12 d[] \OT1/cmr/m/n/12 + []^^A[]\OML/cmm
@@ -180,8 +181,8 @@ OML/cmm/m/it/12 d[] \OT1/cmr/m/n/12 + \OML/cmm/m/it/12 d[]\OT1/cmr/m/n/12 ) + [
 ]^^A[]\OML/cmm/m/it/12 L\OT1/cmr/m/n/12 )[][]$ []  
  []
 
-[2] [3] [4]
-Overfull \hbox (83.19101pt too wide) detected at line 123
+[2] [3]
+Overfull \hbox (83.19101pt too wide) detected at line 127
 \OMS/cmsy/m/n/12 j\OML/cmm/m/it/12  []\OMS/cmsy/m/n/12 i ^^Y \OML/cmm/m/it/12 e
 []\OT1/cmr/m/n/12 (1 + []\OML/cmm/m/it/12 a[] \OT1/cmr/m/n/12 + []\OML/cmm/m/it
 /12 a[] \OT1/cmr/m/n/12 + \OML/cmm/m/it/12 ia[]a[] \OT1/cmr/m/n/12 + [](\OML/cm
@@ -191,32 +192,33 @@ m/m/it/12 a[]\OT1/cmr/m/n/12 )[] + [](\OML/cmm/m/it/12 a[]\OT1/cmr/m/n/12 )[] +
 12 + \OML/cmm/m/it/12 :::\OT1/cmr/m/n/12 )
  []
 
-[5] [6] [7] (./formulas.aux) ) 
+[4] [5] [6] [7] [8] (./formulas.aux) ) 
 Here is how much of TeX's memory you used:
- 2187 strings out of 493029
- 26501 string characters out of 6136234
- 97413 words of memory out of 5000000
- 5745 multiletter control sequences out of 15000+600000
+ 2203 strings out of 492995
+ 27021 string characters out of 6132704
+ 98617 words of memory out of 5000000
+ 5777 multiletter control sequences out of 15000+600000
  10793 words of font info for 39 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 27i,11n,35p,357b,198s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmsy8.pfb>
-Output written on formulas.pdf (7 pages, 141548 bytes).
+ 27i,11n,35p,363b,198s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2017/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmr17.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmsy6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmsy8.pfb>
+Output written on formulas.pdf (8 pages, 144787 bytes).
 PDF statistics:
- 80 PDF objects out of 1000 (max. 8388607)
- 57 compressed objects within 1 object stream
+ 83 PDF objects out of 1000 (max. 8388607)
+ 59 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

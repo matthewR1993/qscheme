@@ -190,6 +190,7 @@ def partial_transpose(matrix):
     return res_matrix
 
 
+# Takes density matrix of the subsystem
 def linear_entropy(dens_matrix):
     entropy = 1 - np.trace(dens_matrix @ dens_matrix)
     return entropy
