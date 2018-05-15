@@ -253,17 +253,22 @@ plt.show()
 # plt.show()
 
 
-# TODO S(t1, t4) plot
+# Entropy S(t1, t4) 3D plot.
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 
-X = t1_array
-Y = t4_array
+X = np.square(t4_array)
+Y = np.square(t1_array)
 X, Y = np.meshgrid(X, Y)
 
 # Plot the surface.
 surf = ax.plot_surface(X, Y, np.real(log_entropy_array), cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
+                      linewidth=0, antialiased=False)
+plt.title(r'Log. VN entropy.')
+
+# surf = ax.plot_surface(X, Y, np.real(log_negativity), cmap=cm.coolwarm,
+#                        linewidth=0, antialiased=False)
+# plt.title(r'Log. negativity.')
 
 # Customize the z axis.
 # ax.set_zlim(-1.01, 1.01)
@@ -272,6 +277,21 @@ surf = ax.plot_surface(X, Y, np.real(log_entropy_array), cmap=cm.coolwarm,
 
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# Entropy S(t1, t4) 2D plot.
+im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
+# im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
+cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
+plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
+plt.colorbar(im)
+plt.xlabel(r'$t_{4}$', fontsize=16)
+plt.ylabel(r'$t_{1}$', fontsize=16)
+# plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
+plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
 plt.show()
 
 
