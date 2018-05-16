@@ -147,10 +147,12 @@ mut_state_unappl = tf.tensordot(
 # Several params:
 print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
-r1_grid = 16
-r4_grid = 16
+r1_grid = 1
+r4_grid = 18
 
 bs1_even = True
+
+phase_diff = (1/6) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -158,7 +160,8 @@ log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # Varying last BS (BS4)
 a4 = 0
-t4_array = np.linspace(0, 1, r4_grid)
+T4_array = np.linspace(0, 1, r4_grid)
+t4_array = np.sqrt(T4_array)
 
 r4_fun = lambda tt: sqrt(1 - pow(tt, 2) - pow(a4, 2))
 r4_vect_func = np.vectorize(r4_fun)
@@ -166,7 +169,8 @@ r4_array = r4_vect_func(t4_array)
 
 # Varying first BS (BS1)
 a1 = 0
-t1_array = np.linspace(0, 1, r1_grid)
+T1_array = np.linspace(0, 1, r1_grid)
+t1_array = np.sqrt(T1_array)
 
 r1_fun = lambda tt: sqrt(1 - pow(tt, 2) - pow(a1, 2))
 r1_vect_func = np.vectorize(r1_fun)
@@ -211,6 +215,9 @@ for i in range(r4_grid):
         trim_size = 8
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
+        # phase modulation
+        final_dens_matrix = phase_modulation(final_dens_matrix, phase_diff)
+
         # Trace one channel out of final state
         final_traced = trace_channel(final_dens_matrix, channel=4)
         print('Trace of final matrix:', np.trace(final_traced))
@@ -229,9 +236,9 @@ for i in range(r4_grid):
 
 
 # Varying t4
-plt.plot(t4_array, np.real(log_entropy_array[:, 0]), label=r'$Log. entropy$')
-plt.plot(t4_array, np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
-plt.plot(t4_array, np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
+plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. entropy$')
+plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
+plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
 plt.title(r'Entanglement.')
 plt.xlabel(r'$t_{4}$', fontsize=16)
 plt.xlim([0, 1])
@@ -242,9 +249,9 @@ plt.show()
 
 # mult = 1e-3
 #
-# plt.plot(t4_array, np.real(log_entropy_array), label=r'$Log. entropy$')
-# plt.plot(t4_array, np.real(lin_entropy), label=r'$Lin. entropy$')
-# plt.plot(t4_array, np.real(mult*log_negativity), label=r'$Log. negativity*10^{-3}$')
+# plt.plot(np.square(t4_array), np.real(log_entropy_array), label=r'$Log. entropy$')
+# plt.plot(np.square(t4_array), np.real(lin_entropy), label=r'$Lin. entropy$')
+# plt.plot(np.square(t4_array), np.real(mult*log_negativity), label=r'$Log. negativity*10^{-3}$')
 # plt.title(r'Entanglement.')
 # plt.xlabel(r'$t_{4}$', fontsize=16)
 # plt.xlim([0, 1])
