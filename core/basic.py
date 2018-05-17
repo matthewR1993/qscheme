@@ -173,7 +173,7 @@ def log_entropy(dens_matrix):
     w, v = np.linalg.eig(dens_matrix)
     for n in range(size):
         if w[n] != 0:
-            entropy = entropy + w[n] * np.log(w[n])
+            entropy = entropy + w[n] * np.log2(w[n])
     entropy = - entropy
     return entropy
 
@@ -225,7 +225,7 @@ def negativity(rho, neg_type='logarithmic'):
         raise ValueError('Incorrect configuration')
 
 
-def phase_modulation(rho, phase=0):
+def phase_modulation(rho, phase):
     if phase is 0:
         return rho
     size = len(rho)

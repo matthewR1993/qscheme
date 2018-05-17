@@ -152,7 +152,7 @@ r4_grid = 18
 
 bs1_even = True
 
-phase_diff = (1/6) * np.pi
+phase_diff = (0) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -222,14 +222,23 @@ for i in range(r4_grid):
         final_traced = trace_channel(final_dens_matrix, channel=4)
         print('Trace of final matrix:', np.trace(final_traced))
 
+        # Other channel traced
+        final_traced_4th = trace_channel(final_dens_matrix, channel=2)
+
         # Calculate entropy
         log_entanglement = log_entropy(final_traced)
         # log_entanglement = log_entropy(afterdet_traced)
         print('Log. entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
+        # Logarithmic entropy difference
+        print('Log. entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
+
         lin_entropy[i, j] = np.real(linear_entropy(final_traced))
         print('Lin. entropy: ', lin_entropy[i, j])
+
+        # Linear entropy difference
+        print('Linear entropy difference: ', lin_entropy[i, j] - linear_entropy(final_traced_4th))
 
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
@@ -276,11 +285,6 @@ plt.title(r'Log. VN entropy.')
 # surf = ax.plot_surface(X, Y, np.real(log_negativity), cmap=cm.coolwarm,
 #                        linewidth=0, antialiased=False)
 # plt.title(r'Log. negativity.')
-
-# Customize the z axis.
-# ax.set_zlim(-1.01, 1.01)
-# ax.zaxis.set_major_locator(LinearLocator(10))
-# ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
