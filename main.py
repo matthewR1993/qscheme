@@ -225,16 +225,19 @@ for i in range(r4_grid):
         # Other channel traced
         final_traced_4th = trace_channel(final_dens_matrix, channel=2)
 
+        print('trace of reduced matrix:', np.trace(final_traced_4th))
+
         # Calculate entropy
-        log_entanglement = log_entropy(final_traced)
-        # log_entanglement = log_entropy(afterdet_traced)
-        print('Log. entropy: ', np.real(log_entanglement))
+        # log_entanglement = log_entropy(final_traced)
+        log_entanglement = log_entropy(final_traced_4th)
+        print('FN entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
         # Logarithmic entropy difference
-        print('Log. entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
+        print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
 
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        # lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other traced matrix
         print('Lin. entropy: ', lin_entropy[i, j])
 
         # Linear entropy difference
