@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 9
+series_length = 13
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -29,13 +29,13 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(input_series_length, alpha=2)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
@@ -148,15 +148,18 @@ mut_state_unappl = tf.tensordot(
 print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 r1_grid = 1
-r4_grid = 18
+r4_grid = 16
 
 bs1_even = True
 
-phase_diff = (0) * np.pi
+# Phase difference before last BS
+phase_diff = (0.0) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
+
+log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # Varying last BS (BS4)
 a4 = 0
@@ -208,15 +211,22 @@ for i in range(r4_grid):
         # Dens matrix and trace
         dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
+        # phase modulation
+        dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+
+        # Disable phase addition
+        # dens_matrix_2channels_withph = dens_matrix_2channels
+
+        # after detection, with phase
+        # log_negativity_aftdet[i] = negativity(dens_matrix_2channels_withph, neg_type='logarithmic')
+
         # Traced matrix after detection
         # afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
+        # TODO check differences after detection
 
         # Transformation at last BS
         trim_size = 8
-        final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
-
-        # phase modulation
-        final_dens_matrix = phase_modulation(final_dens_matrix, phase_diff)
+        final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
         final_traced = trace_channel(final_dens_matrix, channel=4)
@@ -228,16 +238,16 @@ for i in range(r4_grid):
         print('trace of reduced matrix:', np.trace(final_traced_4th))
 
         # Calculate entropy
-        # log_entanglement = log_entropy(final_traced)
-        log_entanglement = log_entropy(final_traced_4th)
+        log_entanglement = log_entropy(final_traced)
+        # log_entanglement = log_entropy(final_traced_4th)
         print('FN entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
         # Logarithmic entropy difference
         print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
 
-        # lin_entropy[i, j] = np.real(linear_entropy(final_traced))
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other traced matrix
+        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        # lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other traced matrix
         print('Lin. entropy: ', lin_entropy[i, j])
 
         # Linear entropy difference
@@ -248,10 +258,11 @@ for i in range(r4_grid):
 
 
 # Varying t4
-plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. entropy$')
-plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
-plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
-plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (phase_diff / np.pi, DET_CONF))
+plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. entropy, out$')
+plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy, out$')
+plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity, out$')
+# plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
+# plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (phase_diff / np.pi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.xlim([0, 1])
 plt.legend()
@@ -273,40 +284,40 @@ plt.show()
 
 
 # Entropy S(t1, t4) 3D plot.
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-X = np.square(t4_array)
-Y = np.square(t1_array)
-X, Y = np.meshgrid(X, Y)
-
-# Plot the surface.
-surf = ax.plot_surface(X, Y, np.real(log_entropy_array), cmap=cm.coolwarm,
-                      linewidth=0, antialiased=False)
-plt.title(r'Log. VN entropy.')
-
-# surf = ax.plot_surface(X, Y, np.real(log_negativity), cmap=cm.coolwarm,
-#                        linewidth=0, antialiased=False)
-# plt.title(r'Log. negativity.')
-
-# Add a color bar which maps values to colors.
-fig.colorbar(surf, shrink=0.5, aspect=5)
-plt.xlabel(r'$T_{4}$', fontsize=16)
-plt.ylabel(r'$T_{1}$', fontsize=16)
-plt.show()
-
-
-# Entropy S(t1, t4) 2D plot.
-im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
-# im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
-cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
-plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
-plt.colorbar(im)
-plt.xlabel(r'$t_{4}$', fontsize=16)
-plt.ylabel(r'$t_{1}$', fontsize=16)
-# plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
-plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
-plt.show()
+# fig = plt.figure()
+# ax = fig.gca(projection='3d')
+#
+# X = np.square(t4_array)
+# Y = np.square(t1_array)
+# X, Y = np.meshgrid(X, Y)
+#
+# # Plot the surface.
+# surf = ax.plot_surface(X, Y, np.real(log_entropy_array), cmap=cm.coolwarm,
+#                       linewidth=0, antialiased=False)
+# plt.title(r'Log. VN entropy.')
+#
+# # surf = ax.plot_surface(X, Y, np.real(log_negativity), cmap=cm.coolwarm,
+# #                        linewidth=0, antialiased=False)
+# # plt.title(r'Log. negativity.')
+#
+# # Add a color bar which maps values to colors.
+# fig.colorbar(surf, shrink=0.5, aspect=5)
+# plt.xlabel(r'$T_{4}$', fontsize=16)
+# plt.ylabel(r'$T_{1}$', fontsize=16)
+# plt.show()
+#
+#
+# # Entropy S(t1, t4) 2D plot.
+# im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
+# # im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
+# cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
+# plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
+# plt.colorbar(im)
+# plt.xlabel(r'$t_{4}$', fontsize=16)
+# plt.ylabel(r'$t_{1}$', fontsize=16)
+# # plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
+# plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
+# plt.show()
 
 
 '''

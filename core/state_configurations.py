@@ -16,3 +16,13 @@ def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
     for n in range(series_length):
         state[n] = exp(-abs(alpha)**2 / 2) * alpha**n / factorial(n)
     return state
+
+
+# TODO
+def squeezed_vacuum(series_length=DEF_SERIES_LEN, squeezing=1):
+    return 0
+
+
+# TODO
+def squeezed_coherent_state(series_length=DEF_SERIES_LEN, squeezing=1, alpha=1):
+    return 0
