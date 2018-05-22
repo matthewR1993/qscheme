@@ -20,13 +20,13 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 13
+series_length = 12
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
-# input_st[n] = state with 'n' photons !!!
+# input_st[n] = state with 'n' photons !!!a
 
 # INPUT
 # input_st = single_photon(series_length)
@@ -238,16 +238,16 @@ for i in range(r4_grid):
         print('trace of reduced matrix:', np.trace(final_traced_4th))
 
         # Calculate entropy
-        log_entanglement = log_entropy(final_traced)
-        # log_entanglement = log_entropy(final_traced_4th)
+        # log_entanglement = log_entropy(final_traced)
+        log_entanglement = log_entropy(final_traced_4th)  # other channel traced matrix
         print('FN entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
         # Logarithmic entropy difference
         print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
 
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
-        # lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other traced matrix
+        # lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other channel traced matrix
         print('Lin. entropy: ', lin_entropy[i, j])
 
         # Linear entropy difference
