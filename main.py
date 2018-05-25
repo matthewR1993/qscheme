@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 12
+series_length = 4
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -29,13 +29,14 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!a
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=2)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=2)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
+
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
@@ -153,7 +154,7 @@ r4_grid = 16
 bs1_even = True
 
 # Phase difference before last BS
-phase_diff = (0.0) * np.pi
+phase_diff = (0.25) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
