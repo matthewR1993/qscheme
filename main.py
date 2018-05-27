@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 13
+series_length = 5
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -29,20 +29,20 @@ max_power = input_series_length + auxiliary_series_length
 # input_st[n] = state with 'n' photons !!!
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=2)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=2)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
-# DET_CONF = 'NONE'  # None of detectors was clicked
+DET_CONF = 'NONE'  # None of detectors was clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
