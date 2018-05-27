@@ -20,13 +20,17 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
+<<<<<<< HEAD
 series_length = 5
+=======
+series_length = 4
+>>>>>>> 64280b00e55c6b438e2497f7ed796543efa1f1c3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
 # Set up input and auxiliary states as a Taylor series
-# input_st[n] = state with 'n' photons !!!
+# input_st[n] = state with 'n' photons !!!a
 
 # INPUT
 input_st = single_photon(series_length)
@@ -34,6 +38,10 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
+<<<<<<< HEAD
+=======
+
+>>>>>>> 64280b00e55c6b438e2497f7ed796543efa1f1c3
 auxiliary_st = single_photon(series_length)
 # auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
@@ -153,7 +161,7 @@ r4_grid = 16
 bs1_even = True
 
 # Phase difference before last BS
-phase_diff = (0.0) * np.pi
+phase_diff = (0.25) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -238,16 +246,16 @@ for i in range(r4_grid):
         print('trace of reduced matrix:', np.trace(final_traced_4th))
 
         # Calculate entropy
-        log_entanglement = log_entropy(final_traced)
-        # log_entanglement = log_entropy(final_traced_4th)
+        # log_entanglement = log_entropy(final_traced)
+        log_entanglement = log_entropy(final_traced_4th)  # other channel traced matrix
         print('FN entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
         # Logarithmic entropy difference
         print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
 
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
-        # lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other traced matrix
+        # lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other channel traced matrix
         print('Lin. entropy: ', lin_entropy[i, j])
 
         # Linear entropy difference
