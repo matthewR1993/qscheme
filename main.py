@@ -20,11 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-<<<<<<< HEAD
 series_length = 5
-=======
-series_length = 4
->>>>>>> 64280b00e55c6b438e2497f7ed796543efa1f1c3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -38,10 +34,6 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-<<<<<<< HEAD
-=======
-
->>>>>>> 64280b00e55c6b438e2497f7ed796543efa1f1c3
 auxiliary_st = single_photon(series_length)
 # auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
