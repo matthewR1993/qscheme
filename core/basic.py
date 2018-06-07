@@ -104,6 +104,21 @@ def dens_matrix_with_trace(left_vector, right_vector):
     return dens_matrix
 
 
+# Form dens matrix for two channels.
+def dens_matrix(state):
+    size = len(state)
+    state_conj = np.conj(state)
+    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+
+    for p1 in range(size):
+        for p2 in range(size):
+            for p1_ in range(size):
+                for p2_ in range(size):
+                    dens_matrix[p1, p2, p1_, p2_] = state[p1, p2] * state_conj[p1_, p2_]
+
+    return dens_matrix
+
+
 # trace one channel
 def trace_channel(input_matrix, channel=4):
     size = len(input_matrix)
@@ -173,8 +188,7 @@ def log_entropy(dens_matrix):
     w, v = np.linalg.eig(dens_matrix)
     for n in range(size):
         if w[n] != 0:
-            entropy = entropy + w[n] * np.log2(w[n])
-    entropy = - entropy
+            entropy = entropy - w[n] * np.log2(w[n])
     return entropy
 
 
@@ -236,3 +250,13 @@ def phase_modulation(rho, phase):
                 for p2_ in range(size):
                     rho_out[p1, p2, p1_, p2_] = rho[p1, p2, p1_, p2_] * np.exp(1j * phase * (p2 - p2_))
     return rho_out
+
+
+# Aplly operators to state in two channels
+def make_state_appliable(state):
+    size = len(state)
+    st_appl = np.zeros((size, size), dtype=complex)
+    for p1 in range(size):
+        for p2 in range(size):
+            st_appl[p1, p2] = state[p1, p2] * sqrt(factorial(p1) * factorial(p2))
+    return st_appl

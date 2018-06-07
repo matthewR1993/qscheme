@@ -31,7 +31,7 @@ def dens_matrix(phase):
     rho[7, 3] = 1j*sqrt(2)/8 * (np.exp(1j*2*phase) - 1) * (np.exp(-1j*2*phase) + 1)
     return rho
 
-num = 100
+num = 200
 
 phase_arr = np.linspace(0, np.pi, num)
 
@@ -96,7 +96,9 @@ plt.show()
 
 ##########################
 
-phase = 0.0 * np.pi
+num = 200
+
+phase = 1.0 * np.pi
 t2_array = np.linspace(0, 1, num)
 
 # eigvalues of reduced dens matrix
@@ -111,11 +113,11 @@ def dens_matrix_gen(phase, t2):
     rho = np.zeros((9, 9), dtype=complex)
     rho[2, 2] = (1/2) * np.abs((t2**2 - 1)*np.exp(1j*2*phase) + t2**2)**2
     rho[4, 4] = t2**2 * (1 - t2**2) * np.abs(np.exp(1j*2*phase) + 1)**2
-    rho[6, 6] = (1/2) * np.abs(t2**2*np.exp(1j*2*phase) + t2**2 - 1)**2
-    rho[3, 7] = (1/np.sqrt(2)) * (1j)*t2*np.sqrt(1 - t2**2)*(np.exp(1j*2*phase) + 1) * (t2**2*np.exp(-1j*2*phase) + t2**2 - 1)
-    rho[7, 3] = (1/np.sqrt(2)) * (-1j)*(t2**2*np.exp(1j*2*phase) + t2**2 - 1) * t2*np.sqrt(1 - t2**2) * (np.exp(-1j*2*phase) + 1)
-    rho[8, 0] = (1/2) * (t2**2*np.exp(1j*2*phase) + t2**2 - 1) * ((t2**2 - 1)*np.exp(-1j*2*phase) + t2**2)
-    rho[0, 8] = (1/2) * ((t2**2 - 1)*np.exp(1j*2*phase) + t2**2) * (t2**2*np.exp(-1j*2*phase) + t2**2 - 1)
+    rho[6, 6] = (1/2) * np.abs((t2**2) * np.exp(1j*2*phase) + t2**2 - 1)**2
+    rho[3, 7] = (1/np.sqrt(2)) * (1j)*t2*np.sqrt(1 - t2**2)*(np.exp(1j*2*phase) + 1) * ((t2**2) * np.exp(-1j*2*phase) + t2**2 - 1)
+    rho[7, 3] = (1/np.sqrt(2)) * (-1j)*((t2**2)*np.exp(1j*2*phase) + t2**2 - 1) * t2*np.sqrt(1 - t2**2) * (np.exp(-1j*2*phase) + 1)
+    rho[8, 0] = (1/2) * ((t2**2) * np.exp(1j*2*phase) + t2**2 - 1) * ((t2**2 - 1)*np.exp(-1j*2*phase) + t2**2)
+    rho[0, 8] = (1/2) * ((t2**2 - 1)*np.exp(1j*2*phase) + t2**2) * ((t2**2) * np.exp(-1j*2*phase) + t2**2 - 1)
     rho[1, 5] = (1/np.sqrt(2)) * (-1j) * ((t2**2 - 1)*np.exp(1j*2*phase) + t2**2) * t2*np.sqrt(1 - t2**2) * (np.exp(-1j*2*phase) + 1)
     rho[5, 1] = (1/np.sqrt(2)) * (1j) * t2*np.sqrt(1 - t2**2) * (np.exp(1j*2*phase) + 1) * ((t2**2 - 1)*np.exp(-1j*2*phase) + t2**2)
     return rho
@@ -139,6 +141,7 @@ def dens_matrx2(phase, t2):
 log_neg_t2arr = np.zeros(num)
 fn_entropy_t2arr = np.zeros(num)
 fn_entropy_full_t2arr = np.zeros(num)
+lin_entropy_full_t2arr = np.zeros(num)
 
 for i in range(num):
     # negativity
@@ -153,19 +156,23 @@ for i in range(num):
     # fn entropy
     fn_entropy_t2arr[i] = - eigv1(phase, t2_array[i])*np.log(eigv1(phase, t2_array[i])) - eigv2(phase, t2_array[i])*np.log(eigv2(phase, t2_array[i])) - eigv3(phase, t2_array[i])*np.log(eigv3(phase, t2_array[i]))
 
-    matr2 = dens_matrx2(phase, t2_array[i])
-    w2, v2 = np.linalg.eig(matr2)
+    # matr2 = dens_matrx2(phase, t2_array[i])
+    # w2, v2 = np.linalg.eig(matr2)
 
-    full_entr = 0
-    for eigval2 in w2:
+    # FN entropy of full dens matrix
+    #full_entr = 0
+    #for eigval2 in w2:
         # print(eigval2)
-        if eigval2 != 0:
-            full_entr = full_entr - np.real(eigval2) * np.log(np.real(eigval2))
-    fn_entropy_full_t2arr[i] = full_entr
+    #    if eigval2 != 0:
+    #        full_entr = full_entr - np.real(eigval2) * np.log(np.real(eigval2))
+    #fn_entropy_full_t2arr[i] = full_entr
+    # print('another')
 
+    #lin_entropy_full_t2arr[i] = 1 - np.trace(matr2 @ matr2)
 
 plt.plot(np.square(t2_array), fn_entropy_t2arr, label=r'$Relative \ log. \ entropy$')
-plt.plot(np.square(t2_array), fn_entropy_full_t2arr, label=r'$Full \ log. \ entropy$')
+# plt.plot(np.square(t2_array), fn_entropy_full_t2arr, label=r'$Full \ log. \ entropy$')
+# plt.plot(np.square(t2_array), lin_entropy_full_t2arr, label=r'$Full \ lin. \ entropy$')
 plt.plot(np.square(t2_array), log_neg_t2arr, label=r'$Log. \ negativity$')
 plt.xlim([0, 1])
 # plt.ylim([0, 1.2])
@@ -173,7 +180,7 @@ plt.legend()
 plt.grid(True)
 # plt.set_xticks([0, np.pi])
 # plt.set_xticklabels(['0', '$\pi$'])
-plt.xlabel('$T_{4}$')
+plt.xlabel('$T_{2}$')
 plt.ylabel('$Entanglement$')
 plt.show()
 
