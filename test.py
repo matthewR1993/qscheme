@@ -187,3 +187,50 @@ plt.show()
 
 # eigv1(0.5, 0.5) + eigv2(0.5, 0.5) + eigv3(0.5, 0.5)
 
+##########
+
+
+st = np.zeros((3, 3), dtype=complex)
+st[2, 0] = 1/sqrt(3)
+st[0, 2] = 1/sqrt(3)
+st[1, 1] = 1/sqrt(3)
+
+
+def assembl_dens_matrix2(state):
+    size = len(state)**2
+    rho = np.zeros((size, size), dtype=complex)
+    # all indexes -1
+    rho[6, 6] = state[2, 0] * np.conj(state[2, 0])
+    rho[6, 4] = state[2, 0] * np.conj(state[1, 1])
+    rho[6, 2] = state[2, 0] * np.conj(state[0, 2])
+    rho[4, 6] = state[1, 1] * np.conj(state[2, 0])
+    rho[4, 4] = state[1, 1] * np.conj(state[1, 1])
+    rho[4, 2] = state[1, 1] * np.conj(state[0, 2])
+    rho[2, 6] = state[0, 2] * np.conj(state[2, 0])
+    rho[2, 4] = state[0, 2] * np.conj(state[1, 1])
+    rho[2, 2] = state[0, 2] * np.conj(state[0, 2])
+    return rho
+
+
+densmatr9x9 = assembl_dens_matrix2(st)
+
+densmatr9x9transp = np.zeros((9, 9), dtype=complex)
+
+densmatr9x9transp[6, 6] = densmatr9x9[6, 6]
+densmatr9x9transp[7, 3] = densmatr9x9[6, 4]
+densmatr9x9transp[8, 0] = densmatr9x9[6, 2]
+densmatr9x9transp[3, 7] = densmatr9x9[4, 6]
+densmatr9x9transp[4, 4] = densmatr9x9[4, 4]
+densmatr9x9transp[5, 1] = densmatr9x9[4, 2]
+densmatr9x9transp[0, 8] = densmatr9x9[2, 6]
+densmatr9x9transp[1, 5] = densmatr9x9[2, 4]
+densmatr9x9transp[2, 2] = densmatr9x9[2, 2]
+
+w, v = np.linalg.eig(densmatr9x9transp)
+neg = 0
+for eigval in w:
+    if np.real(eigval) < 0:
+        neg = neg + np.abs(np.real(eigval))
+log_neg = np.log2(2 * neg + 1)
+
+print('log. negativity: ', log_neg)
