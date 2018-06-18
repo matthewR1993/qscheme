@@ -1,3 +1,4 @@
+# Two single photons and two beam splitters.
 import sys
 try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
@@ -79,7 +80,6 @@ for i in range(net):
     log_neg_arr2[i] = log_neg
 
     fn_entr_arr2[i] = fn_entropy
-
 
 
 plt.plot(np.square(t2_arr), fn_entr_arr2, label=r'$Log. FN \ entropy$')

@@ -239,6 +239,7 @@ def negativity(rho, neg_type='logarithmic'):
         raise ValueError('Incorrect configuration')
 
 
+# A phase modulation for the dens. matrix in two channels
 def phase_modulation(rho, phase):
     if phase is 0:
         return rho
@@ -250,6 +251,17 @@ def phase_modulation(rho, phase):
                 for p2_ in range(size):
                     rho_out[p1, p2, p1_, p2_] = rho[p1, p2, p1_, p2_] * np.exp(1j * phase * (p2 - p2_))
     return rho_out
+
+
+# A phase modulation for the state in two channels
+# Input: unapplied state
+def phase_modulation_state(state, phase):
+    size = len(state)
+    st_mod = np.zeros((size, size), dtype=complex)
+    for p1 in range(size):
+        for p2 in range(size):
+            st_mod[p1, p2] = state[p1, p2] * np.exp(1j * p1 * phase)
+    return st_mod
 
 
 # Aplly operators to state in two channels

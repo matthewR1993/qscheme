@@ -1,3 +1,4 @@
+# Check out for two coherent states, entanglement should be zero.
 import sys
 try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
@@ -71,4 +72,4 @@ print('Lin. entropy', linear_entropy(dens_matrix))
 log_negativity = negativity(dens_matrix_2channels, neg_type='logarithmic')
 print('Log. negativity', log_negativity)
 
-# Fuckin works!
+# Fuckin works, entanglement is 0!
