@@ -63,6 +63,7 @@ mut_state_unappl = tf.tensordot(
 
 # First BS
 state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
+# plot_state(state_after_bs_unappl, 'after first BS')
 
 # Second and third BSs
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
