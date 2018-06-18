@@ -1,4 +1,5 @@
-# Check out for two coherent states, entanglement should be zero.
+# Checking out properties for two coherent states, entanglement should be zero.
+
 import sys
 try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
