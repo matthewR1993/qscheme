@@ -16,7 +16,7 @@ from time import gmtime, strftime
 
 from customutils.utils import *
 from core.basic import *
-from core.state_configurations import coherent_state, single_photon
+from core.state_configurations import coherent_state, single_photon, squeezed_vacuum
 from setup_parameters import *
 
 
@@ -30,18 +30,19 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(input_series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
+input_st = squeezed_vacuum(input_series_length, squeezing_amp=0.5, squeezing_phase=0)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
+auxiliary_st = single_photon(auxiliary_series_length)
 # auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 
-in_state_tf = tf.constant(input_st, tf.float64)
-aux_state_tf = tf.constant(auxiliary_st, tf.float64)
+in_state_tf = tf.constant(input_st, tf.complex128)
+aux_state_tf = tf.constant(auxiliary_st, tf.complex128)
 
 # A tensor product, returns numpy array
 mut_state_unappl = tf.tensordot(
@@ -55,7 +56,7 @@ mut_state_unappl = tf.tensordot(
 # The first BS
 state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
-grd = 20
+grd = 10
 
 # Varying BS2
 t2_arr = np.linspace(0, 1, grd)
@@ -63,7 +64,7 @@ r2_arr = np.zeros(grd)
 for i in range(grd):
     r2_arr[i] = sqrt(1 - pow(t2_arr[i], 2))
 
-ph_inpi = 0.0
+ph_inpi = 0.5
 phase_mod = ph_inpi * np.pi
 
 log_entr_arr = np.zeros(grd)
