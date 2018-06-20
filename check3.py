@@ -16,14 +16,14 @@ from time import gmtime, strftime
 
 from customutils.utils import *
 from core.basic import *
-from core.state_configurations import coherent_state, single_photon, squeezed_vacuum
+from core.state_configurations import coherent_state, single_photon, squeezed_vacuum, squeezed_coherent_state
 from setup_parameters import *
 
 
 sess = tf.Session()
 
 # Parameters for states
-series_length = 14
+series_length = 12
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -32,7 +32,8 @@ max_power = input_series_length + auxiliary_series_length
 # INPUT
 # input_st = single_photon(input_series_length)
 # input_st = coherent_state(input_series_length, alpha=1)
-input_st = squeezed_vacuum(input_series_length, squeezing_amp=0.5, squeezing_phase=0)
+# input_st = squeezed_vacuum(input_series_length, squeezing_amp=0.5, squeezing_phase=0)
+input_st = squeezed_coherent_state(input_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
@@ -56,7 +57,7 @@ mut_state_unappl = tf.tensordot(
 # The first BS
 state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
-grd = 10
+grd = 32
 
 # Varying BS2
 t2_arr = np.linspace(0, 1, grd)
@@ -64,7 +65,7 @@ r2_arr = np.zeros(grd)
 for i in range(grd):
     r2_arr[i] = sqrt(1 - pow(t2_arr[i], 2))
 
-ph_inpi = 0.5
+ph_inpi = 0.25
 phase_mod = ph_inpi * np.pi
 
 log_entr_arr = np.zeros(grd)

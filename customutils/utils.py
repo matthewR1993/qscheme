@@ -105,6 +105,7 @@ def plot_state(
 
 
 # For input and auxiliary states
+# Takes state that is not applied
 def get_state_norm(state):
     norm = 0
     for i in range(len(state)):
