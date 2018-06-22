@@ -84,6 +84,8 @@ def state_norm(state):
     return sqrt(norm_)
 
 
+# Takes not appplied state
+# Returns applied dens matrix
 def dens_matrix_with_trace(left_vector, right_vector):
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
@@ -105,6 +107,7 @@ def dens_matrix_with_trace(left_vector, right_vector):
 
 
 # Form dens matrix for two channels.
+# State is applied
 def dens_matrix(state):
     size = len(state)
     state_conj = np.conj(state)
@@ -115,6 +118,27 @@ def dens_matrix(state):
             for p1_ in range(size):
                 for p2_ in range(size):
                     dens_matrix[p1, p2, p1_, p2_] = state[p1, p2] * state_conj[p1_, p2_]
+
+    return dens_matrix
+
+
+# Form dens matrix for 4 channels.
+# Quite large for many dimentions
+# Operators are applied
+def dens_matrix_4ch(state):
+    size = len(state)
+    state_conj = np.conj(state)
+    dens_matrix = np.zeros((size,) * 8, dtype=complex)
+
+    for p1 in range(size):
+        for p2 in range(size):
+            for p3 in range(size):
+                for p4 in range(size):
+                    for p1_ in range(size):
+                        for p2_ in range(size):
+                            for p3_ in range(size):
+                                for p4_ in range(size):
+                                    dens_matrix[p1, p2, p3, p4, p1_, p2_, p3_, p4_] = state[p1, p2, p3, p4] * state_conj[p1_, p2_, p3_, p4_]
 
     return dens_matrix
 
@@ -143,6 +167,8 @@ def trace_channel(input_matrix, channel=4):
 
 
 # Last beam splitter transformation of dens matrix.
+# Takes applied  dens matrix
+# Returns applied dens matrix
 def bs_densmatrix_transform(input_matrix, t4, r4):
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)
@@ -240,6 +266,7 @@ def negativity(rho, neg_type='logarithmic'):
 
 
 # A phase modulation for the dens. matrix in two channels
+# Returns what takes
 def phase_modulation(rho, phase):
     if phase is 0:
         return rho
@@ -271,4 +298,16 @@ def make_state_appliable(state):
     for p1 in range(size):
         for p2 in range(size):
             st_appl[p1, p2] = state[p1, p2] * sqrt(factorial(p1) * factorial(p2))
+    return st_appl
+
+
+# Aplly operators to state in 4 channels
+def make_state_appliable_4ch(state):
+    size = len(state)
+    st_appl = np.zeros((size,)*4, dtype=complex)
+    for p1 in range(size):
+        for p2 in range(size):
+            for p3 in range(size):
+                for p4 in range(size):
+                    st_appl[p1, p2, p3, p4] = state[p1, p2, p3, p4] * sqrt(factorial(p1) * factorial(p2) * factorial(p3) * factorial(p4))
     return st_appl
