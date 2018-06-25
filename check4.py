@@ -1,4 +1,4 @@
-# Two beam splitters with loses
+# Two beam splitters with loses, INCORRECT description of losses.
 
 import sys
 try:
