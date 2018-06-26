@@ -25,7 +25,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 4
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -33,14 +33,10 @@ max_power = input_series_length + auxiliary_series_length
 
 # INPUT
 input_st = single_photon(input_series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
-# input_st = squeezed_vacuum(input_series_length, squeezing_amp=0.5, squeezing_phase=0)
-# input_st = squeezed_coherent_state(input_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
 auxiliary_st = single_photon(auxiliary_series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 
@@ -121,11 +117,19 @@ for p1 in range(size):
                 dm_aft_trace_appl_2[p1, p2, p1_, p2_] = matrix_sum
 
 
-matr_diff = dm_aft_trace_appl_2 - final_dens_matrix[:5, :5, :5, :5]
+matr_diff = dm_aft_trace_appl_2 - final_dens_matrix[:7, :7, :7, :7]
 
 # prob distr diff
-pd1 = prob_distr(final_dens_matrix[:5, :5, :5, :5])
+pd1 = prob_distr(final_dens_matrix[:7, :7, :7, :7])
 
 pd2 = prob_distr(dm_aft_trace_appl_2)
+
+pd_diff = pd1 - pd2
+
+# Dens matr abs diff.
+plt.matshow(np.abs(pd_diff))
+plt.title('Abs(diff_dens)')
+plt.colorbar()
+plt.show()
 
 
