@@ -166,6 +166,7 @@ ax.plot(np.square(t2_arr), single_squez_vac_ksi_1_1_neg, label=r'$|1> + |\xi=1.1
 ax.plot(np.square(t2_arr), single_squez_coh_alpha1_ksi0_5_neg, label=r'$|1> + |\alpha=1, \ \xi=0.5>$')
 ax.plot(np.square(t2_arr), squez_vac_ksi_05_coher1_neg, label=r'$|\xi=0.5> + |\alpha=1>$')
 plt.title('Phase = {0}pi'.format(ph_inpi))
+
 plt.xlabel('$T_{2}$')
 plt.ylabel('$Log \ negativity$')
 plt.xlim([0, 1])
