@@ -22,6 +22,8 @@ def bs2x2_transform(t, r, input_state):
 
 
 # 2 channels : 2 BS : 4 channels
+# a1 => t1 a2 + i r1 a1
+# a2 => t2 a4 + i r2 a3
 def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     size = len(input_state)
     output_state = np.zeros((size, size, size, size), dtype=complex)
@@ -169,6 +171,10 @@ def trace_channel(input_matrix, channel=4):
 # Last beam splitter transformation of dens matrix.
 # Takes applied  dens matrix
 # Returns applied dens matrix
+# Mapping:
+# a2 => t b1 + i r b2
+# a4 => t b2 + i r b1
+# a2 is down, a4 is on top
 def bs_densmatrix_transform(input_matrix, t4, r4):
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)

@@ -23,7 +23,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 16  # 16 is maximum
+series_length = 16  # 16 is maximum, EVEN NUMBER
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -31,15 +31,15 @@ max_power = input_series_length + auxiliary_series_length
 
 # INPUT
 # input_st = single_photon(input_series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = coherent_state(input_series_length, alpha=1.8)
 # input_st = squeezed_vacuum(input_series_length, squeezing_amp=1.1, squeezing_phase=0)
 # input_st = squeezed_coherent_state(input_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(auxiliary_series_length)
+auxiliary_st = single_photon(auxiliary_series_length)
 # auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
-auxiliary_st = squeezed_vacuum(auxiliary_series_length, squeezing_amp=0.5, squeezing_phase=0)
+# auxiliary_st = squeezed_vacuum(auxiliary_series_length, squeezing_amp=0.5, squeezing_phase=0)
 # auxiliary_st = squeezed_coherent_state(auxiliary_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -68,7 +68,7 @@ r2_arr = np.zeros(grd)
 for i in range(grd):
     r2_arr[i] = sqrt(1 - pow(t2_arr[i], 2))
 
-ph_inpi = 0.5
+ph_inpi = 0.25
 phase_mod = ph_inpi * np.pi
 
 log_entr_arr = np.zeros(grd)
@@ -114,6 +114,10 @@ plt.show()
 # several plots in one
 
 # ph_inpi = 0
+
+# single + vacuum ( coher alpha=0 )
+# single_vacuum_entr = log_entr_arr
+# single_vacuum_neg = log_neg_arr
 
 # single + coh alpha=1
 # single_coh1_entr = log_entr_arr
