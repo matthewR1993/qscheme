@@ -13,16 +13,12 @@ b = 1
 
 ampl = lambda wi, ws: np.exp(-(wlen - ws - wi)**2/(2*a**2)) * np.exp(-(ws - wi)**2/(2*b**2))
 
-
 grd = 140
-
 
 wi_arr = np.linspace(-6, 6, grd)
 ws_arr = np.linspace(-6, 6, grd)
 
-
 ampl_arr = np.zeros((grd, grd))
-
 
 for i in range(grd):
     for j in range(grd):

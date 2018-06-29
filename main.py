@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 5
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -30,19 +30,19 @@ max_power = input_series_length + auxiliary_series_length
 
 # INPUT
 input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=2)
+# input_st = coherent_state(input_series_length, alpha=1)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=2)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
-DET_CONF = 'NONE'  # None of detectors was clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -61,17 +61,18 @@ mut_state_unappl = tf.tensordot(
 ).eval(session=sess)
 
 
-################################
+#############
 # Several params:
 print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
+# First and last BS grids
 r1_grid = 1
-r4_grid = 16
+r4_grid = 6
 
 bs1_even = True
 
 # Phase difference before last BS
-phase_diff = (0.25) * np.pi
+phase_diff = (0.0) * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -80,27 +81,25 @@ log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # Varying last BS (BS4)
-a4 = 0
 T4_array = np.linspace(0, 1, r4_grid)
 t4_array = np.sqrt(T4_array)
 
-r4_fun = lambda tt: sqrt(1 - pow(tt, 2) - pow(a4, 2))
+r4_fun = lambda tt: sqrt(1 - pow(tt, 2))
 r4_vect_func = np.vectorize(r4_fun)
 r4_array = r4_vect_func(t4_array)
 
 # Varying first BS (BS1)
-a1 = 0
 T1_array = np.linspace(0, 1, r1_grid)
 t1_array = np.sqrt(T1_array)
 
-r1_fun = lambda tt: sqrt(1 - pow(tt, 2) - pow(a1, 2))
+r1_fun = lambda tt: sqrt(1 - pow(tt, 2))
 r1_vect_func = np.vectorize(r1_fun)
 r1_array = r1_vect_func(t1_array)
 
 # Set BS1 - 50:50
 if r1_grid is 1 and bs1_even:
     t1_array = [sqrt(0.5)]
-    r1_array = [sqrt(1 - pow(t1_array[0], 2) - pow(a1, 2))]
+    r1_array = [sqrt(1 - pow(t1_array[0], 2))]
 
 # loops
 for i in range(r4_grid):
@@ -120,7 +119,7 @@ for i in range(r4_grid):
         state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
         # Detection
-        # unnormalised state
+        # Unnormalised state
         state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
         norm_after_det = state_norm(state_after_dett_unappl)
         # normalised state
@@ -140,9 +139,9 @@ for i in range(r4_grid):
 
         # Traced matrix after detection
         # afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
-        # TODO check differences after detection
 
         # Transformation at last BS
+        # Trim for better performance
         trim_size = 8
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
