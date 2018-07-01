@@ -119,7 +119,7 @@ for i in range(r4_grid):
         state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
         # Detection
-        # Unnormalised state
+        # Gives not normalised state
         state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
         norm_after_det = state_norm(state_after_dett_unappl)
         # normalised state
@@ -131,7 +131,7 @@ for i in range(r4_grid):
         # phase modulation
         dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
-        # Disable phase addition
+        # It's possible to disable a phase addition like this!!!
         # dens_matrix_2channels_withph = dens_matrix_2channels
 
         # after detection, with phase
@@ -151,7 +151,6 @@ for i in range(r4_grid):
 
         # Other channel traced
         final_traced_4th = trace_channel(final_dens_matrix, channel=2)
-
         print('trace of reduced matrix:', np.trace(final_traced_4th))
 
         # Calculate entropy

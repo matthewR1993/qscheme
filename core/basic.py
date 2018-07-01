@@ -4,6 +4,8 @@ from math import sqrt, factorial
 
 
 # returns 2x2 BS transformation matrix
+# takes unapplied state
+# returns unapplied state
 def bs2x2_transform(t, r, input_state):
     size = len(input_state)
     output_state = np.zeros((size*2 - 1, size*2 - 1), dtype=complex)
@@ -24,6 +26,8 @@ def bs2x2_transform(t, r, input_state):
 # 2 channels : 2 BS : 4 channels
 # a1 => t1 a2 + i r1 a1
 # a2 => t2 a4 + i r2 a3
+# takes unapplied state
+# returns unapplied state
 def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     size = len(input_state)
     output_state = np.zeros((size, size, size, size), dtype=complex)
@@ -74,8 +78,8 @@ def detection(input_state, detection_event='FIRST'):
     return output_state
 
 
+# Takes an unapplied state
 def state_norm(state):
-    # takes unapplied state
     size = len(state)
     norm_ = 0
     for p1 in range(size):
@@ -86,8 +90,8 @@ def state_norm(state):
     return sqrt(norm_)
 
 
-# Takes not appplied state
-# Returns applied dens matrix
+# Takes an unapplied state in 4 channels
+# Returns applied dens matrix for 2 channels
 def dens_matrix_with_trace(left_vector, right_vector):
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
@@ -203,6 +207,7 @@ def bs_densmatrix_transform(input_matrix, t4, r4):
 
 
 # photons distribution probability from final_dens_matrix
+# Takes 2 channels density matrix
 def prob_distr(input_matrix):
     size = len(input_matrix)
     prob_matrix = np.zeros((size, size), dtype=complex)
@@ -220,7 +225,8 @@ def log_entropy(dens_matrix):
     w, v = np.linalg.eig(dens_matrix)
     for n in range(size):
         if w[n] != 0:
-            entropy = entropy - w[n] * np.log2(w[n])
+            #entropy = entropy - w[n] * np.log2(w[n])
+            entropy = entropy - w[n] * np.log(w[n])
     return entropy
 
 

@@ -1,5 +1,7 @@
 # A coherent state and a single photon with two beam splitters and phase modul.
 # Gives zeros entanglement for two coherent states
+# Tracing different channels gives same entropy(works)
+# Gives the same result comparing anlytical formula of two photons
 
 import sys
 try:
@@ -23,22 +25,22 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 16  # 16 is maximum, EVEN NUMBER
+series_length = 10  # 16 is maximum, EVEN NUMBER
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT
-# input_st = single_photon(input_series_length)
-input_st = coherent_state(input_series_length, alpha=1.8)
+input_st = single_photon(input_series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 # input_st = squeezed_vacuum(input_series_length, squeezing_amp=1.1, squeezing_phase=0)
 # input_st = squeezed_coherent_state(input_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(auxiliary_series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(auxiliary_series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = squeezed_vacuum(auxiliary_series_length, squeezing_amp=0.5, squeezing_phase=0)
 # auxiliary_st = squeezed_coherent_state(auxiliary_series_length, alpha=1, squeezing_amp=0.5, squeezing_phase=0)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
@@ -59,7 +61,7 @@ mut_state_unappl = tf.tensordot(
 # The first BS
 state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
-grd = 13
+grd = 21
 
 # Varying BS2, t2, r2 small
 T2_arr = np.linspace(0, 1, grd)
@@ -71,7 +73,8 @@ for i in range(grd):
 ph_inpi = 0.25
 phase_mod = ph_inpi * np.pi
 
-log_entr_arr = np.zeros(grd)
+log_entr_arr4 = np.zeros(grd)
+log_entr_arr2 = np.zeros(grd)
 log_neg_arr = np.zeros(grd)
 
 for i in range(grd):
@@ -88,11 +91,16 @@ for i in range(grd):
 
     dens_matrix_2channels = dens_matrix(state_after_bs2_appl)
 
-    reduced_dens_matrix = trace_channel(dens_matrix_2channels, channel=2)
+    reduced_dens_matrix4 = trace_channel(dens_matrix_2channels, channel=2)
+
+    reduced_dens_matrix2 = trace_channel(dens_matrix_2channels, channel=4)
 
     # Entanglement
-    log_fn_entropy = log_entropy(reduced_dens_matrix)
-    log_entr_arr[i] = log_fn_entropy
+    log_fn_entropy4 = log_entropy(reduced_dens_matrix4)
+    log_entr_arr4[i] = log_fn_entropy4
+
+    log_fn_entropy2 = log_entropy(reduced_dens_matrix2)
+    log_entr_arr2[i] = log_fn_entropy2
     # print('FN log. entropy:', log_fn_entropy)
 
     log_negativity = negativity(dens_matrix_2channels, neg_type='logarithmic')
@@ -101,7 +109,8 @@ for i in range(grd):
 
 
 fig, ax = plt.subplots()
-ax.plot(np.square(t2_arr), log_entr_arr, label=r'$Log. FN \ entropy$')
+ax.plot(np.square(t2_arr), log_entr_arr4, label=r'$Log. FN \ entropy \ 4th \ chan$')
+ax.plot(np.square(t2_arr), log_entr_arr2, label=r'$Log. FN \ entropy \ 2nd \ chan$')
 ax.plot(np.square(t2_arr), log_neg_arr, label=r'$Log. negativity$')
 plt.title('Phase = {0}pi'.format(ph_inpi))
 plt.xlabel('$T_{2}$')
