@@ -22,7 +22,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 10
+series_length = 3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,8 +36,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
@@ -155,10 +155,12 @@ for i in range(r1_grd):
 
     # Put two channels back together
     # trim_size=8 for state with length of 10
-    # trim_size = 8  # trim density matrix for better performance
+    # trim_size = 4  # trim density matrix for better performance
     # final_dm = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
+    # Neglet last BS
     final_dm = dens_matrix_2channels
+
     # Traced matrices
     # final_traced_2chan = trace_channel(dens_matrix_2channels, channel=4)
     final_traced_2chan = trace_channel(final_dm, channel=4)
@@ -183,10 +185,12 @@ for i in range(r1_grd):
     log_entropy_arr_2chan[i] = log_entanglement_2chan
 
 
+tr_arr_toplot = t1_array
+
 fig, ax = plt.subplots()
-ax.plot(np.square(t1_array), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
-ax.plot(np.square(t1_array), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
-ax.plot(np.square(t1_array), neg_arr, label=r'$Log. negativity$')
+ax.plot(np.square(tr_arr_toplot), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
+ax.plot(np.square(tr_arr_toplot), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
+ax.plot(np.square(tr_arr_toplot), neg_arr, label=r'$Log. negativity$')
 plt.title('Phase = {0}pi'.format(0))
 plt.xlabel('$T_{1}$')
 plt.ylabel('$Entanglement$')
