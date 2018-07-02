@@ -112,6 +112,7 @@ def dens_matrix_with_trace(left_vector, right_vector):
     return dens_matrix
 
 
+# TODO trace consequently
 # Takes an unapplied state in 4 channels
 # Returns applied dens matrix for 2 channels
 def dens_matrix_with_trace_new(left_vector, right_vector):
@@ -120,8 +121,32 @@ def dens_matrix_with_trace_new(left_vector, right_vector):
         raise ValueError('Incorrect dimensions')
 
     right_vector_conj = np.conj(right_vector)
+
+    # trace first channel
+    dens_matrix_pre = np.zeros((size,) * 6, dtype=complex)
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p3 in range(size):
+                for p3_ in range(size):
+                    for p4 in range(size):
+                        for p4_ in range(size):
+                            matrix_sum_pre = 0
+                            for k1 in range(size):
+                                matrix_sum_pre = matrix_sum_pre + left_vector[k1, p2, p3, p4] * right_vector_conj[k1, p2_, p3_, p4_] * factorial(k1) * sqrt(factorial(p2)*factorial(p3)*factorial(p4)*factorial(p2_)*factorial(p3_)*factorial(p4_))
+                            dens_matrix_pre[p2, p3, p4, p2_, p3_, p4_] = matrix_sum_pre
+
+    # trace third channel
     dens_matrix = np.zeros((size,) * 4, dtype=complex)
-    return 1
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p4 in range(size):
+                for p4_ in range(size):
+                    matrix_sum = 0
+                    for k3 in range(size):
+                        matrix_sum = matrix_sum + dens_matrix_pre[p2, k3, p4, p2_, k3, p4_] * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
+                    dens_matrix[p2, p4, p2_, p4_] = matrix_sum
+
+    return dens_matrix
 
 
 # Form dens matrix for two channels.

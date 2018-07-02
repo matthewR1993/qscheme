@@ -84,8 +84,8 @@ mut_state_unappl = tf.tensordot(
 #            for p4 in range(len(state_aft2bs_unappl)):
 #                norm = norm + state[p1, p2, p3, p4] * state_conj[p1, p2, p3, p4] * factorial(p1) * factorial(p2) * factorial(p3) * factorial(p4)
 
-# TODO check it, build first dens matrix and then trace
-#dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
+# TODO NEW
+# dens_matrix_2channels = dens_matrix_with_trace_new(state_aft2bs_unappl, state_aft2bs_unappl)
 
 # Other channel traced
 # final_traced_4nd_chan = trace_channel(dens_matrix_2channels, channel=2)
@@ -151,7 +151,7 @@ for i in range(r1_grd):
 
     state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs1_unappl)
 
-    dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
+    dens_matrix_2channels = dens_matrix_with_trace_new(state_aft2bs_unappl, state_aft2bs_unappl)
 
     # Put two channels back together
     # trim_size=8 for state with length of 10
@@ -184,11 +184,11 @@ for i in range(r1_grd):
 
 
 fig, ax = plt.subplots()
-ax.plot(np.square(t4_array), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
-ax.plot(np.square(t4_array), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
-ax.plot(np.square(t4_array), neg_arr, label=r'$Log. negativity$')
+ax.plot(np.square(t1_array), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
+ax.plot(np.square(t1_array), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
+ax.plot(np.square(t1_array), neg_arr, label=r'$Log. negativity$')
 plt.title('Phase = {0}pi'.format(0))
-plt.xlabel('$T_{4}$')
+plt.xlabel('$T_{1}$')
 plt.ylabel('$Entanglement$')
 plt.legend()
 plt.grid(True)
