@@ -112,6 +112,18 @@ def dens_matrix_with_trace(left_vector, right_vector):
     return dens_matrix
 
 
+# Takes an unapplied state in 4 channels
+# Returns applied dens matrix for 2 channels
+def dens_matrix_with_trace_new(left_vector, right_vector):
+    size = len(left_vector)
+    if len(left_vector) != len(right_vector):
+        raise ValueError('Incorrect dimensions')
+
+    right_vector_conj = np.conj(right_vector)
+    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+    return 1
+
+
 # Form dens matrix for two channels.
 # State is applied
 def dens_matrix(state):

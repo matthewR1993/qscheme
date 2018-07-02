@@ -1,4 +1,4 @@
-# Similar to checkout3 but with detection
+# Similar to checkout3 but with two BS in the middle, trace and detection
 
 import sys
 try:
@@ -59,7 +59,7 @@ mut_state_unappl = tf.tensordot(
 ).eval(session=sess)
 
 # First BS
-state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
+# state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
 # Works
 # get_state_norm_2ch(state_after_bs1_unappl)
@@ -72,27 +72,48 @@ state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 # plt.show()
 
 # 2nd and 3rd detectors
-state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs1_unappl)
+# state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs1_unappl)
 
+# norm works
+# norm = 0
+# state = state_aft2bs_unappl
+# state_conj = np.conj(state_aft2bs_unappl)
+# for p1 in range(len(state_aft2bs_unappl)):
+#    for p2 in range(len(state_aft2bs_unappl)):
+#        for p3 in range(len(state_aft2bs_unappl)):
+#            for p4 in range(len(state_aft2bs_unappl)):
+#                norm = norm + state[p1, p2, p3, p4] * state_conj[p1, p2, p3, p4] * factorial(p1) * factorial(p2) * factorial(p3) * factorial(p4)
 
-dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
-
-# Traced matrices
-final_traced_2chan = trace_channel(dens_matrix_2channels, channel=4)
-print('Trace of reduced matrix:', np.trace(final_traced_2chan))
+# TODO check it, build first dens matrix and then trace
+#dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
 
 # Other channel traced
-final_traced_4chan = trace_channel(dens_matrix_2channels, channel=2)
-print('trace of reduced matrix:', np.trace(final_traced_4chan))
+# final_traced_4nd_chan = trace_channel(dens_matrix_2channels, channel=2)
+# print('trace of reduced matrix:', np.trace(final_traced_4nd_chan))
+
+# TODO check factorials in dens_matrix_with_trace
+
+# TODO check normalisation after tracing
+
+# Traced matrices of 2nd and 4th channel
+# final_traced_2nd_chan = trace_channel(dens_matrix_2channels, channel=4)
+# print('Trace of reduced matrix:', np.trace(final_traced_2nd_chan))
+
+# Other channel traced
+# final_traced_4nd_chan = trace_channel(dens_matrix_2channels, channel=2)
+# print('trace of reduced matrix:', np.trace(final_traced_4nd_chan))
+
+
+# Put two channels together
+# final_dm = bs_densmatrix_transform(dens_matrix_2channels, t4, r4)
+
 
 # FN entropy for diff channels works, its the same
-log_entanglement_4chan = log_entropy(final_traced_4chan)
-log_entanglement_2chan = log_entropy(final_traced_2chan)
+# log_entanglement_4chan = log_entropy(final_traced_4nd_chan)
+# log_entanglement_2chan = log_entropy(final_traced_2nd_chan)
 
 # Negativity
-neg = negativity(dens_matrix_2channels, neg_type='logarithmic')
-
-# TODO S(T1), LN(T1) at this point
+# neg = negativity(dens_matrix_2channels, neg_type='logarithmic')
 
 
 # loop over T1
@@ -104,6 +125,16 @@ r1_fun = lambda tt: sqrt(1 - pow(tt, 2))
 r1_vect_func = np.vectorize(r1_fun)
 r1_array = r1_vect_func(t1_array)
 
+
+# loop over T4
+r4_grd = r1_grd
+T4_array = np.linspace(0, 1, r4_grd)
+t4_array = np.sqrt(T4_array)
+
+r4_fun = lambda tt: sqrt(1 - pow(tt, 2))
+r4_vect_func = np.vectorize(r4_fun)
+r4_array = r4_vect_func(t4_array)
+
 neg_arr = np.zeros(r1_grd)
 log_entropy_arr_2chan = np.zeros(r1_grd)
 log_entropy_arr_4chan = np.zeros(r1_grd)
@@ -112,6 +143,9 @@ for i in range(r1_grd):
     print('step', i)
     t1 = t1_array[i]
     r1 = r1_array[i]
+
+    # t4 = t4_array[i]
+    # r4 = r4_array[i]
     # First BS
     state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
@@ -119,12 +153,20 @@ for i in range(r1_grd):
 
     dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
 
+    # Put two channels back together
+    # trim_size=8 for state with length of 10
+    # trim_size = 8  # trim density matrix for better performance
+    # final_dm = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+
+    final_dm = dens_matrix_2channels
     # Traced matrices
-    final_traced_2chan = trace_channel(dens_matrix_2channels, channel=4)
+    # final_traced_2chan = trace_channel(dens_matrix_2channels, channel=4)
+    final_traced_2chan = trace_channel(final_dm, channel=4)
     print('Trace of reduced matrix:', np.trace(final_traced_2chan))
 
     # Other channel traced
-    final_traced_4chan = trace_channel(dens_matrix_2channels, channel=2)
+    # final_traced_4chan = trace_channel(dens_matrix_2channels, channel=2)
+    final_traced_4chan = trace_channel(final_dm, channel=2)
     print('trace of reduced matrix:', np.trace(final_traced_4chan))
 
     # FN entropy for diff channels works, its the same
@@ -142,11 +184,11 @@ for i in range(r1_grd):
 
 
 fig, ax = plt.subplots()
-ax.plot(np.square(t1_array), log_entropy_arr_2chan, label=r'$Log. FN \ entropy$')
-ax.plot(np.square(t1_array), log_entropy_arr_4chan, label=r'$Log. FN \ entropy$')
-ax.plot(np.square(t1_array), neg_arr, label=r'$Log. negativity$')
+ax.plot(np.square(t4_array), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
+ax.plot(np.square(t4_array), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
+ax.plot(np.square(t4_array), neg_arr, label=r'$Log. negativity$')
 plt.title('Phase = {0}pi'.format(0))
-plt.xlabel('$T_{2}$')
+plt.xlabel('$T_{4}$')
 plt.ylabel('$Entanglement$')
 plt.legend()
 plt.grid(True)
@@ -156,9 +198,8 @@ plt.show()
 
 
 
-# TODO calculate the whole scheme but without detection
 
-# TODO Later this
+# TODO Later this with detection
 
 # Gives not normalised state
 state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)

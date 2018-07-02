@@ -109,3 +109,69 @@ plt.xlabel(r'$\tau$', fontsize=16)
 plt.ylabel(r'$P$', fontsize=16)
 plt.show()
 
+
+# mult = 1e-3
+#
+# plt.plot(np.square(t4_array), np.real(log_entropy_array), label=r'$Log. entropy$')
+# plt.plot(np.square(t4_array), np.real(lin_entropy), label=r'$Lin. entropy$')
+# plt.plot(np.square(t4_array), np.real(mult*log_negativity), label=r'$Log. negativity*10^{-3}$')
+# plt.title(r'Entanglement.')
+# plt.xlabel(r'$t_{4}$', fontsize=16)
+# plt.xlim([0, 1])
+# plt.legend()
+# plt.grid(True)
+# plt.show()
+
+
+# Entropy S(t1, t4) 3D plot.
+# fig = plt.figure()
+# ax = fig.gca(projection='3d')
+#
+# X = np.square(t4_array)
+# Y = np.square(t1_array)
+# X, Y = np.meshgrid(X, Y)
+#
+# # Plot the surface.
+# surf = ax.plot_surface(X, Y, np.real(log_entropy_array), cmap=cm.coolwarm,
+#                       linewidth=0, antialiased=False)
+# plt.title(r'Log. VN entropy.')
+#
+# # surf = ax.plot_surface(X, Y, np.real(log_negativity), cmap=cm.coolwarm,
+# #                        linewidth=0, antialiased=False)
+# # plt.title(r'Log. negativity.')
+#
+# # Add a color bar which maps values to colors.
+# fig.colorbar(surf, shrink=0.5, aspect=5)
+# plt.xlabel(r'$T_{4}$', fontsize=16)
+# plt.ylabel(r'$T_{1}$', fontsize=16)
+# plt.show()
+#
+#
+# # Entropy S(t1, t4) 2D plot.
+# im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
+# # im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
+# cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
+# plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
+# plt.colorbar(im)
+# plt.xlabel(r'$t_{4}$', fontsize=16)
+# plt.ylabel(r'$t_{1}$', fontsize=16)
+# # plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
+# plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
+# plt.show()
+
+
+'''
+
+# plot input states
+plt.bar(list(range(len(input_st))), input_st, width=1, edgecolor='c')
+# plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], width=1, edgecolor='c')
+plt.title('Input state')
+plt.xlabel('Number of photons')
+plt.show()
+plt.bar(list(range(len(auxiliar y_st))), auxiliary_st, color='g', width=1, edgecolor='c')
+# plt.bar(list(range(8)), [0, 1, 0, 0, 0, 0, 0, 0], color='g', width=1, edgecolor='c')
+plt.title('Auxiliary state')
+plt.xlabel('Number of photons')
+plt.show()
+
+'''
