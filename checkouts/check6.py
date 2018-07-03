@@ -141,25 +141,27 @@ log_entropy_arr_4chan = np.zeros(r1_grd)
 
 for i in range(r1_grd):
     print('step', i)
-    t1 = t1_array[i]
-    r1 = r1_array[i]
+    # t1 = t1_array[i]
+    # r1 = r1_array[i]
 
-    # t4 = t4_array[i]
-    # r4 = r4_array[i]
+    t4 = t4_array[i]
+    r4 = r4_array[i]
     # First BS
     state_after_bs1_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
     state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs1_unappl)
 
-    dens_matrix_2channels = dens_matrix_with_trace_new(state_aft2bs_unappl, state_aft2bs_unappl)
+    # dens_matrix_2channels = dens_matrix_with_trace_new(state_aft2bs_unappl, state_aft2bs_unappl)
+    # old method
+    dens_matrix_2channels = dens_matrix_with_trace(state_aft2bs_unappl, state_aft2bs_unappl)
 
     # Put two channels back together
     # trim_size=8 for state with length of 10
-    # trim_size = 4  # trim density matrix for better performance
-    # final_dm = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+    trim_size = 4  # trim density matrix for better performance
+    final_dm = bs_densmatrix_transform(dens_matrix_2channels[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
     # Neglet last BS
-    final_dm = dens_matrix_2channels
+    # final_dm = dens_matrix_2channels
 
     # Traced matrices
     # final_traced_2chan = trace_channel(dens_matrix_2channels, channel=4)
@@ -178,25 +180,27 @@ for i in range(r1_grd):
     print('diff channels entropy diff', log_entanglement_4chan - log_entanglement_2chan)
 
     # Negativity
-    neg = negativity(dens_matrix_2channels, neg_type='logarithmic')
+    neg = negativity(final_dm, neg_type='logarithmic')
 
     neg_arr[i] = neg
     log_entropy_arr_4chan[i] = log_entanglement_4chan
     log_entropy_arr_2chan[i] = log_entanglement_2chan
 
 
-tr_arr_toplot = t1_array
+tr_arr_toplot = t4_array
 
 fig, ax = plt.subplots()
 ax.plot(np.square(tr_arr_toplot), log_entropy_arr_2chan, label=r'$Log. FN \ entropy \ 2chan $')
 ax.plot(np.square(tr_arr_toplot), log_entropy_arr_4chan, label=r'$Log. FN \ entropy \ 4chan $')
 ax.plot(np.square(tr_arr_toplot), neg_arr, label=r'$Log. negativity$')
 plt.title('Phase = {0}pi'.format(0))
-plt.xlabel('$T_{1}$')
+plt.xlabel('$T_{4}$')
 plt.ylabel('$Entanglement$')
 plt.legend()
 plt.grid(True)
 plt.show()
+
+
 
 
 

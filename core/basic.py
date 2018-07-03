@@ -143,7 +143,7 @@ def dens_matrix_with_trace_new(left_vector, right_vector):
                 for p4_ in range(size):
                     matrix_sum = 0
                     for k3 in range(size):
-                        matrix_sum = matrix_sum + dens_matrix_pre[p2, k3, p4, p2_, k3, p4_] * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
+                        matrix_sum = matrix_sum + dens_matrix_pre[p2, k3, p4, p2_, k3, p4_]
                     dens_matrix[p2, p4, p2_, p4_] = matrix_sum
 
     return dens_matrix
