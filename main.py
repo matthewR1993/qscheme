@@ -39,10 +39,10 @@ auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
-DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -67,7 +67,7 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 6
+r4_grid = 15
 
 bs1_even = True
 
@@ -141,7 +141,7 @@ for i in range(r4_grid):
         # afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
 
         # Transformation at last BS
-        # Trim for better performance
+        # Trim for better performance, trim_size=8 for series_len=10
         trim_size = 8
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
@@ -174,9 +174,9 @@ for i in range(r4_grid):
 
 
 # Varying t4
-plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. entropy, out$')
-plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy, out$')
-plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity, out$')
+plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. FN \ entropy$')
+# plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy, out$')
+plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
 # plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
 # plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (phase_diff / np.pi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)

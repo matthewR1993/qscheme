@@ -30,7 +30,7 @@ def bs2x2_transform(t, r, input_state):
 # returns unapplied state
 def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     size = len(input_state)
-    output_state = np.zeros((size, size, size, size), dtype=complex)
+    output_state = np.zeros((size,) * 4, dtype=complex)
     for m in range(size):
         for n in range(size):
             # two sums up to m and n
@@ -48,30 +48,39 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
 
 # simple solution, 4 channels state
-def detection(input_state, detection_event='FIRST'):
+# Takes unapplied state
+# Returns applied state
+def detection(input_state, detection_event):
     size = len(input_state)
-    output_state = np.array(input_state)
+    output_state = np.zeros((size,) * 4, dtype=complex)
     if detection_event is 'BOTH':
-        pass
+        for p1 in range(size):
+            for p2 in range(size):
+                for p3 in range(size):
+                    for p4 in range(size):
+                        if p1 is not 0 and p3 is not 0:
+                            output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
     elif detection_event is 'NONE':
-        output_state[0, :, :, :] = 0
-        output_state[:, :, 0, :] = 0
+        for p1 in range(size):
+            for p2 in range(size):
+                for p3 in range(size):
+                    for p4 in range(size):
+                        if p1 is 0 and p3 is 0:
+                            output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
     elif detection_event is 'FIRST':
-        output_state[0, :, :, :] = 0
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
-                        if p3 > 0:
-                            output_state[p1, p2, p3, p4] = 0
+                        if p1 is not 0 and p3 is 0:
+                            output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
     elif detection_event is 'THIRD':
-        output_state[:, :, 0, :] = 0
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
-                        if p1 > 0:
-                            output_state[p1, p2, p3, p4] = 0
+                        if p1 is 0 and p3 is not 0:
+                            output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
     else:
         raise ValueError('Wrong configuration')
 
