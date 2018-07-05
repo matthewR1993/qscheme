@@ -121,7 +121,6 @@ def dens_matrix_with_trace(left_vector, right_vector):
     return dens_matrix
 
 
-# TODO trace consequently
 # Takes an unapplied state in 4 channels
 # Returns applied dens matrix for 2 channels
 def dens_matrix_with_trace_new(left_vector, right_vector):
@@ -224,7 +223,7 @@ def trace_channel(input_matrix, channel=4):
 # Mapping:
 # a2 => t b1 + i r b2
 # a4 => t b2 + i r b1
-# a2 is down, a4 is on top
+# a2 is down, a4 is on the top
 def bs_densmatrix_transform(input_matrix, t4, r4):
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)
@@ -271,8 +270,7 @@ def log_entropy(dens_matrix):
     w, v = np.linalg.eig(dens_matrix)
     for n in range(size):
         if w[n] != 0:
-            #entropy = entropy - w[n] * np.log2(w[n])
-            entropy = entropy - w[n] * np.log(w[n])
+            entropy = entropy - w[n] * np.log2(w[n])
     return entropy
 
 

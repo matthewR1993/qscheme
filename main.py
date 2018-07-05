@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 10
+series_length = 3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -34,15 +34,15 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -67,7 +67,7 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 15
+r4_grid = 25
 
 bs1_even = True
 
@@ -78,7 +78,7 @@ log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
 
-log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
+# log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # Varying last BS (BS4)
 T4_array = np.linspace(0, 1, r4_grid)
@@ -125,8 +125,10 @@ for i in range(r4_grid):
         # normalised state
         state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
-        # Dens matrix and trace
+        # Build dens matrix and trace
         dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+        # new method
+        # dens_matrix_2channels = dens_matrix_with_trace_new(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
         # phase modulation
         dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
@@ -141,8 +143,10 @@ for i in range(r4_grid):
         # afterdet_traced = trace_channel(dens_matrix_2channels, channel=4)
 
         # Transformation at last BS
-        # Trim for better performance, trim_size=8 for series_len=10
-        trim_size = 8
+        # Trim for better performance,
+        # trim_size=8 for series_len=10
+        # trim_size=4 for series_len=3
+        trim_size = 4
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
