@@ -61,11 +61,22 @@ mut_state_unappl = tf.tensordot(
 
 # build density matrix
 
-dens_matr = 1
+dm_in = dens_matrix(make_state_appliable(mut_state_unappl))
 
 # transform at bs
 
-t4 = 0.8
+t4 = 0.4
 r4 = sqrt(1 - t4**2)
 
+dm_out = bs_densmatrix_transform(dm_in, t4, r4)
+
+# (t4**2 - r4**2)**2
+#
+# (t4**2 - r4**2)*t4*r4
+#
+# t4**2 * r4**2
+
+
+dm_out[1, 1, 1, 1]
+dm_out[1, 1, 2, 0] * sqrt(2)
 
