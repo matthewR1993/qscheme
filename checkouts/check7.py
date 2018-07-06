@@ -51,7 +51,7 @@ in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
 
-# tensor product, returns numpy array
+# Tensor product, returns numpy array
 mut_state_unappl = tf.tensordot(
     in_state_tf,
     aux_state_tf,
@@ -59,24 +59,34 @@ mut_state_unappl = tf.tensordot(
     name=None
 ).eval(session=sess)
 
-# build density matrix
+# Building density matrix
 
-dm_in = dens_matrix(make_state_appliable(mut_state_unappl))
+mut_state_appl = make_state_appliable(mut_state_unappl)
 
-# transform at bs
+dm_in = dens_matrix(mut_state_appl)
+
+# The transformation at BS
 
 t4 = 0.4
 r4 = sqrt(1 - t4**2)
 
 dm_out = bs_densmatrix_transform(dm_in, t4, r4)
 
-# (t4**2 - r4**2)**2
+# (t4**2 - r4**2)**2    // 0.4623
 #
-# (t4**2 - r4**2)*t4*r4
+# (t4**2 - r4**2)*t4*r4 * sqrt(2)  // -0.352
 #
-# t4**2 * r4**2
+# t4**2 * r4**2 * 2     // 0.268
 
-
+# Works
 dm_out[1, 1, 1, 1]
-dm_out[1, 1, 2, 0] * sqrt(2)
+dm_out[1, 1, 2, 0]
+dm_out[1, 1, 0, 2]
 
+dm_out[2, 0, 1, 1]
+dm_out[2, 0, 2, 0]
+dm_out[2, 0, 0, 2]
+
+dm_out[0, 2, 1, 1]
+dm_out[0, 2, 2, 0]
+dm_out[0, 2, 0, 2]

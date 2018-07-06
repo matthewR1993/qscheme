@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -34,15 +34,15 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
 # DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
-DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -67,12 +67,13 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 25
+r4_grid = 11
 
 bs1_even = True
 
 # Phase difference before last BS
-phase_diff = (0.0) * np.pi
+ph_inpi = 0.0
+phase_diff = ph_inpi * np.pi
 
 log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -146,7 +147,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=8 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 4
+        trim_size = 10
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
@@ -179,11 +180,13 @@ for i in range(r4_grid):
 
 # Varying t4
 plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. FN \ entropy$')
-# plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy, out$')
+# plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
 plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
 # plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
-# plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (phase_diff / np.pi, DET_CONF))
+plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel('$Entanglement$')
+# plt.title('Phase = {0}pi'.format(ph_inpi))
 plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)

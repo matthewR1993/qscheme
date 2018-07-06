@@ -195,6 +195,8 @@ def dens_matrix_4ch(state):
 
 
 # trace one channel
+# Takes applied density matrix in two channels.
+# Return applied reduced density matrix of one channel
 def trace_channel(input_matrix, channel=4):
     size = len(input_matrix)
     reduced_matrix = np.zeros((size, size), dtype=complex)
@@ -224,29 +226,29 @@ def trace_channel(input_matrix, channel=4):
 # a2 => t b1 + i r b2
 # a4 => t b2 + i r b1
 # a2 is down, a4 is on the top
-def bs_densmatrix_transform(input_matrix, t4, r4):
+def bs_densmatrix_transform(input_matrix, t, r):
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)
 
-    for p2 in range(size):
-        for p4 in range(size):
-            for p2_ in range(size):
-                for p4_ in range(size):
+    for p1 in range(size):
+        for p2 in range(size):
+            for p1_ in range(size):
+                for p2_ in range(size):
 
-                    # two sums up to m and n
-                    for k in range(p2 + 1):
-                        for l in range(p4 + 1):
-                            for k_ in range(p2_ + 1):
-                                for l_ in range(p4_ + 1):
-                                    d1 = p2 - k + l
-                                    d2 = p4 - l + k
-                                    coeff1 = t4**(p2 - k + p4 - l) * (1j*r4)**(l+k) * sqrt(factorial(d1)*factorial(d2)) * factorial(p2)*factorial(p4)/(factorial(k)*factorial(p2-k)*factorial(l)*factorial(p4-l))
+                    # four sums
+                    for n in range(p1 + 1):
+                        for k in range(p2 + 1):
+                            for n_ in range(p1_ + 1):
+                                for k_ in range(p2_ + 1):
+                                    d1 = p1 - n + k
+                                    d2 = n + p2 - k
+                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2)) * factorial(p1) * factorial(p2) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
 
-                                    d1_ = p2_ - k_ + l_
-                                    d2_ = k_ + p4_ - l_
-                                    coeff2 = t4**(p2_ - k_ + p4_ - l_) * (-1j*r4)**(k_ + l_) * sqrt(factorial(d1_)*factorial(d2_)) * factorial(p2_)*factorial(p4_)/(factorial(k_)*factorial(p2_-k_)*factorial(l_)*factorial(p4_-l_))
+                                    d1_ = p1_ - n_ + k_
+                                    d2_ = n_ + p2_ - k_
+                                    coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_)) * factorial(p1_) * factorial(p2_) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
 
-                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p2, p4, p2_, p4_] * 1/(sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))) * coeff1 * coeff2
+                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2 * 1/sqrt(factorial(p1)*factorial(p2)*factorial(p1_)*factorial(p2_))
 
     return output_matrix
 
