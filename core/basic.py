@@ -48,8 +48,8 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
 
 # simple solution, 4 channels state
-# Takes unapplied state
-# Returns applied state
+# Takes unapplied/applied state
+# Returns unapplied/applied state
 def detection(input_state, detection_event):
     size = len(input_state)
     output_state = np.zeros((size,) * 4, dtype=complex)
@@ -72,7 +72,7 @@ def detection(input_state, detection_event):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
-                        if p1 is not 0 and p3 is 0:
+                        if p1 > 0 and p3 is 0:
                             output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
     elif detection_event is 'THIRD':
         for p1 in range(size):
@@ -87,7 +87,7 @@ def detection(input_state, detection_event):
     return output_state
 
 
-# Takes an unapplied state
+# Takes an unapplied state in 4 channels
 def state_norm(state):
     size = len(state)
     norm_ = 0
@@ -107,7 +107,7 @@ def dens_matrix_with_trace(left_vector, right_vector):
         raise ValueError('Incorrect dimensions')
 
     right_vector_conj = np.conj(right_vector)
-    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+    dm = np.zeros((size,) * 4, dtype=complex)
 
     for p2 in range(size):
         for p2_ in range(size):
@@ -117,8 +117,8 @@ def dens_matrix_with_trace(left_vector, right_vector):
                     for k1 in range(size):
                         for k3 in range(size):
                             matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_] * factorial(k1) * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
-                    dens_matrix[p2, p4, p2_, p4_] = matrix_sum
-    return dens_matrix
+                    dm[p2, p4, p2_, p4_] = matrix_sum
+    return dm
 
 
 # Takes an unapplied state in 4 channels
@@ -144,7 +144,7 @@ def dens_matrix_with_trace_new(left_vector, right_vector):
                             dens_matrix_pre[p2, p3, p4, p2_, p3_, p4_] = matrix_sum_pre
 
     # trace third channel
-    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+    dm = np.zeros((size,) * 4, dtype=complex)
     for p2 in range(size):
         for p2_ in range(size):
             for p4 in range(size):
@@ -152,29 +152,29 @@ def dens_matrix_with_trace_new(left_vector, right_vector):
                     matrix_sum = 0
                     for k3 in range(size):
                         matrix_sum = matrix_sum + dens_matrix_pre[p2, k3, p4, p2_, k3, p4_]
-                    dens_matrix[p2, p4, p2_, p4_] = matrix_sum
+                    dm[p2, p4, p2_, p4_] = matrix_sum
 
-    return dens_matrix
+    return dm
 
 
 # Form dens matrix for two channels.
-# State is applied
+# Takes applied state
 def dens_matrix(state):
     size = len(state)
     state_conj = np.conj(state)
-    dens_matrix = np.zeros((size,) * 4, dtype=complex)
+    dm = np.zeros((size,) * 4, dtype=complex)
 
     for p1 in range(size):
         for p2 in range(size):
             for p1_ in range(size):
                 for p2_ in range(size):
-                    dens_matrix[p1, p2, p1_, p2_] = state[p1, p2] * state_conj[p1_, p2_]
+                    dm[p1, p2, p1_, p2_] = state[p1, p2] * state_conj[p1_, p2_]
 
-    return dens_matrix
+    return dm
 
 
 # Form dens matrix for 4 channels.
-# Quite large for many dimentions
+# Quite large for many dimensions
 # Operators are applied
 def dens_matrix_4ch(state):
     size = len(state)
@@ -254,7 +254,7 @@ def bs_densmatrix_transform(input_matrix, t, r):
 
 
 # photons distribution probability from final_dens_matrix
-# Takes 2 channels density matrix
+# Takes 2 channels applied density matrix
 def prob_distr(input_matrix):
     size = len(input_matrix)
     prob_matrix = np.zeros((size, size), dtype=complex)
@@ -265,11 +265,12 @@ def prob_distr(input_matrix):
     return prob_matrix
 
 
-# The logarithmic entanglement out of 2x2 density matrix
-def log_entropy(dens_matrix):
-    size = len(dens_matrix)
+# The logarithmic Fon Neuman entropy / entanglement.
+# Takes applied  reduced density matrix
+def log_entropy(dm):
+    size = len(dm)
     entropy = 0
-    w, v = np.linalg.eig(dens_matrix)
+    w, v = np.linalg.eig(dm)
     for n in range(size):
         if w[n] != 0:
             entropy = entropy - w[n] * np.log2(w[n])
@@ -289,8 +290,8 @@ def partial_transpose(matrix):
 
 
 # Takes density matrix of the subsystem
-def linear_entropy(dens_matrix):
-    entropy = 1 - np.trace(dens_matrix @ dens_matrix)
+def linear_entropy(dm):
+    entropy = 1 - np.trace(dm @ dm)
     return entropy
 
 

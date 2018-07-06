@@ -20,7 +20,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 10
+series_length = 3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -34,13 +34,13 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'FIRST'  # 1st detector clicked
 # DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
@@ -67,7 +67,7 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 11
+r4_grid = 19
 
 bs1_even = True
 
@@ -122,19 +122,21 @@ for i in range(r4_grid):
         # Detection
         # Gives not normalised state
         state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
+        # Calculating the norm
         norm_after_det = state_norm(state_after_dett_unappl)
         # normalised state
         state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
         # Build dens matrix and trace
         dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-        # new method
+
+        # The new method, works
         # dens_matrix_2channels = dens_matrix_with_trace_new(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
-        # phase modulation
+        # Phase modulation
         dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
-        # It's possible to disable a phase addition like this!!!
+        # Disable a phase addition.
         # dens_matrix_2channels_withph = dens_matrix_2channels
 
         # after detection, with phase
@@ -145,18 +147,18 @@ for i in range(r4_grid):
 
         # Transformation at last BS
         # Trim for better performance,
-        # trim_size=8 for series_len=10
+        # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 10
+        trim_size = 4
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
         final_traced = trace_channel(final_dens_matrix, channel=4)
-        print('Trace of final matrix:', np.trace(final_traced))
+        print('trace of final reduced matrix 2nd channel:', np.trace(final_traced))
 
         # Other channel traced
         final_traced_4th = trace_channel(final_dens_matrix, channel=2)
-        print('trace of reduced matrix:', np.trace(final_traced_4th))
+        print('trace of final reduced matrix 4th channel:', np.trace(final_traced_4th))
 
         # Calculate entropy
         # log_entanglement = log_entropy(final_traced)
