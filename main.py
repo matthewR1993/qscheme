@@ -40,8 +40,8 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector clicked
-# DET_CONF = 'THIRD'  # 3rd detector clicked
+# DET_CONF = 'FIRST'  # 1st detector clicked
+DET_CONF = 'THIRD'  # 3rd detector clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
@@ -67,7 +67,7 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 19
+r4_grid = 31
 
 bs1_even = True
 
@@ -102,6 +102,14 @@ if r1_grid is 1 and bs1_even:
     t1_array = [sqrt(0.5)]
     r1_array = [sqrt(1 - pow(t1_array[0], 2))]
 
+
+# transmit all near detection area
+# t2 = 0.99999
+# r2 = sqrt(1 - t2**2)
+# t3 = 0.99999
+# r3 = sqrt(1 - t3**2)
+
+
 # loops
 for i in range(r4_grid):
     t4 = t4_array[i]
@@ -124,6 +132,7 @@ for i in range(r4_grid):
         state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
         # Calculating the norm
         norm_after_det = state_norm(state_after_dett_unappl)
+        print('Norm after det.:', norm_after_det)
         # normalised state
         state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
@@ -134,10 +143,10 @@ for i in range(r4_grid):
         # dens_matrix_2channels = dens_matrix_with_trace_new(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
         # Phase modulation
-        dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+        # dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
         # Disable a phase addition.
-        # dens_matrix_2channels_withph = dens_matrix_2channels
+        dens_matrix_2channels_withph = dens_matrix_2channels
 
         # after detection, with phase
         # log_negativity_aftdet[i] = negativity(dens_matrix_2channels_withph, neg_type='logarithmic')
@@ -161,16 +170,16 @@ for i in range(r4_grid):
         print('trace of final reduced matrix 4th channel:', np.trace(final_traced_4th))
 
         # Calculate entropy
-        # log_entanglement = log_entropy(final_traced)
-        log_entanglement = log_entropy(final_traced_4th)  # other channel traced matrix
+        log_entanglement = log_entropy(final_traced)
+        # log_entanglement = log_entropy(final_traced_4th)  # other channel traced matrix
         print('FN entropy: ', np.real(log_entanglement))
         log_entropy_array[i, j] = log_entanglement
 
         # Logarithmic entropy difference
         print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
 
-        # lin_entropy[i, j] = np.real(linear_entropy(final_traced))
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other channel traced matrix
+        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
+        # lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other channel traced matrix
         print('Lin. entropy: ', lin_entropy[i, j])
 
         # Linear entropy difference
@@ -185,7 +194,7 @@ plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. FN
 # plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
 plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
 # plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
-plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
+#plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Entanglement$')
 # plt.title('Phase = {0}pi'.format(ph_inpi))

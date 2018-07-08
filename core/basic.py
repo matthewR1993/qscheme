@@ -350,7 +350,7 @@ def phase_modulation_state(state, phase):
     return st_mod
 
 
-# Aplly operators to state in two channels
+# Apply operators to state in two channels
 def make_state_appliable(state):
     size = len(state)
     st_appl = np.zeros((size, size), dtype=complex)
@@ -360,7 +360,7 @@ def make_state_appliable(state):
     return st_appl
 
 
-# Aplly operators to state in 4 channels
+# Apply operators to state in 4 channels
 def make_state_appliable_4ch(state):
     size = len(state)
     st_appl = np.zeros((size,)*4, dtype=complex)
