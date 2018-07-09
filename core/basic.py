@@ -295,6 +295,8 @@ def linear_entropy(dm):
     return entropy
 
 
+# Reorganise density matrix in two channels.
+# rho[m, n, m_, n_] ==> rho_out[k, k_]
 def reorganise_dens_matrix(rho):
     size = len(rho)
     rho_out = np.zeros((size**2,)*2, dtype=complex)

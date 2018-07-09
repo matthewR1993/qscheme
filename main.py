@@ -13,14 +13,14 @@ from time import gmtime, strftime
 
 from customutils.utils import *
 from core.basic import *
-from core.state_configurations import coherent_state, single_photon
+from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
 
 
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -31,18 +31,20 @@ max_power = input_series_length + auxiliary_series_length
 # INPUT
 input_st = single_photon(series_length)
 # input_st = coherent_state(input_series_length, alpha=1)
+# input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector clicked
-DET_CONF = 'THIRD'  # 3rd detector clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'THIRD'  # 3rd detector is clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -67,7 +69,7 @@ print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
 r1_grid = 1
-r4_grid = 31
+r4_grid = 11
 
 bs1_even = True
 
@@ -75,9 +77,13 @@ bs1_even = True
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
-log_entropy_array = np.zeros((r4_grid, r1_grid), dtype=complex)
-lin_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
+log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
+log_entropy_subs2_array = np.zeros((r4_grid, r1_grid), dtype=complex)
+lin_entropy_subs1 = np.zeros((r4_grid, r1_grid), dtype=complex)
+lin_entropy_subs2 = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
+mut_information = np.zeros((r4_grid, r1_grid), dtype=complex)
+full_fn_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
@@ -143,10 +149,10 @@ for i in range(r4_grid):
         # dens_matrix_2channels = dens_matrix_with_trace_new(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
         # Phase modulation
-        # dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+        dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
         # Disable a phase addition.
-        dens_matrix_2channels_withph = dens_matrix_2channels
+        # dens_matrix_2channels_withph = dens_matrix_2channels
 
         # after detection, with phase
         # log_negativity_aftdet[i] = negativity(dens_matrix_2channels_withph, neg_type='logarithmic')
@@ -158,43 +164,56 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 4
+        trim_size = 10
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
-        final_traced = trace_channel(final_dens_matrix, channel=4)
-        print('trace of final reduced matrix 2nd channel:', np.trace(final_traced))
+        final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
+        print('trace of final reduced matrix 2nd channel:', np.trace(final_traced_subs1))
 
         # Other channel traced
-        final_traced_4th = trace_channel(final_dens_matrix, channel=2)
-        print('trace of final reduced matrix 4th channel:', np.trace(final_traced_4th))
+        final_traced_subs2 = trace_channel(final_dens_matrix, channel=2)
+        print('trace of final reduced matrix 4th channel:', np.trace(final_traced_subs2))
 
         # Calculate entropy
-        log_entanglement = log_entropy(final_traced)
-        # log_entanglement = log_entropy(final_traced_4th)  # other channel traced matrix
-        print('FN entropy: ', np.real(log_entanglement))
-        log_entropy_array[i, j] = log_entanglement
+        log_entanglement_subs1 = log_entropy(final_traced_subs1)
+        log_entanglement_subs2 = log_entropy(final_traced_subs2)
+        # print('FN entropy subs1: ', np.real(log_entanglement_subs1))
+        # print('FN entropy subs2: ', np.real(log_entanglement_subs2))
+        log_entropy_subs1_array[i, j] = log_entanglement_subs1
+        log_entropy_subs2_array[i, j] = log_entanglement_subs2
 
         # Logarithmic entropy difference
-        print('FN entropy difference: ', log_entanglement - log_entropy(final_traced_4th))
+        # print('FN entropy difference: ', log_entanglement_subs1 - log_entanglement_subs2)
 
-        lin_entropy[i, j] = np.real(linear_entropy(final_traced))
-        # lin_entropy[i, j] = np.real(linear_entropy(final_traced_4th))  # other channel traced matrix
-        print('Lin. entropy: ', lin_entropy[i, j])
+        # Full entropy and the mutual information
+        final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
+        full_entr = log_entropy(final_reorg_matr)
+
+        mut_information[i, j] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
+        full_fn_entropy[i, j] = full_entr
+
+        # lin_entropy_subs1[i, j] = np.real(linear_entropy(log_entanglement_subs1))
+        # lin_entropy_subs2[i, j] = np.real(linear_entropy(log_entanglement_subs2))
+        # print('Lin. entropy subs1: ', lin_entropy_subs1[i, j])
+        # print('Lin. entropy subs2: ', lin_entropy_subs2[i, j])
 
         # Linear entropy difference
-        print('Linear entropy difference: ', lin_entropy[i, j] - linear_entropy(final_traced_4th))
+        print('Linear entropy difference: ', lin_entropy_subs1[i, j] - lin_entropy_subs2[i, j])
 
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
 
 # Varying t4
-plt.plot(np.square(t4_array), np.real(log_entropy_array[:, 0]), label=r'$Log. FN \ entropy$')
+plt.plot(np.square(t4_array), np.real(log_entropy_subs1_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 1$')
+plt.plot(np.square(t4_array), np.real(log_entropy_subs2_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 2$')
+plt.plot(np.square(t4_array), np.real(mut_information[:, 0]), label=r'$Mut \ information, \ FN \ log. \ entropy.$')
+plt.plot(np.square(t4_array), np.real(full_fn_entropy[:, 0]), label=r'$Full \ FN \ log. \ entropy.$')
 # plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
-plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. negativity$')
+plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. \ negativity$')
 # plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
-#plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
+plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Entanglement$')
 # plt.title('Phase = {0}pi'.format(ph_inpi))

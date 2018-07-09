@@ -16,6 +16,12 @@ def single_photon(series_length=DEF_SERIES_LEN):
     return state
 
 
+def fock_state(n, series_length=DEF_SERIES_LEN):
+    state = np.zeros(series_length)
+    state[n] = 1 / sqrt(factorial(n))
+    return state
+
+
 def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
     state = np.zeros(series_length, dtype=np.complex128)
     for n in range(series_length):
