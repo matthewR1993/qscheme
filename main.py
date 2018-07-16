@@ -43,9 +43,9 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -75,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 2.0
+ph_inpi = 0.75
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -230,8 +230,6 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-
-# dX1 * dX2 product
 
 # plot squeezing
 plt.plot(np.square(t4_array), sqeez_dX1[:, 0], label=r'$\Delta X_1$')
