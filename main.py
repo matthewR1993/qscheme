@@ -75,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 1.5
+ph_inpi = 2.0
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
