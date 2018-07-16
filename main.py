@@ -13,6 +13,7 @@ from time import gmtime, strftime
 
 from customutils.utils import *
 from core.basic import *
+from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
 
@@ -41,8 +42,8 @@ auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
-DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
+DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
@@ -74,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 1.0
+ph_inpi = 0.25
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -84,6 +85,10 @@ lin_entropy_subs2 = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
 mut_information = np.zeros((r4_grid, r1_grid), dtype=complex)
 full_fn_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
+sqeez_dX1 = np.zeros((r4_grid, r1_grid), dtype=complex)
+sqeez_dX2 = np.zeros((r4_grid, r1_grid), dtype=complex)
+
+
 
 # log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
@@ -204,6 +209,11 @@ for i in range(r4_grid):
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
+        dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=1)
+        print('dX1:', dX1, ' dX2:', dX2)
+        sqeez_dX1[i, j] = dX1
+        sqeez_dX2[i, j] = dX2
+
 
 # Varying t4
 plt.plot(np.square(t4_array), np.real(log_entropy_subs1_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 1$')
@@ -213,10 +223,25 @@ plt.plot(np.square(t4_array), np.real(full_fn_entropy[:, 0]), label=r'$Full \ FN
 # plt.plot(np.square(t4_array), np.real(lin_entropy[:, 0]), label=r'$Lin. entropy$')
 plt.plot(np.square(t4_array), np.real(log_negativity[:, 0]), label=r'$Log. \ negativity$')
 # plt.plot(np.square(t4_array), np.real(log_negativity_aftdet[:, 0]), label=r'$Log. negativity, after det. with phase$')
-plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
+# plt.title(f'Entanglement. Phase=%0.2f pi. Det. - %s' % (ph_inpi, DET_CONF))
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Entanglement$')
 # plt.title('Phase = {0}pi'.format(ph_inpi))
+plt.xlim([0, 1])
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# dX1 * dX2 product
+
+# plot squeezing
+plt.plot(np.square(t4_array), sqeez_dX1[:, 0], label=r'$\Delta X_1$')
+plt.plot(np.square(t4_array), sqeez_dX2[:, 0], label=r'$\Delta X_2$')
+plt.plot(np.square(t4_array), np.multiply(sqeez_dX1[:, 0], sqeez_dX2[:, 0]), label=r'$\Delta X_1 \Delta X_2$')
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel('$Squeezing$')
+plt.title('$Squeezing$')
 plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)
