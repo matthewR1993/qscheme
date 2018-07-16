@@ -75,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 0.25
+ph_inpi = 1.5
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -87,8 +87,6 @@ mut_information = np.zeros((r4_grid, r1_grid), dtype=complex)
 full_fn_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
 sqeez_dX1 = np.zeros((r4_grid, r1_grid), dtype=complex)
 sqeez_dX2 = np.zeros((r4_grid, r1_grid), dtype=complex)
-
-
 
 # log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
