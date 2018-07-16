@@ -21,7 +21,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 10
+series_length = 4
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,16 +36,16 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector is clicked
+DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -75,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 0.75
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -167,7 +167,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 10
+        trim_size = 5
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
