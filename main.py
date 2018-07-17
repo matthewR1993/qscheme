@@ -21,7 +21,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 4
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,16 +36,16 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
@@ -167,7 +167,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 5
+        trim_size = 10
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
@@ -207,7 +207,8 @@ for i in range(r4_grid):
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
-        dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=1)
+        # dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=1)
+        dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=2)
         print('dX1:', dX1, ' dX2:', dX2)
         sqeez_dX1[i, j] = dX1
         sqeez_dX2[i, j] = dX2
