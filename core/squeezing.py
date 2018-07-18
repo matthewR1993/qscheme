@@ -69,3 +69,9 @@ def squeezing_quadratures(dm, channel):
         raise ValueError('Wrong configuration')
 
     return dx1, dx2
+
+
+# TODO EPR correlations.
+# Two modes squeezing EPR correlations: D[(X1(2) - X1(2))/sqrt(2)], D[(X2(2) + X2(2))/sqrt(2)]
+def squeezing_correlations(dm):
+    return 0
