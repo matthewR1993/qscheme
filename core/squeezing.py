@@ -3,6 +3,7 @@ import numpy as np
 from math import sqrt, factorial
 
 
+# TODO divide it and make it a constructor
 # Two modes squeezing
 # Takes applied density matrix for 2 channels
 # Returns first and second quadratures for a chosen channel
@@ -72,6 +73,10 @@ def squeezing_quadratures(dm, channel):
 
 
 # TODO EPR correlations.
-# Two modes squeezing EPR correlations: D[(X1(2) - X1(2))/sqrt(2)], D[(X2(2) + X2(2))/sqrt(2)]
+# Two modes squeezing EPR correlations: D[(X1(2) - X1(1))/sqrt(2)], D[(X2(2) + X2(1))/sqrt(2)]
+# Where D[A] is a dispersion of A
 def squeezing_correlations(dm):
-    return 0
+    dx = 0  # dx = D[(X1(2) - X1(1))/sqrt(2)]
+    dp = 0  # dp = D[(X2(2) + X2(1))/sqrt(2)]
+
+    return dx, dp
