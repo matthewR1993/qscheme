@@ -21,7 +21,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 10
+series_length = 3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,8 +36,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -85,8 +85,10 @@ lin_entropy_subs2 = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_negativity = np.zeros((r4_grid, r1_grid), dtype=complex)
 mut_information = np.zeros((r4_grid, r1_grid), dtype=complex)
 full_fn_entropy = np.zeros((r4_grid, r1_grid), dtype=complex)
-sqeez_dX1 = np.zeros((r4_grid, r1_grid), dtype=complex)
-sqeez_dX2 = np.zeros((r4_grid, r1_grid), dtype=complex)
+sqeez_dX = np.zeros((r4_grid, r1_grid), dtype=complex)
+sqeez_dP = np.zeros((r4_grid, r1_grid), dtype=complex)
+erp_correl_x = np.zeros((r4_grid, r1_grid), dtype=complex)
+erp_correl_p = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
@@ -167,7 +169,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 10
+        trim_size = 4
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
@@ -207,11 +209,15 @@ for i in range(r4_grid):
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
-        # dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=1)
-        dX1, dX2 = squeezing_quadratures(final_dens_matrix, channel=2)
-        print('dX1:', dX1, ' dX2:', dX2)
-        sqeez_dX1[i, j] = dX1
-        sqeez_dX2[i, j] = dX2
+        dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
+        print('dX:', dX, ' dP:', dP)
+        sqeez_dX[i, j] = dX
+        sqeez_dP[i, j] = dP
+
+        # ERP correlations
+        erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
+        erp_correl_x[i, j] = erp_x
+        erp_correl_p[i, j] = erp_p
 
 
 # Varying t4
@@ -233,12 +239,24 @@ plt.show()
 
 
 # plot squeezing
-plt.plot(np.square(t4_array), sqeez_dX1[:, 0], label=r'$\Delta X_1$')
-plt.plot(np.square(t4_array), sqeez_dX2[:, 0], label=r'$\Delta X_2$')
-plt.plot(np.square(t4_array), np.multiply(sqeez_dX1[:, 0], sqeez_dX2[:, 0]), label=r'$\Delta X_1 \Delta X_2$')
+# TODO plot squezing quadratures as log() and normalised at pi/4: ln(dX/(pi/4))
+plt.plot(np.square(t4_array), sqeez_dX[:, 0], label=r'$\Delta X$')
+plt.plot(np.square(t4_array), sqeez_dP[:, 0], label=r'$\Delta P$')
+plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Squeezing$')
 plt.title('$Squeezing$')
+plt.xlim([0, 1])
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# ERP correlations
+plt.plot(np.square(t4_array), erp_correl_x[:, 0], label=r'$erp X$')
+plt.plot(np.square(t4_array), erp_correl_p[:, 0], label=r'$erp P$')
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel('$ERP correl$')
+plt.title('$ERP correl$')
 plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)
