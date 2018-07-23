@@ -21,7 +21,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,8 +36,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -75,7 +75,7 @@ r4_grid = 11
 bs1_even = True
 
 # Phase difference before last BS
-ph_inpi = 0.0
+ph_inpi = 0.25
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -169,7 +169,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 4
+        trim_size = 10
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
@@ -218,6 +218,7 @@ for i in range(r4_grid):
         erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
         erp_correl_x[i, j] = erp_x
         erp_correl_p[i, j] = erp_p
+        print('erp_X:', erp_x, ' erp_P:', erp_p)
 
 
 # Varying t4
@@ -239,7 +240,7 @@ plt.show()
 
 
 # plot squeezing
-# TODO plot squezing quadratures as log() and normalised at pi/4: ln(dX/(pi/4))
+# TODO plot squezing quadratures as log() and normalised at 1/4: ln(dX/(1/4))
 plt.plot(np.square(t4_array), sqeez_dX[:, 0], label=r'$\Delta X$')
 plt.plot(np.square(t4_array), sqeez_dP[:, 0], label=r'$\Delta P$')
 plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
@@ -252,11 +253,11 @@ plt.grid(True)
 plt.show()
 
 # ERP correlations
-plt.plot(np.square(t4_array), erp_correl_x[:, 0], label=r'$erp X$')
-plt.plot(np.square(t4_array), erp_correl_p[:, 0], label=r'$erp P$')
+plt.plot(np.square(t4_array), erp_correl_x[:, 0], label=r'$\Delta[X^{(1)} - X^{(2)}]$')
+plt.plot(np.square(t4_array), erp_correl_p[:, 0], label=r'$\Delta[P^{(1)} + P^{(2)}]$')
 plt.xlabel(r'$T_{4}$', fontsize=16)
-plt.ylabel('$ERP correl$')
-plt.title('$ERP correl$')
+plt.ylabel('$ERP \ correlations \ [a. u.]$')
+plt.title('$ERP \ correlations$')
 plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)
