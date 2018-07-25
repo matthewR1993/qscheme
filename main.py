@@ -21,7 +21,7 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
@@ -36,8 +36,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -69,13 +69,14 @@ mut_state_unappl = tf.tensordot(
 print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # First and last BS grids
-r1_grid = 1
-r4_grid = 11
+r1_grid = 9
+r4_grid = 9
 
-bs1_even = True
+# TODO refactor it.
+bs1_even = False
 
 # Phase difference before last BS
-ph_inpi = 0.25
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -169,7 +170,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 4
+        trim_size = 10
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state
@@ -221,6 +222,7 @@ for i in range(r4_grid):
         print('erp_X:', erp_x, ' erp_P:', erp_p)
 
 
+# 2D pictures
 # Varying t4
 plt.plot(np.square(t4_array), np.real(log_entropy_subs1_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 1$')
 plt.plot(np.square(t4_array), np.real(log_entropy_subs2_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 2$')
@@ -262,3 +264,126 @@ plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)
 plt.show()
+
+
+# dX, dP - 3D pictures
+
+# dX
+# dX - 3D - picture
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+X = np.square(t4_array)
+Y = np.square(t1_array)
+X, Y = np.meshgrid(X, Y)
+# surf = ax.plot_surface(X, Y, np.real(sqeez_dX), cmap=cm.coolwarm,
+#                         linewidth=0, antialiased=False)
+# plt.title(r'$\Delta X$')
+surf = ax.plot_surface(X, Y, np.log10(np.real(sqeez_dX)/(1/2)), cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$')
+fig.colorbar(surf, shrink=0.5, aspect=5)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# dX - 2D - picture.
+# im = plt.imshow(np.real(sqeez_dX), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+# plt.title('$\Delta X$')
+im = plt.imshow(np.log10(np.real(sqeez_dX)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$')
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# dP
+# dP - 3D - picture
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+X = np.square(t4_array)
+Y = np.square(t1_array)
+X, Y = np.meshgrid(X, Y)
+# surf = ax.plot_surface(X, Y, np.real(sqeez_dP), cmap=cm.coolwarm,
+#                        linewidth=0, antialiased=False)
+# plt.title(r'$\Delta P$')
+surf = ax.plot_surface(X, Y, np.log10(np.real(sqeez_dP)/(1/2)), cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+plt.title(r'$\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+fig.colorbar(surf, shrink=0.5, aspect=5)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# dP - 2D - picture.
+im = plt.imshow(np.real(sqeez_dP), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+plt.title('$\Delta P$')
+# im = plt.imshow(np.log10(np.real(sqeez_dP)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+# plt.title(r'$\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# dX * dP - 2D picture.
+# Should be >= 0.25
+im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+plt.title(r'$\Delta X\Delta P$')
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
+# EPR correlations:
+# ERP X, 3D picture
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+X = np.square(t4_array)
+Y = np.square(t1_array)
+X, Y = np.meshgrid(X, Y)
+surf = ax.plot_surface(X, Y, np.real(erp_correl_x), cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(in)}}$')
+fig.colorbar(surf, shrink=0.5, aspect=5)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.xlim(1, 0)
+plt.ylim(0, 1)
+plt.show()
+
+# ERP X, 2D picture
+im = plt.imshow(np.real(erp_correl_x), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(in)}}$')
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+# ERP P, 3D picture
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+X = np.square(t4_array)
+Y = np.square(t1_array)
+X, Y = np.meshgrid(X, Y)
+surf = ax.plot_surface(X, Y, np.real(erp_correl_p), cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+plt.title(r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(in)}}$')
+fig.colorbar(surf, shrink=0.5, aspect=5)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.xlim(1, 0)
+plt.ylim(0, 1)
+plt.show()
+
+# ERP P, 2D picture
+im = plt.imshow(np.real(erp_correl_p), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+plt.title(r'$\frac{\Delta[P^{(1)} - P^{(2)}]^{(out)}}{\Delta[P^{(1)} - P^{(2)}]^{(in)}}$')
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
