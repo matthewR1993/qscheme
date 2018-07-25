@@ -38,8 +38,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -60,6 +60,9 @@ dm = dens_matrix(make_state_appliable(mut_state_unappl))
 erp_x, erp_p = erp_squeezing_correlations(dm)
 # For coherent + single:
 # erp_x, erp_p = 1, 1
+
+# For single + single:
+# erp_x, erp_p = 1.2247, 1.2247
 
 # For coherent + coherent:
 # erp_x, erp_p = sqrt(0.5), sqrt(0.5)  <- check it
