@@ -29,13 +29,14 @@ max_power = input_series_length + auxiliary_series_length
 # Set up input and auxiliary states as a Taylor series
 # input_st[n] = state with 'n' photons !!!a
 
-# INPUT
+# TODO specify number of channels in relation to detectors
+# INPUT - first(at the bottom) channel
 input_st = single_photon(series_length)
 # input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
-# AUXILIARY
+# AUXILIARY - second(on top) channel
 # auxiliary_st = single_photon(series_length)
 auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
@@ -64,20 +65,24 @@ mut_state_unappl = tf.tensordot(
 ).eval(session=sess)
 
 
-#############
-# Several params:
+# Begin.
 print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
-# First and last BS grids
-r1_grid = 9
-r4_grid = 9
+# The first and the last BS grids
+r1_grid = 13
+r4_grid = 13
 
-# TODO refactor it.
-bs1_even = False
+bs1_is_symmetrical = False
 
-# Phase difference before last BS
+# The phase difference before last BS
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
+
+# BS transmittion range
+T1_min = 0.0
+T1_max = 1.0
+T4_min = 0.0
+T4_max = 1.0
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_entropy_subs2_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -91,10 +96,9 @@ sqeez_dP = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_x = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_p = np.zeros((r4_grid, r1_grid), dtype=complex)
 
-# log_negativity_aftdet = np.zeros((r4_grid, r1_grid), dtype=complex)
 
 # Varying last BS (BS4)
-T4_array = np.linspace(0, 1, r4_grid)
+T4_array = np.linspace(T4_min, T4_max, r4_grid)
 t4_array = np.sqrt(T4_array)
 
 r4_fun = lambda tt: sqrt(1 - pow(tt, 2))
@@ -102,24 +106,17 @@ r4_vect_func = np.vectorize(r4_fun)
 r4_array = r4_vect_func(t4_array)
 
 # Varying first BS (BS1)
-T1_array = np.linspace(0, 1, r1_grid)
+T1_array = np.linspace(T1_min, T1_max, r1_grid)
 t1_array = np.sqrt(T1_array)
 
 r1_fun = lambda tt: sqrt(1 - pow(tt, 2))
 r1_vect_func = np.vectorize(r1_fun)
 r1_array = r1_vect_func(t1_array)
 
-# Set BS1 - 50:50
-if r1_grid is 1 and bs1_even:
+# Set BS1 - 50:50 if required.
+if r1_grid is 1 and bs1_is_symmetrical:
     t1_array = [sqrt(0.5)]
     r1_array = [sqrt(1 - pow(t1_array[0], 2))]
-
-
-# transmit all near detection area
-# t2 = 0.99999
-# r2 = sqrt(1 - t2**2)
-# t3 = 0.99999
-# r3 = sqrt(1 - t3**2)
 
 
 # loops
@@ -205,22 +202,25 @@ for i in range(r4_grid):
         # print('Lin. entropy subs2: ', lin_entropy_subs2[i, j])
 
         # Linear entropy difference
-        print('Linear entropy difference: ', lin_entropy_subs1[i, j] - lin_entropy_subs2[i, j])
+        # print('Linear entropy difference: ', lin_entropy_subs1[i, j] - lin_entropy_subs2[i, j])
 
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
+        # Squeezing quadratures.
         dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
         print('dX:', dX, ' dP:', dP)
         sqeez_dX[i, j] = dX
         sqeez_dP[i, j] = dP
 
-        # ERP correlations
+        # ERP correlations.
         erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
         erp_correl_x[i, j] = erp_x
         erp_correl_p[i, j] = erp_p
         print('erp_X:', erp_x, ' erp_P:', erp_p)
 
+
+ORTS = [T4_min, T4_max, T1_min, T1_max]
 
 # 2D pictures
 # Varying t4
@@ -242,7 +242,6 @@ plt.show()
 
 
 # plot squeezing
-# TODO plot squezing quadratures as log() and normalised at 1/4: ln(dX/(1/4))
 plt.plot(np.square(t4_array), sqeez_dX[:, 0], label=r'$\Delta X$')
 plt.plot(np.square(t4_array), sqeez_dP[:, 0], label=r'$\Delta P$')
 plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
@@ -268,6 +267,14 @@ plt.show()
 
 # dX, dP - 3D pictures
 
+# EPR variance for vaacum state, the minimum itself.
+EPR_VAR_X_VAC = sqrt(1/2)
+EPR_VAR_P_VAC = sqrt(1/2)
+
+#
+QUADR_VAR_X_VAC  = sqrt(1/2)
+QUADR_VAR_P_VAC  = sqrt(1/2)
+
 # dX
 # dX - 3D - picture
 fig = plt.figure()
@@ -278,9 +285,9 @@ X, Y = np.meshgrid(X, Y)
 # surf = ax.plot_surface(X, Y, np.real(sqeez_dX), cmap=cm.coolwarm,
 #                         linewidth=0, antialiased=False)
 # plt.title(r'$\Delta X$')
-surf = ax.plot_surface(X, Y, np.log10(np.real(sqeez_dX)/(1/2)), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dX)/(1/2)), cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
-plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$')
+plt.title(r'$10\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -288,10 +295,10 @@ plt.show()
 
 
 # dX - 2D - picture.
-# im = plt.imshow(np.real(sqeez_dX), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+# im = plt.imshow(np.real(sqeez_dX), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 # plt.title('$\Delta X$')
-im = plt.imshow(np.log10(np.real(sqeez_dX)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
-plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$')
+im = plt.imshow(np.log10(np.real(sqeez_dX)/(1/2)), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
+plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -318,9 +325,9 @@ plt.show()
 
 
 # dP - 2D - picture.
-im = plt.imshow(np.real(sqeez_dP), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+im = plt.imshow(np.real(sqeez_dP), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 plt.title('$\Delta P$')
-# im = plt.imshow(np.log10(np.real(sqeez_dP)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+# im = plt.imshow(np.log10(np.real(sqeez_dP)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 # plt.title(r'$\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
@@ -330,7 +337,7 @@ plt.show()
 
 # dX * dP - 2D picture.
 # Should be >= 0.25
-im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
+im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 plt.title(r'$\Delta X\Delta P$')
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
@@ -339,15 +346,15 @@ plt.show()
 
 
 # EPR correlations:
-# ERP X, 3D picture
+# EPR X, 3D picture
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 X = np.square(t4_array)
 Y = np.square(t1_array)
 X, Y = np.meshgrid(X, Y)
-surf = ax.plot_surface(X, Y, np.real(erp_correl_x), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, np.real(erp_correl_x)/EPR_VAR_X_VAC, cmap=cm.Spectral,
                        linewidth=0, antialiased=False)
-plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(in)}}$')
+plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(vac)}}$', fontsize=16)
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -356,8 +363,8 @@ plt.ylim(0, 1)
 plt.show()
 
 # ERP X, 2D picture
-im = plt.imshow(np.real(erp_correl_x), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
-plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(in)}}$')
+im = plt.imshow(np.real(erp_correl_x)/EPR_VAR_X_VAC, interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(vac)}}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -369,9 +376,9 @@ ax = fig.gca(projection='3d')
 X = np.square(t4_array)
 Y = np.square(t1_array)
 X, Y = np.meshgrid(X, Y)
-surf = ax.plot_surface(X, Y, np.real(erp_correl_p), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, np.real(erp_correl_p)/EPR_VAR_P_VAC, cmap=cm.Spectral,
                        linewidth=0, antialiased=False)
-plt.title(r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(in)}}$')
+plt.title(r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(vac)}}$', fontsize=16)
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -380,10 +387,28 @@ plt.ylim(0, 1)
 plt.show()
 
 # ERP P, 2D picture
-im = plt.imshow(np.real(erp_correl_p), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=[0, 1, 0, 1])
-plt.title(r'$\frac{\Delta[P^{(1)} - P^{(2)}]^{(out)}}{\Delta[P^{(1)} - P^{(2)}]^{(in)}}$')
+im = plt.imshow(np.real(erp_correl_p)/EPR_VAR_P_VAC, interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(vac)}}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
+
+# Uncertainty principle for EPR, should be > 1/2
+Z = np.multiply(np.real(erp_correl_x), np.real(erp_correl_p))
+
+im = plt.imshow(np.multiply(np.real(erp_correl_x), np.real(erp_correl_p)), interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$\Delta[X^{(1)} - X^{(2)}]^{(out)}\Delta[P^{(1)} + P^{(2)}]^{(out)}$', fontsize=16)
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+contours = plt.contour(X, Y, Z, 3, colors='black')
+plt.clabel(contours, inline=True, fontsize=8)
+plt.show()
+
+arr = np.array([16, 3, 8, 99, 14, 5, 1, 3, 190])
+cond = np.mod(arr, 1) > 16
+np.extract(cond, arr)
+
+np.where(arr >= 14)

@@ -62,7 +62,11 @@ erp_x, erp_p = erp_squeezing_correlations(dm)
 # erp_x, erp_p = 1, 1
 
 # For single + single:
-# erp_x, erp_p = 1.2247, 1.2247
+# erp_x, erp_p = 1.2247, 1.2247 = > sqrt(3/2), sqrt(3/2)
 
 # For coherent + coherent:
 # erp_x, erp_p = sqrt(0.5), sqrt(0.5)  <- check it
+
+# TODO check it for vac + vac
+# should be:
+# erp_x, erp_p = sqrt(1/2), sqrt(1/2)
