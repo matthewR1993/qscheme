@@ -3,6 +3,7 @@ import sympy as sp
 from math import sqrt, factorial
 
 
+# The method with using symbolic expressions.
 def measure_state(state_before, clicked):
     # Both detectors were clicked
     b1, b2, b3, b4 = sp.symbols('b1 b2 b3 b4')

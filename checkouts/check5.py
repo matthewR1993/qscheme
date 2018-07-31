@@ -89,8 +89,7 @@ for p2 in range(size):
 final_dens_matrix = bs_densmatrix_transform(dm_aft_trace_appl, t3, r3)
 
 
-###############
-# Second method
+# Second method.
 # First, channels with loses are located after BS
 state_aft_1st_bs_unappl = bs2x2_transform(t3, r3, mut_state_unappl)
 

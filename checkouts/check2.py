@@ -5,16 +5,8 @@ try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 except: pass
 
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
-from qutip import (wigner, super_tensor, Qobj)
-from time import gmtime, strftime
-
 from customutils.utils import *
 from core.basic import *
-from core.state_configurations import coherent_state, single_photon
 from setup_parameters import *
 
 
@@ -39,13 +31,9 @@ fn_entr_arr = np.zeros(net)
 
 for i in range(net):
     phi = phi_arr[i]
-
     log_neg = np.log2(2*(np.abs(a02(t2,phi))*np.abs(a11(t2,phi)) + np.abs(a02(t2,phi))*np.abs(a20(t2,phi)) + np.abs(a11(t2,phi))*np.abs(a20(t2,phi))) + 1)
-
     fn_entropy = - np.abs(a02(t2,phi))**2*np.log(np.abs(a02(t2,phi))**2) - np.abs(a20(t2,phi))**2*np.log(np.abs(a20(t2,phi))**2) - np.abs(a11(t2,phi))**2*np.log(np.abs(a11(t2,phi))**2)
-
     log_neg_arr[i] = log_neg
-
     fn_entr_arr[i] = fn_entropy
 
 
@@ -73,13 +61,9 @@ fn_entr_arr2 = np.zeros(net)
 
 for i in range(net):
     t2 = t2_arr[i]
-
     log_neg = np.log2(2*(np.abs(a02(t2,phi))*np.abs(a11(t2,phi)) + np.abs(a02(t2,phi))*np.abs(a20(t2,phi)) + np.abs(a11(t2,phi))*np.abs(a20(t2,phi))) + 1)
-
     fn_entropy = - np.abs(a02(t2,phi))**2*np.log(np.abs(a02(t2,phi))**2) - np.abs(a20(t2,phi))**2*np.log(np.abs(a20(t2,phi))**2) - np.abs(a11(t2,phi))**2*np.log(np.abs(a11(t2,phi))**2)
-
     log_neg_arr2[i] = log_neg
-
     fn_entr_arr2[i] = fn_entropy
 
 
@@ -92,4 +76,3 @@ plt.xlabel('$T_{2}$')
 plt.ylabel('$Entanglement$')
 plt.xlim([0, 1])
 plt.show()
-

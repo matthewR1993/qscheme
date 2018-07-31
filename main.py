@@ -29,14 +29,14 @@ max_power = input_series_length + auxiliary_series_length
 # Set up input and auxiliary states as a Taylor series
 # input_st[n] = state with 'n' photons !!!a
 
-# TODO specify number of channels in relation to detectors
-# INPUT - first(at the bottom) channel
+
+# INPUT - the state in the first(at the bottom) channel
 input_st = single_photon(series_length)
 # input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
-# AUXILIARY - second(on top) channel
+# AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
 auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
@@ -65,8 +65,8 @@ mut_state_unappl = tf.tensordot(
 ).eval(session=sess)
 
 
-# Begin.
-print('Started:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+# Start time.
+print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # The first and the last BS grids
 r1_grid = 13
@@ -265,16 +265,6 @@ plt.grid(True)
 plt.show()
 
 
-# dX, dP - 3D pictures
-
-# EPR variance for vaacum state, the minimum itself.
-EPR_VAR_X_VAC = sqrt(1/2)
-EPR_VAR_P_VAC = sqrt(1/2)
-
-#
-QUADR_VAR_X_VAC  = sqrt(1/2)
-QUADR_VAR_P_VAC  = sqrt(1/2)
-
 # dX
 # dX - 3D - picture
 fig = plt.figure()
@@ -285,7 +275,7 @@ X, Y = np.meshgrid(X, Y)
 # surf = ax.plot_surface(X, Y, np.real(sqeez_dX), cmap=cm.coolwarm,
 #                         linewidth=0, antialiased=False)
 # plt.title(r'$\Delta X$')
-surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dX)/(1/2)), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
 plt.title(r'$10\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
 fig.colorbar(surf, shrink=0.5, aspect=5)
@@ -297,15 +287,14 @@ plt.show()
 # dX - 2D - picture.
 # im = plt.imshow(np.real(sqeez_dX), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 # plt.title('$\Delta X$')
-im = plt.imshow(np.log10(np.real(sqeez_dX)/(1/2)), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
-plt.title(r'$\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
+im = plt.imshow(10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
+plt.title(r'$10*\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
 
-# dP
 # dP - 3D - picture
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -315,9 +304,9 @@ X, Y = np.meshgrid(X, Y)
 # surf = ax.plot_surface(X, Y, np.real(sqeez_dP), cmap=cm.coolwarm,
 #                        linewidth=0, antialiased=False)
 # plt.title(r'$\Delta P$')
-surf = ax.plot_surface(X, Y, np.log10(np.real(sqeez_dP)/(1/2)), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
-plt.title(r'$\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+plt.title(r'$10*\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -325,18 +314,18 @@ plt.show()
 
 
 # dP - 2D - picture.
-im = plt.imshow(np.real(sqeez_dP), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
-plt.title('$\Delta P$')
-# im = plt.imshow(np.log10(np.real(sqeez_dP)/(1/2)), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
-# plt.title(r'$\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+# im = plt.imshow(np.real(sqeez_dP), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
+# plt.title('$\Delta P$')
+im = plt.imshow(10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
+plt.title(r'$10\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
 
-# dX * dP - 2D picture.
-# Should be >= 0.25
+# Uncertainty principle: dX * dP >= 1/4.
+# Should be >= 1/4
 im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 plt.title(r'$\Delta X\Delta P$')
 plt.colorbar(im)
@@ -395,6 +384,8 @@ plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
 
+# TODO everything which is lower
+
 # Uncertainty principle for EPR, should be > 1/2
 Z = np.multiply(np.real(erp_correl_x), np.real(erp_correl_p))
 
@@ -412,3 +403,16 @@ cond = np.mod(arr, 1) > 16
 np.extract(cond, arr)
 
 np.where(arr >= 14)
+
+# # Entropy S(t1, t4) 2D plot.
+# im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
+# # im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
+# cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
+# plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
+# plt.colorbar(im)
+# plt.xlabel(r'$t_{4}$', fontsize=16)
+# plt.ylabel(r'$t_{1}$', fontsize=16)
+# # plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
+# plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
+# plt.show()
+

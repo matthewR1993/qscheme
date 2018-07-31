@@ -6,9 +6,6 @@ try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 except: pass
 
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import tensorflow as tf
 from qutip import (wigner, super_tensor, Qobj)
@@ -27,9 +24,6 @@ series_length = 3
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
-
-# Set up input and auxiliary states as a Taylor series
-# input_st[n] = state with 'n' photons !!!a
 
 # INPUT
 input_st = single_photon(series_length)
@@ -62,7 +56,7 @@ mut_state_unappl = tf.tensordot(
 # Building density matrix
 
 mut_state_appl = make_state_appliable(mut_state_unappl)
-
+from time import gmtime, strftime
 dm_in = dens_matrix(mut_state_appl)
 
 # The transformation at BS
@@ -78,7 +72,7 @@ dm_out = bs_densmatrix_transform(dm_in, t4, r4)
 #
 # t4**2 * r4**2 * 2     // 0.268
 
-# Works
+# Works:
 dm_out[1, 1, 1, 1]
 dm_out[1, 1, 2, 0]
 dm_out[1, 1, 0, 2]

@@ -5,9 +5,6 @@ try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 except: pass
 
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import tensorflow as tf
 
