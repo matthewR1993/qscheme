@@ -78,16 +78,16 @@ bs1_is_symmetrical = True
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
-# BS transmittion range
+# BS1 transmittion range
 T1_min = 0.0
 T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
 
 # BS2, BS3
-t2 = sqrt(0.7)
+t2 = sqrt(0.9)
 r2 = sqrt(1 - t2**2)
-t3 = sqrt(0.3)
+t3 = sqrt(0.1)
 r3 = sqrt(1 - t3**2)
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -260,8 +260,8 @@ plt.grid(True)
 plt.show()
 
 # ERP correlations
-plt.plot(np.square(t4_array), erp_correl_x[:, 0], label=r'$\Delta[X^{(1)} - X^{(2)}]$')
-plt.plot(np.square(t4_array), erp_correl_p[:, 0], label=r'$\Delta[P^{(1)} + P^{(2)}]$')
+plt.plot(np.square(t4_array), erp_correl_x[:, 0]/EPR_VAR_X_VAC, label=r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(vac)}}$')
+plt.plot(np.square(t4_array), erp_correl_p[:, 0]/EPR_VAR_P_VAC, label=r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(vac)}}$')
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$ERP \ correlations \ [a. u.]$')
 plt.title('$ERP \ correlations$')
@@ -281,9 +281,9 @@ X, Y = np.meshgrid(X, Y)
 # surf = ax.plot_surface(X, Y, np.real(sqeez_dX), cmap=cm.coolwarm,
 #                         linewidth=0, antialiased=False)
 # plt.title(r'$\Delta X$')
-surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), cmap=cm.Spectral,
                        linewidth=0, antialiased=False)
-plt.title(r'$10\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
+plt.title(r'$10\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(vac)}})}$', fontsize=16)
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -293,8 +293,8 @@ plt.show()
 # dX - 2D - picture.
 # im = plt.imshow(np.real(sqeez_dX), interpolation='bilinear', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 # plt.title('$\Delta X$')
-im = plt.imshow(10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
-plt.title(r'$10*\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(in)}})}$', fontsize=16)
+im = plt.imshow(10*np.log10(np.real(sqeez_dX)/QUADR_VAR_X_VAC), interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$10\log_{10}{(\frac{\Delta X^{(out)}}{\Delta X^{(vac)}})}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -310,9 +310,9 @@ X, Y = np.meshgrid(X, Y)
 # surf = ax.plot_surface(X, Y, np.real(sqeez_dP), cmap=cm.coolwarm,
 #                        linewidth=0, antialiased=False)
 # plt.title(r'$\Delta P$')
-surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), cmap=cm.coolwarm,
+surf = ax.plot_surface(X, Y, 10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), cmap=cm.Spectral,
                        linewidth=0, antialiased=False)
-plt.title(r'$10*\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+plt.title(r'$10*\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(vac)}})}$')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -322,8 +322,8 @@ plt.show()
 # dP - 2D - picture.
 # im = plt.imshow(np.real(sqeez_dP), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
 # plt.title('$\Delta P$')
-im = plt.imshow(10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
-plt.title(r'$10\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(in)}})}$')
+im = plt.imshow(10*np.log10(np.real(sqeez_dP)/QUADR_VAR_P_VAC), interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$10\log_{10}{(\frac{\Delta P^{(out)}}{\Delta P^{(vac)}})}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
@@ -332,7 +332,7 @@ plt.show()
 
 # Uncertainty principle: dX * dP >= 1/4.
 # Should be >= 1/4
-im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='None', cmap=cm.RdYlGn, origin='lower', extent=ORTS)
+im = plt.imshow(np.multiply(np.real(sqeez_dX), np.real(sqeez_dP)), interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
 plt.title(r'$\Delta X\Delta P$')
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
@@ -365,6 +365,21 @@ plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
+# Trimmed.
+size = len(erp_correl_x)
+Z_erpX = np.real(erp_correl_x)/EPR_VAR_X_VAC
+for i in range(size):
+    for j in range(size):
+        if Z_erpX[i, j] > 1:
+            Z_erpX[i, j] = 0
+im = plt.imshow(Z_erpX, interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(vac)}}$', fontsize=16)
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
+
+
 # ERP P, 3D picture
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -389,36 +404,25 @@ plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.show()
 
+# Trimmed.
+size = len(erp_correl_p)
+Z_erpP = np.real(erp_correl_p)/EPR_VAR_P_VAC
+for i in range(size):
+    for j in range(size):
+        if Z_erpP[i, j] > 1:
+            Z_erpP[i, j] = 0
+im = plt.imshow(Z_erpP, interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
+plt.title(r'$\frac{\Delta[P^{(1)} + P^{(2)}]^{(out)}}{\Delta[P^{(1)} + P^{(2)}]^{(vac)}}$', fontsize=16)
+plt.colorbar(im)
+plt.xlabel(r'$T_{4}$', fontsize=16)
+plt.ylabel(r'$T_{1}$', fontsize=16)
+plt.show()
 
-# TODO everything which is lower
 
 # Uncertainty principle for EPR, should be > 1/2
-Z = np.multiply(np.real(erp_correl_x), np.real(erp_correl_p))
-
 im = plt.imshow(np.multiply(np.real(erp_correl_x), np.real(erp_correl_p)), interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
 plt.title(r'$\Delta[X^{(1)} - X^{(2)}]^{(out)}\Delta[P^{(1)} + P^{(2)}]^{(out)}$', fontsize=16)
 plt.colorbar(im)
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel(r'$T_{1}$', fontsize=16)
-contours = plt.contour(X, Y, Z, 3, colors='black')
-plt.clabel(contours, inline=True, fontsize=8)
 plt.show()
-
-arr = np.array([16, 3, 8, 99, 14, 5, 1, 3, 190])
-cond = np.mod(arr, 1) > 16
-np.extract(cond, arr)
-
-np.where(arr >= 14)
-
-# # Entropy S(t1, t4) 2D plot.
-# im = plt.imshow(np.real(log_entropy_array), cmap=cm.RdBu)  # Log. entropy
-# # im = plt.imshow(np.real(log_negativity), cmap=cm.RdBu)  # Log. nagativity
-# cset = plt.contour(np.real(log_entropy_array), np.arange(-1, 1.5, 0.2), linewidths=2, cmap=cm.Set2)
-# plt.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
-# plt.colorbar(im)
-# plt.xlabel(r'$t_{4}$', fontsize=16)
-# plt.ylabel(r'$t_{1}$', fontsize=16)
-# # plt.title('$S(t_{4}, t_{1}) - VN \ entropy$')
-# plt.title('$S(t_{4}, t_{1}) - Log. \ negativity$')
-# plt.show()
-
