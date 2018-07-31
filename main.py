@@ -26,9 +26,6 @@ input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
-# Set up input and auxiliary states as a Taylor series
-# input_st[n] = state with 'n' photons !!!a
-
 
 # INPUT - the state in the first(at the bottom) channel
 input_st = single_photon(series_length)
