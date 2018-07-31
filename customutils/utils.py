@@ -6,6 +6,7 @@ from math import factorial, sqrt
 a1, a2 = sp.symbols('a1 a2')
 
 
+# Finding state coefficients for symbolic method.
 # Works only for a state in two channels.
 def get_state_coeffs(state, max_power, symbols=(a1, a2), operators_form='unapplied'):
     symb1, symb2 = symbols
