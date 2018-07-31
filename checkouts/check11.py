@@ -1,23 +1,17 @@
-# EPR normalisation for coherent state + single phot.
-
-# Check squeezing right before the detection.
+# EPR normalisation for different combinations.
+# Check the squeezing right before the detection.
 
 import sys
 try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 except: pass
 
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
 import tensorflow as tf
 
 from customutils.utils import *
 from core.basic import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
-from setup_parameters import *
 
 
 sess = tf.Session()
@@ -27,9 +21,6 @@ series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
-
-# Set up input and auxiliary states as a Taylor series
-# input_st[n] = state with 'n' photons !!!a
 
 # INPUT
 input_st = single_photon(series_length)
@@ -58,15 +49,15 @@ dm = dens_matrix(make_state_appliable(mut_state_unappl))
 
 # ERP correlations
 erp_x, erp_p = erp_squeezing_correlations(dm)
+
 # For coherent + single:
 # erp_x, erp_p = 1, 1
 
 # For single + single:
-# erp_x, erp_p = 1.2247, 1.2247 = > sqrt(3/2), sqrt(3/2)
+# erp_x, erp_p = 1.2247, 1.2247 <=> sqrt(3/2), sqrt(3/2)
 
 # For coherent + coherent:
-# erp_x, erp_p = sqrt(0.5), sqrt(0.5)  <- check it
+# erp_x, erp_p = sqrt(1/2), sqrt(1/2)
 
-# TODO check it for vac + vac
-# should be:
+# For vac + vac:
 # erp_x, erp_p = sqrt(1/2), sqrt(1/2)
