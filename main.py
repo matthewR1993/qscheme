@@ -248,9 +248,9 @@ plt.show()
 
 
 # plot squeezing
-plt.plot(np.square(t4_array), sqeez_dX[:, 0], label=r'$\Delta X$')
-plt.plot(np.square(t4_array), sqeez_dP[:, 0], label=r'$\Delta P$')
-plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
+plt.plot(np.square(t4_array), 10*np.log10(sqeez_dX[:, 0]/QUADR_VAR_X_VAC), label=r'$10\log_{10}{\frac{\Delta X^{(out)}}{\Delta X^{(vac)}}}$')
+plt.plot(np.square(t4_array), 10*np.log10(sqeez_dP[:, 0]/QUADR_VAR_P_VAC), label=r'$10\log_{10}{\frac{\Delta P^{(out)}}{\Delta P^{(vac)}}}$')
+#plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Squeezing$')
 plt.title('$Squeezing$')
