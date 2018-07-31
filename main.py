@@ -69,10 +69,10 @@ mut_state_unappl = tf.tensordot(
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # The first and the last BS grids
-r1_grid = 13
-r4_grid = 13
+r1_grid = 1
+r4_grid = 11
 
-bs1_is_symmetrical = False
+bs1_is_symmetrical = True
 
 # The phase difference before last BS
 ph_inpi = 0.0
@@ -83,6 +83,12 @@ T1_min = 0.0
 T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
+
+# BS2, BS3
+t2 = sqrt(0.7)
+r2 = sqrt(1 - t2**2)
+t3 = sqrt(0.3)
+r3 = sqrt(1 - t3**2)
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
 log_entropy_subs2_array = np.zeros((r4_grid, r1_grid), dtype=complex)
