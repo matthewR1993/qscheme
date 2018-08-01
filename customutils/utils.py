@@ -70,41 +70,6 @@ def get_state_coeffs(state, max_power, symbols=(a1, a2), operators_form='unappli
         raise ValueError('Incorrect operators_form type!')
 
 
-def plot_state(
-        state_coeffs,
-        name,
-        size=8,
-        value='abs',
-        xlabel='a2 degree',
-        ylabel='a1 degree'):
-    if value is 'abs':
-        plt.matshow(np.abs(state_coeffs)[0:size, 0:size])
-        plt.title(name + ', Abs value')
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.colorbar()
-        plt.show()
-        return
-    if value is 'real':
-        plt.matshow(np.real(state_coeffs)[0:size, 0:size])
-        plt.title(name + ', Real value')
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.colorbar()
-        plt.show()
-        return
-    if value is 'imag':
-        plt.matshow(np.imag(state_coeffs)[0:size, 0:size])
-        plt.title(name + ', Imag value')
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.colorbar()
-        plt.show()
-        return
-    else:
-        raise ValueError('Wrong configuration')
-
-
 # For input and auxiliary states in single channel
 # Takes state that is not applied
 def get_state_norm(state):

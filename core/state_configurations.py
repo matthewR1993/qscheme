@@ -7,7 +7,7 @@ import numpy.polynomial.hermite as herm
 
 DEF_SERIES_LEN = 100
 
-# All states are with not applied operators!!!
+# All state configurations are with not applied operators!!!
 
 
 def single_photon(series_length=DEF_SERIES_LEN):
