@@ -1,4 +1,4 @@
-## Multimode quantum light in waveguides with detection. Entanglement, squeezing and other properties.
+## Multimode quantum light in waveguides with detectors. Entanglement, squeezing and other properties.
 
 Python 3.5+
 
@@ -11,6 +11,5 @@ pip3 install -r requirements.txt
 
 Run tests:
 ```sh
-python3 -m unittest discover
 pytest
 ```
