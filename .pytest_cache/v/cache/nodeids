@@ -1,1 +1,4 @@
-[]
+[
+  "core/test/test_state_configurations.py::test_single_photon",
+  "core/test/test_state_configurations.py::test_fock_state"
+]
