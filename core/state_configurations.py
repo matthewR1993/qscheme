@@ -11,18 +11,24 @@ DEF_SERIES_LEN = 100
 
 
 def single_photon(series_length=DEF_SERIES_LEN):
+    if series_length < 2:
+        raise ValueError('The series length should be >= 2')
     state = np.zeros(series_length)
     state[1] = 1
     return state
 
 
 def fock_state(n, series_length=DEF_SERIES_LEN):
+    if series_length < 1:
+        raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length)
     state[n] = 1 / sqrt(factorial(n))
     return state
 
 
 def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
+    if series_length < 1:
+        raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length, dtype=np.complex128)
     for n in range(series_length):
         state[n] = exp(-abs(alpha)**2 / 2) * alpha**n / factorial(n)
@@ -30,8 +36,8 @@ def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
 
 
 def squeezed_vacuum(series_length=DEF_SERIES_LEN, squeezing_amp=1, squeezing_phase=0):
-    if series_length % 2 != 0:
-        raise ValueError('The series length should be an even number')
+    if series_length % 2 != 0 or series_length < 1:
+        raise ValueError('The series length should be positive even integer')
     state = np.zeros(series_length, dtype=np.complex128)
     for n in range(int(series_length/2)):
         m = 2 * n
@@ -40,6 +46,8 @@ def squeezed_vacuum(series_length=DEF_SERIES_LEN, squeezing_amp=1, squeezing_pha
 
 
 def squeezed_coherent_state(series_length=DEF_SERIES_LEN, alpha=1, squeezing_amp=1, squeezing_phase=0):
+    if series_length < 1:
+        raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length, dtype=np.complex128)
     const = (1 / sqrt(np.cosh(squeezing_amp))) * cm.exp(- 0.5 * abs(alpha)**2 - 0.5 * np.conj(alpha)**2 * cm.exp(1j * squeezing_phase) * np.tanh(squeezing_amp))
     for n in range(series_length):
