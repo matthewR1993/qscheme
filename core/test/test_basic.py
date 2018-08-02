@@ -19,6 +19,11 @@ def test_bs2x2_transform():
 
 
 def test_two_bs2x4_transform():
+    series_length = 2
+    state1 = np.tensordot(single_photon(series_length), single_photon(series_length), axes=0)
+    t1, r1 = 0, 1
+    t2, r2 = 0, 1
+    two_bs2x4_transform(t1, r1, t2, r2, state1)
     pass
 
 

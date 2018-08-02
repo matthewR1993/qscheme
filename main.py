@@ -48,7 +48,7 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
-# tensor product, returns numpy array
+# Building a mutual state via tensor product, that returns numpy array.
 mut_state_unappl = tf.tensordot(
     in_state_tf,
     aux_state_tf,
@@ -59,7 +59,7 @@ mut_state_unappl = tf.tensordot(
 # Start time.
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
-# The first and the last BS grids
+# The first and the last BS grids.
 r1_grid = 1
 r4_grid = 11
 
@@ -70,13 +70,13 @@ bs1_is_symmetrical = True
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
-# BS1 transmission range
+# BS1 transmission range.
 T1_min = 0.0
 T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
 
-# BS2, BS3
+# BS2, BS3.
 t2 = sqrt(0.9)
 r2 = sqrt(1 - t2**2)
 t3 = sqrt(0.1)
@@ -94,7 +94,7 @@ sqeez_dP = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_x = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_p = np.zeros((r4_grid, r1_grid), dtype=complex)
 
-# Varying last BS (BS4)
+# Varying last BS (BS4).
 T4_array = np.linspace(T4_min, T4_max, r4_grid)
 t4_array = np.sqrt(T4_array)
 
@@ -102,7 +102,7 @@ r4_fun = lambda tt: sqrt(1 - pow(tt, 2))
 r4_vect_func = np.vectorize(r4_fun)
 r4_array = r4_vect_func(t4_array)
 
-# Varying first BS (BS1)
+# Varying first BS (BS1).
 T1_array = np.linspace(T1_min, T1_max, r1_grid)
 t1_array = np.sqrt(T1_array)
 
@@ -126,22 +126,22 @@ for i in range(r4_grid):
         t1 = t1_array[j]
         r1 = r1_array[j]
 
-        # First BS
+        # First BS.
         state_after_bs_unappl = bs2x2_transform(t1, r1, mut_state_unappl)
 
-        # 2d and 3rd BS
+        # 2d and 3rd BS.
         state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
-        # Detection
-        # Gives not normalised state
+        # The detection event.
+        # Gives non-normalised state.
         state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
-        # Calculating the norm
+        # Calculating the norm.
         norm_after_det = state_norm(state_after_dett_unappl)
         print('Norm after det.:', norm_after_det)
-        # normalised state
+        # The normalised state.
         state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
-        # Build dens matrix and trace
+        # Building dens. matrix and trace.
         dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
 
         # The new method, works
