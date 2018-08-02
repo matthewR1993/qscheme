@@ -1,7 +1,7 @@
-from ..state_configurations import *
-import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
+
+from ..state_configurations import *
 
 
 def test_single_photon_configuration():

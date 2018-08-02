@@ -1,13 +1,12 @@
-# this file consist of different state configurations
+# This submodule consist of functions for different state configurations.
+# All state configurations are with not applied operators!!!
 import numpy as np
 from math import factorial, exp, sqrt
 import cmath as cm
-import scipy.special as sp
 import numpy.polynomial.hermite as herm
 
-DEF_SERIES_LEN = 100
 
-# All state configurations are with not applied operators!!!
+DEF_SERIES_LEN = 100
 
 
 def single_photon(series_length=DEF_SERIES_LEN):

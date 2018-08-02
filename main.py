@@ -34,8 +34,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -48,11 +48,6 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 in_state_tf = tf.constant(input_st, tf.float64)
 aux_state_tf = tf.constant(auxiliary_st, tf.float64)
 
-# diag_factorials = diagonal_factorials(input_series_length)
-# diag_factorials_tf = tf.constant(diag_factorials, tf.float64)
-# in_state_tf_appl = tf.einsum('mn,n->n', diag_factorials_tf, in_state_tf)
-# aux_state_tf_appl = tf.einsum('mn,n->n', diagl_factorials_tf, aux_state_tf)
-
 # tensor product, returns numpy array
 mut_state_unappl = tf.tensordot(
     in_state_tf,
@@ -61,7 +56,6 @@ mut_state_unappl = tf.tensordot(
     name=None
 ).eval(session=sess)
 
-
 # Start time.
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
@@ -69,13 +63,14 @@ print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 r1_grid = 1
 r4_grid = 11
 
+# If BS1 is 50:50 symetrical.
 bs1_is_symmetrical = True
 
 # The phase difference before last BS
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
-# BS1 transmittion range
+# BS1 transmission range
 T1_min = 0.0
 T1_max = 1.0
 T4_min = 0.0
@@ -99,7 +94,6 @@ sqeez_dP = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_x = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_p = np.zeros((r4_grid, r1_grid), dtype=complex)
 
-
 # Varying last BS (BS4)
 T4_array = np.linspace(T4_min, T4_max, r4_grid)
 t4_array = np.sqrt(T4_array)
@@ -121,8 +115,7 @@ if r1_grid is 1 and bs1_is_symmetrical:
     t1_array = [sqrt(0.5)]
     r1_array = [sqrt(1 - pow(t1_array[0], 2))]
 
-
-# loops
+# Loops over T1 and T4
 for i in range(r4_grid):
     t4 = t4_array[i]
     r4 = r4_array[i]
@@ -225,6 +218,7 @@ for i in range(r4_grid):
 
 ORTS = [T4_min, T4_max, T1_min, T1_max]
 
+
 # 2D pictures
 # Varying t4
 plt.plot(np.square(t4_array), np.real(log_entropy_subs1_array[:, 0]), label=r'$Log. FN \ entropy \ subs \ 1$')
@@ -247,7 +241,7 @@ plt.show()
 # plot squeezing
 plt.plot(np.square(t4_array), 10*np.log10(sqeez_dX[:, 0]/QUADR_VAR_X_VAC), label=r'$10\log_{10}{\frac{\Delta X^{(out)}}{\Delta X^{(vac)}}}$')
 plt.plot(np.square(t4_array), 10*np.log10(sqeez_dP[:, 0]/QUADR_VAR_P_VAC), label=r'$10\log_{10}{\frac{\Delta P^{(out)}}{\Delta P^{(vac)}}}$')
-#plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
+# plt.plot(np.square(t4_array), np.multiply(sqeez_dX[:, 0], sqeez_dP[:, 0]), label=r'$\Delta X \Delta P$')
 plt.xlabel(r'$T_{4}$', fontsize=16)
 plt.ylabel('$Squeezing$')
 plt.title('$Squeezing$')
@@ -255,6 +249,7 @@ plt.xlim([0, 1])
 plt.legend()
 plt.grid(True)
 plt.show()
+
 
 # ERP correlations
 plt.plot(np.square(t4_array), erp_correl_x[:, 0]/EPR_VAR_X_VAC, label=r'$\frac{\Delta[X^{(1)} - X^{(2)}]^{(out)}}{\Delta[X^{(1)} - X^{(2)}]^{(vac)}}$')
@@ -353,6 +348,7 @@ plt.ylabel(r'$T_{1}$', fontsize=16)
 plt.xlim(1, 0)
 plt.ylim(0, 1)
 plt.show()
+
 
 # ERP X, 2D picture
 im = plt.imshow(np.real(erp_correl_x)/EPR_VAR_X_VAC, interpolation='None', cmap=cm.Spectral, origin='lower', extent=ORTS)
