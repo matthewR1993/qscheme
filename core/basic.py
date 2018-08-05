@@ -100,6 +100,7 @@ def state_norm(state):
 
 
 # Takes an unapplied state in 4 channels
+# Takes partial traces over 1st and 3rd channels
 # Returns applied dens matrix for 2 channels
 def dens_matrix_with_trace(left_vector, right_vector):
     size = len(left_vector)
