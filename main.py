@@ -8,7 +8,6 @@ from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import tensorflow as tf
-from qutip import (wigner, super_tensor, Qobj)
 from time import gmtime, strftime
 
 from customutils.utils import *
@@ -67,7 +66,7 @@ r4_grid = 11
 bs1_is_symmetrical = False
 
 # The phase difference before last BS
-ph_inpi = 0.0
+ph_inpi = 0.75
 phase_diff = ph_inpi * np.pi
 
 # BS1 transmission range.
@@ -218,6 +217,19 @@ for i in range(r4_grid):
         erp_correl_x[i, j] = erp_x
         erp_correl_p[i, j] = erp_p
         print('erp_X:', erp_x, ' erp_P:', erp_p)
+
+
+# Save it.
+fl = np.array([log_negativity,
+               mut_information,
+               sqeez_dX,
+               sqeez_dP,
+               erp_correl_x,
+               erp_correl_p
+               ])
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4/phase-0.5pi/'
+fname = 'phase_0.5pi.npy'
+np.save(save_root + fname, fl)
 
 
 ORTS = [T4_min, T4_max, T1_min, T1_max]
