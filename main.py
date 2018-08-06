@@ -27,14 +27,14 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-# auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = single_photon(series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -66,7 +66,7 @@ r4_grid = 11
 bs1_is_symmetrical = False
 
 # The phase difference before last BS
-ph_inpi = 1.0
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS1 transmission range.
@@ -209,9 +209,9 @@ fl = np.array([log_negativity,
                erp_correl_x,
                erp_correl_p
                ])
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4_det-FIRST/phase-1.0pi/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/phase-0.0pi/'
 # save_root = '/home/matthew/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4/phase-0.0pi/'
-fname = 'phase_1.0pi.npy'
+fname = 'phase_0.0pi.npy'
 np.save(save_root + fname, fl)
 
 
