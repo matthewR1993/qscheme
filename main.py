@@ -66,7 +66,7 @@ r4_grid = 11
 bs1_is_symmetrical = False
 
 # The phase difference before last BS
-ph_inpi = 0.75
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS1 transmission range.
@@ -93,21 +93,11 @@ sqeez_dP = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_x = np.zeros((r4_grid, r1_grid), dtype=complex)
 erp_correl_p = np.zeros((r4_grid, r1_grid), dtype=complex)
 
-# Varying last BS (BS4).
-T4_array = np.linspace(T4_min, T4_max, r4_grid)
-t4_array = np.sqrt(T4_array)
-
-r4_fun = lambda tt: sqrt(1 - pow(tt, 2))
-r4_vect_func = np.vectorize(r4_fun)
-r4_array = r4_vect_func(t4_array)
-
 # Varying first BS (BS1).
-T1_array = np.linspace(T1_min, T1_max, r1_grid)
-t1_array = np.sqrt(T1_array)
+t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
 
-r1_fun = lambda tt: sqrt(1 - pow(tt, 2))
-r1_vect_func = np.vectorize(r1_fun)
-r1_array = r1_vect_func(t1_array)
+# Varying last BS (BS4).
+t4_array, r4_array = bs_params(T4_min, T4_max, r4_grid)
 
 # Set BS1 - 50:50 if required.
 if r1_grid is 1 and bs1_is_symmetrical:
@@ -195,14 +185,6 @@ for i in range(r4_grid):
         mut_information[i, j] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
         full_fn_entropy[i, j] = full_entr
 
-        # lin_entropy_subs1[i, j] = np.real(linear_entropy(log_entanglement_subs1))
-        # lin_entropy_subs2[i, j] = np.real(linear_entropy(log_entanglement_subs2))
-        # print('Lin. entropy subs1: ', lin_entropy_subs1[i, j])
-        # print('Lin. entropy subs2: ', lin_entropy_subs2[i, j])
-
-        # Linear entropy difference
-        # print('Linear entropy difference: ', lin_entropy_subs1[i, j] - lin_entropy_subs2[i, j])
-
         log_negativity[i, j] = negativity(final_dens_matrix, neg_type='logarithmic')
         print('Log. negativity: ', log_negativity[i, j])
 
@@ -227,8 +209,9 @@ fl = np.array([log_negativity,
                erp_correl_x,
                erp_correl_p
                ])
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4/phase-0.5pi/'
-fname = 'phase_0.5pi.npy'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4/phase-0.5pi/'
+save_root = '/home/matthew/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4/phase-0.0pi/'
+fname = 'phase_0.0pi.npy'
 np.save(save_root + fname, fl)
 
 

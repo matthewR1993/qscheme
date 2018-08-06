@@ -1,0 +1,49 @@
+from .basic import *
+
+
+# Process the whole system.
+# Input:
+#  input_state - input unapplied state in 2 channels
+#  bs_params - BS parameters as a dict.
+#  phase_diff - phase modulation in [rad]
+#  det_event - detection option
+# Output:
+#  applied density matrix in 2 channels
+def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
+    t1, r1 = bs_params['t1'], bs_params['r1']
+    t2, r2 = bs_params['t2'], bs_params['r2']
+    t3, r3 = bs_params['t3'], bs_params['r3']
+    t4, r4 = bs_params['t4'], bs_params['r4']
+
+    # First BS.
+    state_after_bs_unappl = bs2x2_transform(t1, r1, input_state)
+
+    # 2d and 3rd BS.
+    state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
+
+    # The detection event.
+    # Gives non-normalised state.
+    state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=det_event)
+
+    # Calculating the norm.
+    norm_after_det = state_norm(state_after_dett_unappl)
+    print('Norm after det.:', norm_after_det)
+
+    # The normalised state.
+    state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
+
+    # trim the state
+    st_trim_sz = 9
+    state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:st_trim_sz, :st_trim_sz, :st_trim_sz, :st_trim_sz]
+
+    # Building dens. matrix and trace.
+    dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+
+    # Phase modulation
+    dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+
+    # The transformation at last BS
+    trim_size = 9
+    final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+
+    return final_dens_matrix

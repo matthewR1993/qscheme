@@ -393,3 +393,12 @@ def trim_state(state, error=1e-9, start_index=10):
             pass
         else:
             return state[:p+1, :p+1, :p+1, :p+1]
+
+
+# Returns BS's t and r small coeficients
+def bs_params(T_min, T_max, num):
+    T_array = np.linspace(T_min, T_max, num)
+    t_array = np.sqrt(T_array)
+    rf = np.vectorize(lambda t: sqrt(1 - pow(t, 2)))
+    r_array = rf(t_array)
+    return t_array, r_array
