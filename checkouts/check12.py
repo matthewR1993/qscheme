@@ -7,6 +7,7 @@ try:
 except: pass
 
 import tensorflow as tf
+import scipy
 from time import gmtime, strftime
 
 from customutils.utils import *
@@ -26,8 +27,8 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
@@ -103,12 +104,31 @@ end = time.time()
 print('Detection:', end - start)
 
 
-# TODO Slow! 110 sec.
+# Trim the state
+start = time.time()
+state_after_dett_unappl_norm_tr = trim_state(state_after_dett_unappl_norm, error=1e-9, start_index=12)
+end = time.time()
+print('Trim the state in 4 chann.:', end - start)
+
+
+state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:10, :10, :10, :10]
+
+# Old method, very slow! 110 sec.
 # Building dens. matrix and trace.
 start = time.time()
-dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+dens_matrix_2channels_old = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
-print('Dens. metrix with trace:', end - start)
+print('Dens. metrix with trace, OLD:', end - start)
+
+# A new method.
+from core.optimized import transformations
+start = time.time()
+dens_matrix_2channels = transformations.dm_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+end = time.time()
+print('Dens. metrix with trace, NEW:', end - start)
+
+# Comparing an old and a new
+np.testing.assert_allclose(dens_matrix_2channels_old, dens_matrix_2channels)
 
 
 # Phase modulation

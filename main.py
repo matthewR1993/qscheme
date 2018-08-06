@@ -34,8 +34,8 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -60,11 +60,11 @@ mut_state_unappl = tf.tensordot(
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 # The first and the last BS grids.
-r1_grid = 1
+r1_grid = 11
 r4_grid = 11
 
 # If BS1 is 50:50 symetrical.
-bs1_is_symmetrical = True
+bs1_is_symmetrical = False
 
 # The phase difference before last BS
 ph_inpi = 0.0
@@ -77,9 +77,9 @@ T4_min = 0.0
 T4_max = 1.0
 
 # BS2, BS3.
-t2 = sqrt(0.9)
+t2 = sqrt(0.5)
 r2 = sqrt(1 - t2**2)
-t3 = sqrt(0.1)
+t3 = sqrt(0.5)
 r3 = sqrt(1 - t3**2)
 
 log_entropy_subs1_array = np.zeros((r4_grid, r1_grid), dtype=complex)
@@ -141,8 +141,12 @@ for i in range(r4_grid):
         # The normalised state.
         state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
+        # trim the state
+        st_trim_sz = 9
+        state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:st_trim_sz, :st_trim_sz, :st_trim_sz, :st_trim_sz]
+
         # Building dens. matrix and trace.
-        dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+        dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 
         # The new method, works
         # dens_matrix_2channels = dens_matrix_with_trace_new(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
@@ -163,7 +167,7 @@ for i in range(r4_grid):
         # Trim for better performance,
         # trim_size=10 for series_len=10
         # trim_size=4 for series_len=3
-        trim_size = 10
+        trim_size = 9
         final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 
         # Trace one channel out of final state

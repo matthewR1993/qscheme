@@ -1,5 +1,6 @@
 import cmath
 import numpy as np
+from scipy.misc import factorial as fact
 from math import sqrt, factorial
 
 
@@ -119,6 +120,7 @@ def dens_matrix_with_trace(left_vector, right_vector):
                         for k3 in range(size):
                             matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_] * factorial(k1) * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
                     dm[p2, p4, p2_, p4_] = matrix_sum
+
     return dm
 
 
@@ -373,3 +375,21 @@ def make_state_appliable_4ch(state):
                 for p4 in range(size):
                     st_appl[p1, p2, p3, p4] = state[p1, p2, p3, p4] * sqrt(factorial(p1) * factorial(p2) * factorial(p3) * factorial(p4))
     return st_appl
+
+
+# TODO trim MDarray with error
+# Takes normalised unapplied state in 4 channels
+# Returns trimmed normalised unapplied state in 4 channels
+def trim_state(state, error=1e-9, start_index=10):
+    size = len(state)
+    st_abs = np.absolute(state)
+    for i in range(start_index, size):
+        p = size - i
+        #print(p)
+        st_tr = st_abs[p:, p:, p:, p:]
+        loc_max = np.amin(st_tr)
+        print(loc_max)
+        if loc_max < error:
+            pass
+        else:
+            return state[:p+1, :p+1, :p+1, :p+1]

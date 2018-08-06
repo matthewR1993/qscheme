@@ -112,6 +112,9 @@ def test_state_norm():
 
 
 def test_dens_matrix_with_trace():
+    with pytest.raises(ValueError):
+        dens_matrix_with_trace(np.array([1, 2, 3]), np.array([1, 2]))
+
     size = 3
 
     state1 = np.zeros((size,) * 4, dtype=complex)
@@ -248,7 +251,7 @@ def test_bs_densmatrix_transform():
     rho_out_expected2[0, 1, 2, 0] = (1 - 7j) * 1j * t2**2 * r2
     rho_out_expected2[0, 1, 1, 1] = (1 - 7j) / sqrt(2) * 2 * t2 * r2**2
     rho_out_expected2[0, 1, 0, 2] = - (1 - 7j) * 1j * r2**3
-    assert_allclose(rho_out2, rho_out_expected2)
+    assert_allclose(rho_out2, rho_out_expected2, rtol=1e-07, atol=1e-09,)
 
 
 def test_prob_distr():
