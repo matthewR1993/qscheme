@@ -1,4 +1,4 @@
-# Measuring functions performance
+# Measuring performance.
 
 import sys
 import time
@@ -15,6 +15,9 @@ from core.basic import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
+
+from core.optimized import transformations
+dens_matrix_2channels = transformations.dm_with_trace(np.zeros((3,) * 4, dtype=np.complex), np.zeros((3,) * 4, dtype=np.complex))
 
 
 sess = tf.Session()
@@ -113,12 +116,17 @@ print('Trim the state in 4 chann.:', end - start)
 
 state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:10, :10, :10, :10]
 
-# Old method, very slow! 110 sec.
-# Building dens. matrix and trace.
+# Old method
+start = time.time()
+dens_matrix_2channels_old = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+end = time.time()
+print('Dens. metrix with trace, OLD:', end - start)
+
+# Trimmed! 2 sec.
 start = time.time()
 dens_matrix_2channels_old = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
-print('Dens. metrix with trace, OLD:', end - start)
+print('Dens. metrix with trace, TRIMMED, OLD:', end - start)
 
 # A new method.
 from core.optimized import transformations
@@ -127,8 +135,9 @@ dens_matrix_2channels = transformations.dm_with_trace(state_after_dett_unappl_no
 end = time.time()
 print('Dens. metrix with trace, NEW:', end - start)
 
+
 # Comparing an old and a new
-np.testing.assert_allclose(dens_matrix_2channels_old, dens_matrix_2channels)
+#np.testing.assert_allclose(dens_matrix_2channels_old, dens_matrix_2channels)
 
 
 # Phase modulation
