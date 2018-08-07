@@ -66,7 +66,7 @@ r4_grid = 11
 bs1_is_symmetrical = False
 
 # The phase difference before last BS
-ph_inpi = 0.25
+ph_inpi = 0.5
 phase_diff = ph_inpi * np.pi
 
 # BS1 transmission range.
@@ -200,9 +200,10 @@ fl = np.array([log_negativity,
                erp_correl_x,
                erp_correl_p
                ])
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4_det-FIRST/phase-1.0pi/'
-save_root = '/home/matthew/qscheme/results/res13/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/phase-0.25pi/'
-fname = 'phase_0.25pi.npy'
+
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/phase-0.5pi/'
+# save_root = '/home/matthew/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4_det-FIRST/phase-0.0pi/'
+fname = 'phase_0.5pi.npy'
 np.save(save_root + fname, fl)
 
 
