@@ -18,15 +18,15 @@ from setup_parameters import *
 sess = tf.Session()
 
 # Parameters for states
-series_length = 3
+series_length = 10
 input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
@@ -55,15 +55,15 @@ mut_state_unappl = tf.tensordot(
 
 
 # The phase difference before last BS
-ph_inpi = 1.0
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
 r1_grid = 11
 r4_grid = 11
 
-r2_grid = 1
-r3_grid = 1
+r2_grid = 11
+r3_grid = 11
 
 
 # BS values range.
@@ -72,10 +72,10 @@ T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
 
-T2_min = sqrt(0.5)
-T2_max = sqrt(0.5)
-T3_min = sqrt(0.5)
-T3_max = sqrt(0.5)
+T2_min = 0.001
+T2_max = 1.0
+T3_min = 0.001
+T3_max = 1.0
 
 # Varying BSs.
 t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
@@ -96,9 +96,9 @@ sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res13/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/phase-0.5pi/'
-# save_root = '/home/matthew/qscheme/results/res13/coh(ch2)_single(ch1)_var_phase_t1_t4_det-FIRST/phase-0.0pi/'
-fname = 'phase_0.5pi.npy'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/'
+save_root = '/home/matthew/qscheme/results/res14/'
+fname = 'coh(chan-1)_single(chan-2)_phase-0.0pi_det-FIRST.npy'
 
 
 if __name__ == "__main__":
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         for n4 in range(r4_grid):
             for n2 in range(r2_grid):
                 for n3 in range(r3_grid):
-                    print('Steps [n1, n2, n2, n3]:', n1, n4, n2, n3)
+                    print('Steps [n1, n4, n2, n3]:', n1, n4, n2, n3)
                     bs_params = {
                         't1': t1_array[n1],
                         'r1': r1_array[n1],
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
                     # Squeezing quadratures.
                     dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
-                    print('dX:', dX, ' dP:', dP)
+                    # print('dX:', dX, ' dP:', dP)
                     sqeez_dX[n1, n4, n2, n3] = dX
                     sqeez_dP[n1, n4, n2, n3] = dP
 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
                     erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
                     erp_correl_x[n1, n4, n2, n3] = erp_x
                     erp_correl_p[n1, n4, n2, n3] = erp_p
-                    print('erp_X:', erp_x, ' erp_P:', erp_p)
+                    # print('erp_X:', erp_x, ' erp_P:', erp_p)
 
     # Save it.
     fl = np.array([log_negativity,

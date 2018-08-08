@@ -16,9 +16,6 @@ from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
 
-from core.optimized import transformations
-dens_matrix_2channels = transformations.dm_with_trace(np.zeros((3,) * 4, dtype=np.complex), np.zeros((3,) * 4, dtype=np.complex))
-
 
 sess = tf.Session()
 
@@ -30,8 +27,8 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
+# input_st = single_photon(series_length)
+input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
@@ -73,9 +70,9 @@ ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS2, BS3.
-t2 = sqrt(0.9)
+t2 = sqrt(0.6)
 r2 = sqrt(1 - t2**2)
-t3 = sqrt(0.1)
+t3 = sqrt(0.4)
 r3 = sqrt(1 - t3**2)
 
 # Measurements start here.
@@ -114,26 +111,28 @@ end = time.time()
 print('Trim the state in 4 chann.:', end - start)
 
 
-state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:10, :10, :10, :10]
+state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:8, :8, :8, :8]
+
+sm_state = np.sum(np.abs(state_after_dett_unappl_norm[0:, 0:, 0:, 0:]))
 
 # Old method
-start = time.time()
-dens_matrix_2channels_old = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-end = time.time()
-print('Dens. metrix with trace, OLD:', end - start)
+# start = time.time()
+# dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+# end = time.time()
+# print('Dens. metrix with trace, OLD:', end - start)
 
 # Trimmed! 2 sec.
 start = time.time()
-dens_matrix_2channels_old = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
 print('Dens. metrix with trace, TRIMMED, OLD:', end - start)
 
 # A new method.
-from core.optimized import transformations
-start = time.time()
-dens_matrix_2channels = transformations.dm_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-end = time.time()
-print('Dens. metrix with trace, NEW:', end - start)
+# from core.optimized import transformations
+# start = time.time()
+# dens_matrix_2channels = transformations.dm_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
+# end = time.time()
+# print('Dens. metrix with trace, NEW:', end - start)
 
 
 # Comparing an old and a new
@@ -148,11 +147,13 @@ print('Phase modulation:', end - start)
 
 
 # TODO Slow! 69 sec.
-trim_size = 10
+trim_size = 6
 start = time.time()
 final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 end = time.time()
 print('BS4 density matrix transformation:', end - start)
+
+np.sum(np.abs(dens_matrix_2channels_withph[6:, 6:, 6:, 6:]))
 
 
 start = time.time()

@@ -27,14 +27,17 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
 
     # Calculating the norm.
     norm_after_det = state_norm(state_after_dett_unappl)
-    print('Norm after det.:', norm_after_det)
+    # print('Norm after det.:', norm_after_det)
 
     # The normalised state.
     state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
     # trim the state
-    trim_state = 3
+    trim_state = 8
     state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]
+    sm_state = np.sum(np.abs(state_after_dett_unappl_norm[trim_state:, trim_state:, trim_state:, trim_state:]))
+    if sm_state > 1e-10:
+        print('State trim norm:', sm_state)
 
     # Building dens. matrix and trace.
     dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
@@ -43,7 +46,10 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
     dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
     # The transformation at last BS
-    trim_dm = 3
+    trim_dm = 6
     final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
+    sm_dm = np.sum(np.abs(dens_matrix_2channels_withph[trim_dm:, trim_dm:, trim_dm:, trim_dm:]))
+    if sm_dm > 1e-10:
+        print('Dens. matr. trim norm:', sm_dm)
 
     return final_dens_matrix

@@ -250,13 +250,13 @@ def bs_densmatrix_transform(input_matrix, t, r):
                                 for k_ in range(p2_ + 1):
                                     d1 = p1 - n + k
                                     d2 = n + p2 - k
-                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2)) * factorial(p1) * factorial(p2) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
+                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2) * factorial(p1) * factorial(p2)) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
 
                                     d1_ = p1_ - n_ + k_
                                     d2_ = n_ + p2_ - k_
-                                    coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_)) * factorial(p1_) * factorial(p2_) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
+                                    coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_) * factorial(p1_) * factorial(p2_)) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
 
-                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2 * 1/sqrt(factorial(p1)*factorial(p2)*factorial(p1_)*factorial(p2_))
+                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2
 
     return output_matrix
 
