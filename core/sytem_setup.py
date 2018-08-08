@@ -33,8 +33,8 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
     state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 
     # trim the state
-    st_trim_sz = 9
-    state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:st_trim_sz, :st_trim_sz, :st_trim_sz, :st_trim_sz]
+    trim_state = 3
+    state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]
 
     # Building dens. matrix and trace.
     dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
@@ -43,7 +43,7 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
     dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
     # The transformation at last BS
-    trim_size = 9
-    final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+    trim_dm = 3
+    final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
 
     return final_dens_matrix
