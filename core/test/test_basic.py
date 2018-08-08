@@ -255,7 +255,22 @@ def test_bs_densmatrix_transform():
 
 
 def test_prob_distr():
-    pass
+    size = 3
+
+    rho_input1 = np.zeros((size,) * 4, dtype=complex)
+    prob1 = prob_distr(rho_input1)
+    prob_expected1 = np.zeros((size,) * 2, dtype=complex)
+    assert_array_equal(prob1, prob_expected1)
+
+    rho_input2 = np.zeros((size,) * 4, dtype=complex)
+    rho_input2[1, 1, 1, 1] = 1
+    rho_input2[1, 2, 1, 2] = 3
+    rho_input2[0, 2, 1, 0] = 3 + 7j
+    prob2 = prob_distr(rho_input2)
+    prob_expected2 = np.zeros((size,) * 2, dtype=complex)
+    prob_expected2[1, 1] = 1
+    prob_expected2[1, 2] = 3
+    assert_array_equal(prob2, prob_expected2)
 
 
 def test_log_entropy():

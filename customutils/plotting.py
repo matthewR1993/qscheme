@@ -1,3 +1,5 @@
+# Script for figures generation using saved files.
+
 from matplotlib import cm
 import matplotlib.pyplot as plt
 import numpy as np

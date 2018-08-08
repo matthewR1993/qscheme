@@ -88,6 +88,11 @@ def detection(input_state, detection_event):
     return output_state
 
 
+# TODO
+def det_probability(input_state, detection_event):
+    pass
+
+
 # Takes an unapplied state in 4 channels
 def state_norm(state):
     size = len(state)
