@@ -102,8 +102,6 @@ erp_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
-print(args.det)
-print(args.phase)
 
 # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/'
 save_root = '/home/matthew/qscheme/results/res14/'
