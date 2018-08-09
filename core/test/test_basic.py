@@ -1,4 +1,5 @@
 import numpy as np
+import cmath
 import pytest
 from numpy.testing import assert_array_equal, assert_allclose
 
@@ -96,7 +97,21 @@ def test_detection():
 
 
 def test_det_probability():
-    pass
+    with pytest.raises(ValueError):
+        det_probability([], 'Invalid option')
+
+    series_length = 3
+    state = np.zeros((series_length,) * 4, dtype=complex)
+    state[0, 0, 0, 0] = 1
+    state[0, 1, 1, 0] = 0.3
+    state[2, 1, 1, 0] = 0.4
+    state[1, 0, 2, 0] = 0.5
+    state[1, 1, 1, 2] = 0.7
+
+    assert det_probability(state, 'FIRST') == 1
+    assert det_probability(state, 'THIRD') == 0.91
+    assert det_probability(state, 'NONE') == 0
+    assert cmath.isclose(det_probability(state, 'BOTH'), 1 - (0.4**2 + 0.5**2 + 0.7**2), rel_tol=1e-8)
 
 
 def test_state_norm():

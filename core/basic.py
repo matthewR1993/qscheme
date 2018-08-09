@@ -392,24 +392,6 @@ def make_state_appliable_4ch(state):
     return st_appl
 
 
-# TODO trim MDarray with error
-# Takes normalised unapplied state in 4 channels
-# Returns trimmed normalised unapplied state in 4 channels
-def trim_state(state, error=1e-9, start_index=10):
-    size = len(state)
-    st_abs = np.absolute(state)
-    for i in range(start_index, size):
-        p = size - i
-        #print(p)
-        st_tr = st_abs[p:, p:, p:, p:]
-        loc_max = np.amin(st_tr)
-        print(loc_max)
-        if loc_max < error:
-            pass
-        else:
-            return state[:p+1, :p+1, :p+1, :p+1]
-
-
 # Returns BS's t and r small coeficients
 def bs_params(T_min, T_max, num):
     T_array = np.linspace(T_min, T_max, num)
