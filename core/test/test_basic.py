@@ -95,6 +95,10 @@ def test_detection():
     assert_array_equal(output4, output_expected4)
 
 
+def test_det_probability():
+    pass
+
+
 def test_state_norm():
     series_length = 4
     state1 = np.zeros((series_length,) * 4, dtype=complex)

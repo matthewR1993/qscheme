@@ -21,6 +21,10 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
     # 2d and 3rd BS.
     state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 
+    # Detection probability
+    det_prob = det_probability(state_aft2bs_unappl, detection_event=det_event)
+    print('det. prob.', det_prob)
+
     # The detection event.
     # Gives non-normalised state.
     state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=det_event)
@@ -52,4 +56,4 @@ def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
     if sm_dm > 1e-10:
         print('Dens. matr. trim norm:', sm_dm)
 
-    return final_dens_matrix
+    return final_dens_matrix, det_prob

@@ -6,6 +6,7 @@ except: pass
 import numpy as np
 import tensorflow as tf
 from time import gmtime, strftime
+import argparse
 
 from customutils.utils import *
 from core.basic import *
@@ -16,6 +17,7 @@ from setup_parameters import *
 
 
 sess = tf.Session()
+parser = argparse.ArgumentParser()
 
 # Parameters for states
 series_length = 10
@@ -84,6 +86,7 @@ t2_array, r2_array = bs_params(T2_min, T2_max, r2_grid)
 t3_array, r3_array = bs_params(T3_min, T3_max, r3_grid)
 
 
+det_prob_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 log_entropy_subs1_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 log_entropy_subs2_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 lin_entropy_subs1 = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
@@ -96,9 +99,16 @@ sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 
+parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
+parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
+args = parser.parse_args()
+print(args.det)
+print(args.phase)
+
 # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/'
 save_root = '/home/matthew/qscheme/results/res14/'
-fname = 'coh(chan-1)_single(chan-2)_phase-0.0pi_det-FIRST.npy'
+fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
+print('save at:', save_root + fname)
 
 
 if __name__ == "__main__":
@@ -119,7 +129,9 @@ if __name__ == "__main__":
                         't3': t3_array[n3],
                         'r3': r3_array[n3],
                     }
-                    final_dens_matrix = process_all(mut_state_unappl, bs_params, phase_diff=0, det_event='NONE')
+                    final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=0, det_event='NONE')
+
+                    det_prob_array[n1, n4, n2, n3] = det_prob
 
                     # Trace one channel out of final state
                     final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)

@@ -88,9 +88,19 @@ def detection(input_state, detection_event):
     return output_state
 
 
-# TODO
+# Probability of detection event.
+# Takes unapplied state in 4 channels.
 def det_probability(input_state, detection_event):
-    pass
+    size = len(input_state)
+    st_aft_det_unappl = detection(input_state, detection_event)
+    st_aft_det_unappl_conj = np.conj(st_aft_det_unappl)
+    trace = 0
+    for p1 in range(size):
+        for p2 in range(size):
+            for p3 in range(size):
+                for p4 in range(size):
+                    trace = trace + input_state[p1, p2, p3, p4] * st_aft_det_unappl_conj[p1, p2, p3, p4]
+    return 1 - trace
 
 
 # Takes an unapplied state in 4 channels
