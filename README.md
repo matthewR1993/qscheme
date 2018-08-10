@@ -13,3 +13,8 @@ Run tests:
 ```sh
 pytest
 ```
+
+Usage:
+```sh
+python3 main.py --det FIRST --phase 0.0
+```

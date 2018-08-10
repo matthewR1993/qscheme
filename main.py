@@ -1,7 +1,7 @@
 import sys
-try:
+import platform
+if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
-except: pass
 
 import numpy as np
 import tensorflow as tf
@@ -17,7 +17,17 @@ from setup_parameters import *
 
 
 sess = tf.Session()
+
 parser = argparse.ArgumentParser()
+
+parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
+parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
+args = parser.parse_args()
+
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
+# save_root = '/home/matthew/qscheme/results/res14/'
+fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
+print('save at:', save_root + fname)
 
 # Parameters for states
 series_length = 10
@@ -57,7 +67,8 @@ mut_state_unappl = tf.tensordot(
 
 
 # The phase difference before last BS
-ph_inpi = 0.0
+# ph_inpi = 0.0
+ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
@@ -98,15 +109,6 @@ sqeez_dX = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 erp_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-
-parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
-parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
-args = parser.parse_args()
-
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/coh(ch1)_single(ch2)_var_phase_t1_t4_det-FIRST/'
-save_root = '/home/matthew/qscheme/results/res14/'
-fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
-print('save at:', save_root + fname)
 
 
 if __name__ == "__main__":

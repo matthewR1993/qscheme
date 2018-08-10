@@ -297,15 +297,59 @@ def test_log_entropy():
 
 
 def test_partial_transpose():
-    pass
+    size = 4
+
+    rho1 = np.zeros((size,) * 4, dtype=complex)
+    assert_array_equal(rho1, partial_transpose(rho1))
+
+    rho2 = np.zeros((size,) * 4, dtype=complex)
+    rho2[1, 1, 1, 0] = 3
+    rho2[1, 1, 0, 0] = 1
+    rho2[0, 1, 0, 2] = 5
+    rho2[2, 1, 3, 3] = 4
+    rho_ptr2 = partial_transpose(rho2)
+    rho_ptr_expected2 = np.zeros((size,) * 4, dtype=complex)
+    rho_ptr_expected2[1, 0, 1, 1] = 3
+    rho_ptr_expected2[1, 0, 0, 1] = 1
+    rho_ptr_expected2[0, 2, 0, 1] = 5
+    rho_ptr_expected2[2, 3, 3, 1] = 4
+    assert_array_equal(rho_ptr2, rho_ptr_expected2)
 
 
 def test_linear_entropy():
-    pass
+    size = 3
+
+    rho1 = np.zeros((size,) * 2, dtype=complex)
+    assert linear_entropy(rho1) == 1
+
+    rho2 = np.zeros((size,) * 2, dtype=complex)
+    rho2[0, 0] = 1
+    rho2[1, 1] = 3
+    rho2[1, 2] = 2
+    rho2[2, 2] = 7
+    assert linear_entropy(rho2) == -58
 
 
 def test_reorganise_dens_matrix():
-    pass
+    size = 3
+
+    rho1 = np.zeros((size,) * 4, dtype=complex)
+    rho_reorg1 = reorganise_dens_matrix(rho1)
+    rho_reorg_expect1 = np.zeros((size**2,) * 2, dtype=complex)
+    assert_array_equal(rho_reorg1, rho_reorg_expect1)
+
+    rho2 = np.zeros((size,) * 4, dtype=complex)
+    rho2[0, 0, 0, 0] = 1
+    rho2[1, 1, 0, 0] = 3
+    rho2[1, 0, 2, 1] = 7
+    rho2[2, 0, 2, 0] = 5
+    rho_reorg2 = reorganise_dens_matrix(rho2)
+    rho_reorg_expect2 = np.zeros((size**2,) * 2, dtype=complex)
+    rho_reorg_expect2[0, 0] = 1
+    rho_reorg_expect2[4, 0] = 3
+    rho_reorg_expect2[3, 7] = 7
+    rho_reorg_expect2[6, 6] = 5
+    assert_array_equal(rho_reorg2, rho_reorg_expect2)
 
 
 def test_negativity():
@@ -313,16 +357,98 @@ def test_negativity():
 
 
 def test_phase_modulation():
-    pass
+    size = 3
+    phase = 0.43 * np.pi
+
+    rho1 = np.zeros((size,) * 4, dtype=complex)
+    rho_mod1 = phase_modulation(rho1, phase)
+    assert_array_equal(rho1, rho_mod1)
+
+    rho2 = np.zeros((size,) * 4, dtype=complex)
+    rho2[1, 0, 1, 0] = 1
+    rho2[1, 0, 2, 2] = 3
+    rho2[1, 1, 2, 2] = 7
+    rho2[0, 2, 2, 0] = 2
+    rho_mod2 = phase_modulation(rho2, 0)
+    assert_array_equal(rho2, rho_mod2)
+
+    rho_mod3 = phase_modulation(rho2, phase)
+    rho_mod_excepted3 = np.zeros((size,) * 4, dtype=complex)
+    rho_mod_excepted3[1, 0, 1, 0] = 1
+    rho_mod_excepted3[1, 0, 2, 2] = 3 * np.exp(-1j * phase * 2)
+    rho_mod_excepted3[1, 1, 2, 2] = 7 * np.exp(-1j * phase)
+    rho_mod_excepted3[0, 2, 2, 0] = 2 * np.exp(1j * phase * 2)
+    assert_array_equal(rho_mod3, rho_mod_excepted3)
 
 
 def test_phase_modulation_state():
-    pass
+    size = 3
+    phase = 0.47 * np.pi
+
+    state1 = np.zeros((size,) * 2, dtype=complex)
+    state_mod1 = phase_modulation_state(state1, phase)
+    assert_array_equal(state_mod1, state1)
+
+    state2 = np.zeros((size,) * 2, dtype=complex)
+    state2[1, 0] = 5
+    state2[2, 1] = 3
+    state_mod2 = phase_modulation_state(state2, 0)
+    assert_array_equal(state_mod2, state2)
+
+    state3 = np.zeros((size,) * 2, dtype=complex)
+    state3[1, 0] = 7
+    state3[2, 1] = 11
+    state_mod3 = phase_modulation_state(state3, phase)
+    state_mod_expected3 = np.zeros((size,) * 2, dtype=complex)
+    state_mod_expected3[1, 0] = 7 * np.exp(1j * phase)
+    state_mod_expected3[2, 1] = 11 * np.exp(1j * phase * 2)
+    assert_array_equal(state_mod3, state_mod_expected3)
 
 
 def test_make_state_appliable():
-    pass
+    size = 4
+
+    state1 = np.zeros((size,) * 2, dtype=complex)
+    state_appl1 = make_state_appliable(state1)
+    assert_array_equal(state_appl1, state1)
+
+    state2 = np.zeros((size,) * 2, dtype=complex)
+    state2[1, 0] = 1
+    state2[1, 3] = 3
+    state2[0, 2] = 5
+    state2[3, 2] = 7
+    state_appl2 = make_state_appliable(state2)
+    state_appl_expected2 = np.zeros((size,) * 2, dtype=complex)
+    state_appl_expected2[1, 0] = 1
+    state_appl_expected2[1, 3] = 3 * sqrt(6)
+    state_appl_expected2[0, 2] = 5 * sqrt(2)
+    state_appl_expected2[3, 2] = 7 * sqrt(12)
+    assert_array_equal(state_appl2, state_appl_expected2)
 
 
 def make_state_appliable_4ch():
-    pass
+    size = 4
+
+    state1 = np.zeros((size,) * 4, dtype=complex)
+    state_appl1 = make_state_appliable_4ch(state1)
+    assert_array_equal(state_appl1, state1)
+
+    state2 = np.zeros((size,) * 4, dtype=complex)
+    state2[1, 1, 1, 1] = 3
+    state2[1, 2, 1, 2] = 5
+    state2[3, 2, 1, 2] = 7
+    state_appl2 = make_state_appliable_4ch(state2)
+    state_appl_expected2 = np.zeros((size,) * 4, dtype=complex)
+    state_appl_expected2[1, 1, 1, 1] = 3
+    state_appl_expected2[1, 2, 1, 2] = 5 * sqrt(4)
+    state_appl_expected2[3, 2, 1, 2] = 7 * sqrt(24)
+    assert_array_equal(state_appl2, state_appl_expected2)
+
+
+def test_bs_params():
+    T_min = 0.35
+    T_max = 0.73
+
+    assert_array_equal(bs_params(T_min, T_max, 1), (np.array([sqrt(0.35)]), np.array([sqrt(1 - 0.35)])))
+    assert_array_equal(bs_params(T_min, T_max, 2), (np.array([sqrt(0.35), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.73)])))
+    assert_array_equal(bs_params(T_min, T_max, 3), (np.array([sqrt(0.35), sqrt(0.54), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.54), sqrt(1 - 0.73)])))
