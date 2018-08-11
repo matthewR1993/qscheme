@@ -170,7 +170,8 @@ if __name__ == "__main__":
                     # print('erp_X:', erp_x, ' erp_P:', erp_p)
 
     # Save it.
-    fl = np.array([log_negativity,
+    fl = np.array([det_prob_array,
+                   log_negativity,
                    mut_information,
                    sqeez_dX,
                    sqeez_dP,
