@@ -86,9 +86,9 @@ T4_min = 0.0
 T4_max = 1.0
 
 T2_min = 0.001
-T2_max = 1.0
+T2_max = 0.999
 T3_min = 0.001
-T3_max = 1.0
+T3_max = 0.999
 
 # Varying BSs.
 t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
