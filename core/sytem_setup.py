@@ -9,7 +9,7 @@ from .basic import *
 #  det_event - detection option
 # Output:
 #  applied density matrix in 2 channels
-def process_all(input_state, bs_params, phase_diff=0, det_event='NONE'):
+def process_all(input_state, bs_params, phase_diff, det_event):
     t1, r1 = bs_params['t1'], bs_params['r1']
     t2, r2 = bs_params['t2'], bs_params['r2']
     t3, r3 = bs_params['t3'], bs_params['r3']
