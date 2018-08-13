@@ -27,7 +27,7 @@ args = parser.parse_args()
 save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
 # save_root = '/home/matthew/qscheme/results/res14/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
-print('save at:', save_root + fname)
+print('Saving path:', save_root + fname)
 
 # Parameters for states
 series_length = 10
@@ -107,8 +107,8 @@ mut_information = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 full_fn_entropy = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 sqeez_dX = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-erp_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-erp_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+epr_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+epr_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 
 
 if __name__ == "__main__":
@@ -129,7 +129,7 @@ if __name__ == "__main__":
                         't3': t3_array[n3],
                         'r3': r3_array[n3],
                     }
-                    final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=0, det_event='NONE')
+                    final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
 
                     det_prob_array[n1, n4, n2, n3] = det_prob
 
@@ -164,18 +164,26 @@ if __name__ == "__main__":
                     sqeez_dP[n1, n4, n2, n3] = dP
 
                     # ERP correlations.
-                    erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
-                    erp_correl_x[n1, n4, n2, n3] = erp_x
-                    erp_correl_p[n1, n4, n2, n3] = erp_p
+                    epr_x, epr_p = erp_squeezing_correlations(final_dens_matrix)
+                    epr_correl_x[n1, n4, n2, n3] = epr_x
+                    epr_correl_p[n1, n4, n2, n3] = epr_p
                     # print('erp_X:', erp_x, ' erp_P:', erp_p)
 
     # Save it.
-    fl = np.array([det_prob_array,
-                   log_negativity,
-                   mut_information,
-                   sqeez_dX,
-                   sqeez_dP,
-                   erp_correl_x,
-                   erp_correl_p
-                   ])
+    fl = {
+        'det_prob': det_prob_array,
+        'log_negativity': log_negativity,
+        'mut_inform': mut_information,
+        'squeez_dx': sqeez_dX,
+        'squeez_dp': sqeez_dP,
+        'epr_correl_x': epr_correl_x,
+        'epr_correl_p': epr_correl_p,
+        'det_conf': DET_CONF,
+        'phase': phase_diff,
+        't1_arr': t1_array,
+        't4_arr': t4_array,
+        't2_arr': t2_array,
+        't3_arr': t3_array,
+        'states_config': 'coh(chan-1)_single(chan-2)'
+    }
     np.save(save_root + fname, fl)
