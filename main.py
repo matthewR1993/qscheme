@@ -13,7 +13,6 @@ from core.basic import *
 from core.sytem_setup import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
-from setup_parameters import *
 
 
 sess = tf.Session()

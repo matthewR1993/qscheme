@@ -1,11 +1,13 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from math import factorial, sqrt
 
 
-# For input and auxiliary states in single channel
-# Takes state that is not applied
 def get_state_norm(state):
+    '''
+    Calculate the norm of the state.
+    :param state: Single channel(mode) unapplied state.
+    :return: Norm of the state.
+    '''
     norm = 0
     for i in range(len(state)):
         norm = norm + state[i] * np.conj(state[i]) * factorial(i)
@@ -14,6 +16,11 @@ def get_state_norm(state):
 
 # Takes unapplied state
 def get_state_norm_2ch(state):
+    '''
+    Calculate the norm of the state.
+    :param state: Two channels(modes) unapplied state.
+    :return: Norm of the state.
+    '''
     norm = 0
     state_conj = np.conj(state)
     for p1 in range(len(state)):
@@ -22,5 +29,10 @@ def get_state_norm_2ch(state):
     return norm
 
 
-def diagonal_factorials(len):
-    return np.identity(len) * np.array([sqrt(factorial(x)) for x in range(len)])
+def diagonal_factorials(l):
+    '''
+    Diagonal matrix of factorials.
+    :param l: Matrix size.
+    :return: Diagonal matrix of factorials
+    '''
+    return np.identity(l) * np.array([sqrt(factorial(x)) for x in range(l)])
