@@ -1,7 +1,4 @@
-import numpy as np
 import cmath
-import pytest
-from numpy.testing import assert_array_equal, assert_allclose
 
 from ..squeezing import *
 
@@ -20,7 +17,7 @@ def test_coord_aver():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -69,7 +66,7 @@ def test_impulse_aver():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -170,7 +167,7 @@ def test_coord_square_aver():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -205,7 +202,7 @@ def test_impulse_square_aver():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -239,7 +236,7 @@ def test_squeezing_quadratures():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -268,7 +265,6 @@ def test_squeezing_quadratures():
     assert cmath.isclose(sq3_2[1], sqrt((r**2)/3 + 0.25), rel_tol=1e-9)
 
 
-# TODO
 def test_erp_squeezing_correlations():
     size = 3
 
@@ -282,7 +278,7 @@ def test_erp_squeezing_correlations():
     rho2[2, 0, 2, 0] = 2 * (t**2 - r**2) ** 2
     rho2[2, 0, 1, 1] = - 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[2, 0, 0, 2] = 2 * (t**2 - r**2) ** 2
-    rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
+    rho2[1, 1, 2, 0] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[1, 1, 1, 1] = 16 * t**2 * r**2
     rho2[1, 1, 0, 2] = 4j * sqrt(2) * t * r * (t**2 - r**2)
     rho2[0, 2, 2, 0] = 2 * (t ** 2 - r ** 2) ** 2
@@ -298,4 +294,6 @@ def test_erp_squeezing_correlations():
     rho3[0, 1, 0, 1] = 2 * r ** 2
     rho3[0, 0, 0, 0] = 1
     rho3 = rho3 / 3
-    assert erp_squeezing_correlations(rho3) == (sqrt(5 / 6), sqrt(5 / 6))
+    epr = erp_squeezing_correlations(rho3)
+    assert cmath.isclose(epr[0], sqrt(5 / 6), rel_tol=1e-9)
+    assert cmath.isclose(epr[1], sqrt(5 / 6), rel_tol=1e-9)

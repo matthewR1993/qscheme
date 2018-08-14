@@ -224,7 +224,7 @@ def squeezing_quadratures(dm, channel):
 # Returns two modes squeezing EPR correlations:
 # corX = D[(X_2 - X_1)],
 # corP = D[(P_1 + P_2)]
-# Where D[A] is a dispersion of A: D[A] = <A^2> - (<A>)^2
+# Where D[A] is a dispersion of A: D[A] = sqrt(<A^2> - (<A>)^2)
 def erp_squeezing_correlations(dm):
     cor_x = np.sqrt(coord_square_aver(dm, 1) - 2 * prod_coord_aver(dm) + coord_square_aver(dm, 2) - coord_aver(dm, 1)**2 + 2 * coord_aver(dm, 1) * coord_aver(dm, 2) - coord_aver(dm, 2)**2)
     cor_p = np.sqrt(impulse_square_aver(dm, 1) + 2 * prod_impulse_aver(dm) + impulse_square_aver(dm, 2) - impulse_aver(dm, 1)**2 - 2 * impulse_aver(dm, 1) * impulse_aver(dm, 2) - impulse_aver(dm, 2)**2)
