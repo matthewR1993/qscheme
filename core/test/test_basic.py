@@ -293,7 +293,16 @@ def test_prob_distr():
 
 
 def test_log_entropy():
-    pass
+    size = 3
+
+    rho1 = np.zeros((size,) * 2, dtype=complex)
+    assert cmath.isclose(log_entropy(rho1), 0, rel_tol=1e-9)
+
+    rho2 = np.zeros((size,) * 2, dtype=complex)
+    rho2[0, 0] = 0.5
+    rho2[1, 1] = 0.35
+    rho2[2, 2] = 0.15
+    assert cmath.isclose(log_entropy(rho2), -(0.5 * np.log2(0.5) + 0.35 * np.log2(0.35) + 0.15 * np.log2(0.15)), rel_tol=1e-9)
 
 
 def test_partial_transpose():
@@ -353,7 +362,28 @@ def test_reorganise_dens_matrix():
 
 
 def test_negativity():
-    pass
+    with pytest.raises(ValueError):
+        negativity([], neg_type=None)
+    size = 3
+
+    rho1 = np.zeros((size,) * 4, dtype=complex)
+    cmath.isclose(negativity(rho1, neg_type='raw'), 0, rel_tol=1e-9)
+    cmath.isclose(negativity(rho1, neg_type='logarithmic'), 0, rel_tol=1e-9)
+
+    a02, a11, a20 = 7 + 1j, 3, 5 - 3j
+    rho2 = np.zeros((size,) * 4, dtype=complex)
+    rho2[0, 2, 0, 2] = a02 * np.conj(a02)
+    rho2[0, 2, 1, 1] = a02 * np.conj(a11)
+    rho2[0, 2, 2, 0] = a02 * np.conj(a20)
+    rho2[1, 1, 0, 2] = a11 * np.conj(a02)
+    rho2[1, 1, 1, 1] = a11 * np.conj(a11)
+    rho2[1, 1, 2, 0] = a11 * np.conj(a20)
+    rho2[2, 0, 0, 2] = a20 * np.conj(a02)
+    rho2[2, 0, 1, 1] = a20 * np.conj(a11)
+    rho2[2, 0, 2, 0] = a20 * np.conj(a20)
+    neg_expected = (abs(a02) + abs(a20)) * abs(a11) + abs(a02) * abs(a20)
+    assert cmath.isclose(negativity(rho2, neg_type='raw'), neg_expected, rel_tol=1e-9)
+    assert cmath.isclose(negativity(rho2, neg_type='logarithmic'), np.log2(2 * neg_expected + 1), rel_tol=1e-9)
 
 
 def test_phase_modulation():
