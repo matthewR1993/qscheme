@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 det = 'FIRST'
 
-phases = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
+phases = [0.0, 0.125, 0.25, 0.375, 0.5]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
@@ -12,6 +12,8 @@ dP_min_arr = np.zeros(size, dtype=complex)
 epr_x_min_arr = np.zeros(size, dtype=complex)
 epr_p_min_arr = np.zeros(size, dtype=complex)
 uncert_min_arr = np.zeros(size, dtype=complex)
+epr_x_min_prob_arr = np.zeros(size, dtype=complex)
+epr_p_min_prob_arr = np.zeros(size, dtype=complex)
 
 dX_min_ind = np.zeros(size, dtype=list)
 dP_min_ind = np.zeros(size, dtype=list)
@@ -33,6 +35,7 @@ for i in range(size):
     sqeez_dP = fl.item().get('squeez_dp')
     erp_correl_x = fl.item().get('epr_correl_x')
     erp_correl_p = fl.item().get('epr_correl_p')
+    prob = fl.item().get('det_prob')
 
     uncert_min_arr[i] = np.amin(np.multiply(sqeez_dX, sqeez_dP))
     dX_min_arr[i] = np.amin(sqeez_dX)
@@ -42,32 +45,40 @@ for i in range(size):
 
     uncert = np.multiply(sqeez_dX, sqeez_dP)
 
-    uncert_min_ind[i] = list(np.unravel_index(np.argmax(uncert, axis=None), uncert.shape))
-    dX_min_ind[i] = list(np.unravel_index(np.argmax(sqeez_dX, axis=None), sqeez_dX.shape))
-    dP_min_ind[i] = list(np.unravel_index(np.argmax(sqeez_dP, axis=None), sqeez_dP.shape))
-    epr_x_min_ind[i] = list(np.unravel_index(np.argmax(erp_correl_x, axis=None), erp_correl_x.shape))
-    epr_p_min_ind[i] = list(np.unravel_index(np.argmax(erp_correl_p, axis=None), erp_correl_p.shape))
+    uncert_min_ind[i] = list(np.unravel_index(np.argmin(uncert, axis=None), uncert.shape))
+    dX_min_ind[i] = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
+    dP_min_ind[i] = list(np.unravel_index(np.argmin(sqeez_dP, axis=None), sqeez_dP.shape))
+    epr_x_min_ind[i] = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
+    epr_p_min_ind[i] = list(np.unravel_index(np.argmin(erp_correl_p, axis=None), erp_correl_p.shape))
 
+    epr_x_min_prob_arr[i] = prob[tuple(epr_x_min_ind[i])]
+    epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
 
-# TODO min for which parameters.?
-
-plt.plot(phases, uncert_min_arr)
-plt.title('dPdX')
+plt.plot(phases, uncert_min_arr, 'r.')
+plt.title('$dPdX^{min}$')
+plt.ylabel('$dPdX^min}$')
+plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-plt.plot(phases, dX_min_arr)
-plt.title('dX min')
+plt.plot(phases, dX_min_arr, 'r.')
+plt.title('$dX^{min}$')
+plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-plt.plot(phases, dP_min_arr)
-plt.title('dP min')
+plt.plot(phases, dP_min_arr, 'r.')
+plt.title('$dP^{min}$')
+plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-plt.plot(phases, epr_x_min_arr)
-plt.title('EPR X_min')
+plt.plot(phases, epr_x_min_arr, 'r.')
+plt.title('$EPR \ X^{min}$')
+plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-plt.plot(phases, epr_p_min_arr)
-plt.title('EPR P_min')
+plt.plot(phases, epr_p_min_arr, 'r.')
+plt.title('$EPR \ P^{min}$')
+plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
+# epr_x_min_ind
+# epr_p_min_ind

@@ -10,6 +10,11 @@ DEF_SERIES_LEN = 100
 
 
 def single_photon(series_length=DEF_SERIES_LEN):
+    '''
+    Generating single photon state in a Fock basis.
+    :param series_length: Lenght of the state.
+    :return: Single photon state as an array.
+    '''
     if series_length < 2:
         raise ValueError('The series length should be >= 2')
     state = np.zeros(series_length)
@@ -18,6 +23,12 @@ def single_photon(series_length=DEF_SERIES_LEN):
 
 
 def fock_state(n, series_length=DEF_SERIES_LEN):
+    '''
+    Generating a Fock state.
+    :param n: Fock number
+    :param series_length: Lenght of the state.
+    :return: General Fock state state as an array.
+    '''
     if series_length < 1:
         raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length)
@@ -26,6 +37,12 @@ def fock_state(n, series_length=DEF_SERIES_LEN):
 
 
 def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
+    '''
+    Generating a coherent state in a Fock basis.
+    :param series_length: Lenght of the state.
+    :param alpha: Alpha
+    :return: Coherent state as an array.
+    '''
     if series_length < 1:
         raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length, dtype=np.complex128)
@@ -35,6 +52,13 @@ def coherent_state(series_length=DEF_SERIES_LEN, alpha=1):
 
 
 def squeezed_vacuum(series_length=DEF_SERIES_LEN, squeezing_amp=1, squeezing_phase=0):
+    '''
+    Generating a squezed vacuum state in a Fock basis.
+    :param series_length: Lenght of the state.
+    :param squeezing_amp: Squeezing parameter amplitude.
+    :param squeezing_phase: Squeezing parameter phase.
+    :return: Squezed vacuum state as an array.
+    '''
     if series_length % 2 != 0 or series_length < 1:
         raise ValueError('The series length should be positive even integer')
     state = np.zeros(series_length, dtype=np.complex128)
@@ -45,6 +69,14 @@ def squeezed_vacuum(series_length=DEF_SERIES_LEN, squeezing_amp=1, squeezing_pha
 
 
 def squeezed_coherent_state(series_length=DEF_SERIES_LEN, alpha=1, squeezing_amp=1, squeezing_phase=0):
+    '''
+    Generating a squezed coherent state in a Fock basis.
+    :param series_length: Lenght of the state.
+    :param alpha: Coheret parameter alpha.
+    :param squeezing_amp: Squeezing parameter amplitude.
+    :param squeezing_phase: Squeezing parameter phase.
+    :return: Squezed coherent state as an array.
+    '''
     if series_length < 1:
         raise ValueError('The series length should be a positive integer')
     state = np.zeros(series_length, dtype=np.complex128)
