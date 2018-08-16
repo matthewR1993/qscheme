@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 det = 'FIRST'
 
-phases = [0.0, 0.125, 0.25, 0.375, 0.5]
+phases = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
