@@ -23,7 +23,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
 
     # Detection probability
     det_prob = det_probability(state_aft2bs_unappl, detection_event=det_event)
-    print('det. prob.', det_prob)
+    # print('det. prob.', det_prob)
 
     # The detection event.
     # Gives non-normalised state.
