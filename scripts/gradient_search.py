@@ -51,7 +51,7 @@ mut_state_unappl = tf.tensordot(
 
 
 # The phase difference before last BS
-ph_inpi = 0.0
+ph_inpi = 0.25
 phase_diff = ph_inpi * np.pi
 
 start_point = {
@@ -65,14 +65,16 @@ start_point = {
     'r3': sqrt(0.5),
 }
 
+# TODO start from different points.
+
 res = gradient_descent(
     start_point,
     mut_state_unappl,
     phase_diff,
     quantity='EPR_X',
     det_event=DET_CONF,
-    delta=1e-5,
-    gamma_t=1e-2
+    delta_t=1e-3,
+    prec_t=1e-6
 )
 
 print(res)
