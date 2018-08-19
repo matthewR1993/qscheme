@@ -65,7 +65,6 @@ start_point = {
     'r3': sqrt(0.5),
 }
 
-# TODO start from different points.
 
 res = gradient_descent(
     start_point,

@@ -25,8 +25,8 @@ uncert_min_ind = np.zeros(size, dtype=list)
 for i in range(size):
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
-    # save_root = '/home/matthew/qscheme/results/res14/'
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
+    save_root = '/home/matthew/qscheme/results/res14/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     fl = np.load(save_root + fname)
@@ -54,6 +54,7 @@ for i in range(size):
     epr_x_min_prob_arr[i] = prob[tuple(epr_x_min_ind[i])]
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
 
+
 plt.plot(phases, uncert_min_arr, 'r.')
 plt.title('$dPdX^{min}$')
 plt.ylabel('$dPdX^min}$')
@@ -79,6 +80,3 @@ plt.plot(phases, epr_p_min_arr, 'r.')
 plt.title('$EPR \ P^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
-
-# epr_x_min_ind
-# epr_p_min_ind

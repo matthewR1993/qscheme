@@ -55,8 +55,6 @@ def gradient_descent(start_point, state, phase_diff, det_event, quantity=None, d
 
         print('t diff:', (np.abs(grads)) * delta_t)
         if np.max(np.abs(grads)) * delta_t <= prec_t:
-            # TODO calculate second derivative
-            # it should be > 0
             return {
                 'step': i,
                 'min_par': bs_params_arr[i],

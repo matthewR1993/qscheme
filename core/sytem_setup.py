@@ -50,9 +50,11 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
 
     # The transformation at last BS
-    trim_dm = 6
+    trim_dm = 7  # 7 is min.
     final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
+    # TODO incorrect trimming in the sum.
     sm_dm = np.sum(np.abs(dens_matrix_2channels_withph[trim_dm:, trim_dm:, trim_dm:, trim_dm:]))
+    # print(sm_dm)
     if sm_dm > 1e-10:
         print('Dens. matr. trim norm:', sm_dm)
 
