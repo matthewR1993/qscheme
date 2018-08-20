@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 det = 'FIRST'
 
-phases = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2.0, 2.125, 2.25]
+phases = [x * 0.125 for x in range(24)]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
@@ -25,8 +25,8 @@ uncert_min_ind = np.zeros(size, dtype=list)
 for i in range(size):
     phase = phases[i]
 
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
-    save_root = '/home/matthew/qscheme/results/res14/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
+    # save_root = '/home/matthew/qscheme/results/res14/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     fl = np.load(save_root + fname)
@@ -55,12 +55,14 @@ for i in range(size):
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
 
 
+# Uncertainty.
 plt.plot(phases, uncert_min_arr, 'r.')
 plt.title('$dPdX^{min}$')
 plt.ylabel('$dPdX^min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
+# Quadratures.
 plt.plot(phases, dX_min_arr, 'r.')
 plt.title('$dX^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
@@ -71,6 +73,7 @@ plt.title('$dP^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
+# EPR:
 plt.plot(phases, epr_x_min_arr, 'r.')
 plt.title('$EPR \ X^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
@@ -80,3 +83,16 @@ plt.plot(phases, epr_p_min_arr, 'r.')
 plt.title('$EPR \ P^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
+
+# Probabilities of realisation for EPR:
+plt.plot(phases, epr_x_min_prob_arr, 'r.')
+plt.title('$P[EPR \ X]$')
+plt.xlabel('$phase \ in \ \pi$')
+plt.show()
+
+plt.plot(phases, epr_p_min_prob_arr, 'r.')
+plt.title('$P[EPR \ P]$')
+plt.xlabel('$phase \ in \ \pi$')
+plt.show()
+
+

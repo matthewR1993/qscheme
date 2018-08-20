@@ -39,23 +39,21 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     # trim the state
     trim_state = 8
     state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]
-    sm_state = np.sum(np.abs(state_after_dett_unappl_norm[trim_state:, trim_state:, trim_state:, trim_state:]))
-    if sm_state > 1e-10:
-        print('State trim norm:', sm_state)
+    # sm_state = np.sum(np.abs(state_after_dett_unappl_norm)) - np.sum(np.abs(state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]))
+    # if sm_state > 1e-7:
+    #     print('State trim norm:', sm_state)
 
     # Building dens. matrix and trace.
-    dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+    dens_matrix_2ch = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 
     # Phase modulation
-    dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+    dens_matrix_2channels_withph = phase_modulation(dens_matrix_2ch, phase_diff)
 
     # The transformation at last BS
-    trim_dm = 7  # 7 is min.
+    trim_dm = 7
     final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
-    # TODO incorrect trimming in the sum.
-    sm_dm = np.sum(np.abs(dens_matrix_2channels_withph[trim_dm:, trim_dm:, trim_dm:, trim_dm:]))
-    # print(sm_dm)
-    if sm_dm > 1e-10:
-        print('Dens. matr. trim norm:', sm_dm)
+    # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
+    # if sm_dm > 1e-7:
+    #    print('Dens. matr. trim norm:', sm_dm)
 
     return final_dens_matrix, det_prob

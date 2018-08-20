@@ -145,8 +145,8 @@ def state_norm(state):
 def dens_matrix_with_trace(left_vector, right_vector):
     '''
     Composing density matrix from projected vectors and partially trace.
-    :param left_vector: Ket state in 4 channels.
-    :param right_vector: Bra state in 4 channels.
+    :param left_vector: Ket unapplied state in 4 channels.
+    :param right_vector: Bra unapplied state in 4 channels.
     :return: Applied dens matrix for 2 channels.
     '''
     size = len(left_vector)

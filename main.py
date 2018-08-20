@@ -3,10 +3,10 @@ import platform
 if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 
-import numpy as np
 import tensorflow as tf
 from time import gmtime, strftime
 import argparse
+import numpy as np
 
 from customutils.utils import *
 from core.basic import *
@@ -23,8 +23,8 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
-# save_root = '/home/matthew/qscheme/results/res14/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+# save_root = '/home/matthew/qscheme/results/res15/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 

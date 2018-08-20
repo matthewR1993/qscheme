@@ -155,6 +155,8 @@ for n1 in range(r1_grid):
                 epr_correl_p[n1, n4, n2, n3] = epr_p
                 # print('erp_X:', erp_x, ' erp_P:', erp_p)
 
+
 print('dXdP:', sqeez_dX[0, 0, 0, 0] * sqeez_dP[0, 0, 0, 0])
+print('EPR dXdP:', epr_correl_x[0, 0, 0, 0] * epr_correl_p[0, 0, 0, 0])
 print('EPR X:', epr_correl_x[0, 0, 0, 0])
 print('EPR P:', epr_correl_p[0, 0, 0, 0])
