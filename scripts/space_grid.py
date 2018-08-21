@@ -1,4 +1,4 @@
-# Sollution with a focused parameters grid.
+# A solution with a scaled grid.
 
 import sys
 import platform
@@ -25,7 +25,7 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res16/'
 # save_root = '/home/matthew/qscheme/results/res15/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
@@ -105,7 +105,7 @@ T3_max_arr[0] = 0.9999
 
 
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-# Reduction step iteration.
+# Scaling step loop.
 for p in range(SCALING_DEPTH):
 
     # BS values range.
@@ -118,6 +118,11 @@ for p in range(SCALING_DEPTH):
     T2_max = T2_max_arr[p]
     T3_min = T3_min_arr[p]
     T3_max = T3_max_arr[p]
+
+    T1_step = abs(T1_max - T1_min) / (r1_grid - 1)
+    T4_step = abs(T4_max - T4_min) / (r4_grid - 1)
+    T2_step = abs(T2_max - T2_min) / (r2_grid - 1)
+    T3_step = abs(T3_max - T3_min) / (r3_grid - 1)
 
     # Varying BSs.
     t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
@@ -189,14 +194,13 @@ for p in range(SCALING_DEPTH):
                     epr_correl_x[n1, n4, n2, n3] = epr_x
                     epr_correl_p[n1, n4, n2, n3] = epr_p
 
-    epr_x_min= np.amin(epr_correl_x)
+    epr_x_min = np.amin(epr_correl_x)
     epr_p_min = np.amin(epr_correl_p)
     dX_min = np.amin(sqeez_dX)
     dP_min = np.amin(sqeez_dP)
 
     uncert = np.multiply(sqeez_dX, sqeez_dP)
 
-    uncert_min_ind = list(np.unravel_index(np.argmin(uncert, axis=None), uncert.shape))
     dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
     dP_min_ind = list(np.unravel_index(np.argmin(sqeez_dP, axis=None), sqeez_dP.shape))
     epr_x_min_ind = list(np.unravel_index(np.argmin(epr_correl_x, axis=None), epr_correl_x.shape))
@@ -205,25 +209,57 @@ for p in range(SCALING_DEPTH):
     # Calculate the minimun.
     if QUANT_T0_MINIMIZE is 'EPR_X':
         ind = epr_x_min_ind
+        print('EPR_X min value:', np.amin(epr_correl_x))
+        print('EPR_X min value:', epr_correl_x[tuple(epr_x_min_ind)])
     elif QUANT_T0_MINIMIZE is 'EPR_P':
         ind = epr_p_min_ind
+        print('EPR_P min value:', np.amin(epr_correl_p))
+        print('EPR_P min value:', epr_correl_p[tuple(epr_p_min_ind)])
     elif QUANT_T0_MINIMIZE is 'dX':
         ind = dX_min_ind
+        print('dX min value:', np.amin(sqeez_dX))
+        print('dX min value:', sqeez_dX[tuple(dX_min_ind)])
     elif QUANT_T0_MINIMIZE is 'dP':
         ind = dP_min_ind
+        print('dP min value:', np.amin(sqeez_dP))
+        print('dP min value:', sqeez_dP[tuple(dP_min_ind)])
     else:
         raise ValueError
 
-    # Minimizing parameters T1, T2, T3, T4:
-    # TODO
+    # Minimizing set of parameters T1, T2, T3, T4:
+    T1_mid = t1_array[ind[0]]
+    T4_mid = t1_array[ind[1]]
+    T2_mid = t1_array[ind[2]]
+    T3_mid = t1_array[ind[3]]
 
-    # Building a new T grid.
-    T1_min_arr[p + 1] = 0
-    T1_max_arr[p + 1] = 0
-    T4_min_arr[p + 1] = 0
-    T4_max_arr[p + 1] = 0
+    print('T1_mid:', T1_mid)
+    print('T4_mid:', T4_mid)
+    print('T2_mid:', T2_mid)
+    print('T3_mid:', T3_mid)
 
-    T2_min_arr[p + 1] = 0
-    T2_max_arr[p + 1] = 0
-    T3_min_arr[p + 1] = 0
-    T3_max_arr[p + 1] = 0
+    # Building a T grid, for a new scale step.
+    T1_min_arr[p + 1] = T1_mid - T1_step
+    T1_max_arr[p + 1] = T1_mid + T1_step
+    T4_min_arr[p + 1] = T4_mid - T4_step
+    T4_max_arr[p + 1] = T4_mid + T4_step
+
+    T2_min_arr[p + 1] = T2_mid - T2_step
+    T2_max_arr[p + 1] = T2_mid + T2_step
+    T3_min_arr[p + 1] = T3_mid - T3_step
+    T3_max_arr[p + 1] = T3_mid + T3_step
+
+    print('T1_min next:', T1_min_arr[p + 1])
+    print('T1_max next:', T1_max_arr[p + 1])
+
+    print('T4_min next:', T4_min_arr[p + 1])
+    print('T4_max next:', T4_max_arr[p + 1])
+
+    print('T2_min next:', T2_min_arr[p + 1])
+    print('T2_max next:', T2_max_arr[p + 1])
+
+    print('T3_min next:', T3_min_arr[p + 1])
+    print('T3_max next:', T3_max_arr[p + 1])
+
+    # Save it.
+    if p == SCALING_DEPTH - 1:
+        data = {}
