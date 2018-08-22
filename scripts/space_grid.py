@@ -4,6 +4,8 @@ import sys
 import platform
 if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
+elif platform.system() == 'Darwin':
+    sys.path.append('/Users/matvei/PycharmProjects/qscheme')
 
 from time import gmtime, strftime
 import tensorflow as tf
@@ -26,7 +28,7 @@ parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=Tr
 args = parser.parse_args()
 
 save_root = '/Users/matvei/PycharmProjects/qscheme/results/res16/'
-# save_root = '/home/matthew/qscheme/results/res15/'
+# save_root = '/home/matthew/qscheme/results/res16/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 
@@ -75,22 +77,22 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 11
-r4_grid = 11
+r1_grid = 3
+r4_grid = 3
 
-r2_grid = 11
-r3_grid = 11
+r2_grid = 3
+r3_grid = 3
 
 
-T1_min_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T1_max_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T4_min_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T4_max_arr = np.zeros(SCALING_DEPTH, dtype=complex)
+T1_min_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T1_max_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T4_min_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T4_max_arr = np.zeros(SCALING_DEPTH, dtype=float)
 
-T2_min_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T2_max_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T3_min_arr = np.zeros(SCALING_DEPTH, dtype=complex)
-T3_max_arr = np.zeros(SCALING_DEPTH, dtype=complex)
+T2_min_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T2_max_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T3_min_arr = np.zeros(SCALING_DEPTH, dtype=float)
+T3_max_arr = np.zeros(SCALING_DEPTH, dtype=float)
 
 # Starting BS parameters grid range.
 T1_min_arr[0] = 0.0
@@ -107,7 +109,7 @@ T3_max_arr[0] = 0.9999
 print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 # Scaling step loop.
 for p in range(SCALING_DEPTH):
-
+    print('Depth:', p)
     # BS values range.
     T1_min = T1_min_arr[p]
     T1_max = T1_max_arr[p]
@@ -125,7 +127,7 @@ for p in range(SCALING_DEPTH):
     T3_step = abs(T3_max - T3_min) / (r3_grid - 1)
 
     # Varying BSs.
-    t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
+    t1_array, r1_array = bs_params(T1_min, T1_max, r1_grid)
     t4_array, r4_array = bs_params(T4_min, T4_max, r4_grid)
     t2_array, r2_array = bs_params(T2_min, T2_max, r2_grid)
     t3_array, r3_array = bs_params(T3_min, T3_max, r3_grid)
@@ -262,4 +264,20 @@ for p in range(SCALING_DEPTH):
 
     # Save it.
     if p == SCALING_DEPTH - 1:
-        data = {}
+        data = {
+            'det_prob': det_prob_array,
+            'log_negativity': log_negativity,
+            'mut_inform': mut_information,
+            'squeez_dx': sqeez_dX,
+            'squeez_dp': sqeez_dP,
+            'epr_correl_x': epr_correl_x,
+            'epr_correl_p': epr_correl_p,
+            'det_conf': DET_CONF,
+            'phase': phase_diff,
+            't1_arr': t1_array,
+            't4_arr': t4_array,
+            't2_arr': t2_array,
+            't3_arr': t3_array,
+            'states_config': 'coh(chan-1)_single(chan-2)'
+        }
+        np.save(save_root + fname, data)

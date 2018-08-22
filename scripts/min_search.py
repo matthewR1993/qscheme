@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 det = 'FIRST'
 
-phases = [x * 0.125 for x in range(24)]
+phases = [x * 0.25 for x in range(4)]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
@@ -25,7 +25,7 @@ uncert_min_ind = np.zeros(size, dtype=list)
 for i in range(size):
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res14/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
     # save_root = '/home/matthew/qscheme/results/res14/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 

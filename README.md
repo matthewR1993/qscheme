@@ -4,8 +4,8 @@ Python 3.5+
 
 Set it up:
 ```sh
-python3 -m venv ENV
-source ENV/bin/activate
+python3 -m venv .env
+source .env/bin/activate
 pip3 install -r requirements.txt
 ```
 

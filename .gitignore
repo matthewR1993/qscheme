@@ -2,6 +2,7 @@
 /VENV
 /ENV
 ENV
+.env
 *.pyc
 __pycache__
 *~
