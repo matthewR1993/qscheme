@@ -19,8 +19,6 @@ from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 
 
-sess = tf.Session()
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
@@ -57,16 +55,8 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
-in_state_tf = tf.constant(input_st, tf.float64)
-aux_state_tf = tf.constant(auxiliary_st, tf.float64)
-
-# Building a mutual state via tensor product, that returns numpy array.
-mut_state_unappl = tf.tensordot(
-    in_state_tf,
-    aux_state_tf,
-    axes=0,
-    name=None
-).eval(session=sess)
+# Building a mutual state via tensor product.
+mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 QUANT_T0_MINIMIZE = 'EPR_P'
 SCALING_DEPTH = 2

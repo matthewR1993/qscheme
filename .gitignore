@@ -5,6 +5,11 @@ ENV
 .env
 *.pyc
 __pycache__
+main.spec
+/dist
+dist
+/build
+build
 *~
 .pytest_cache
 .DS_Store
