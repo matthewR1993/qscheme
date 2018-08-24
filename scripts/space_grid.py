@@ -68,11 +68,11 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 3
-r4_grid = 3
+r1_grid = 5
+r4_grid = 5
 
-r2_grid = 3
-r3_grid = 3
+r2_grid = 5
+r3_grid = 5
 
 
 T1_min_arr = np.zeros(SCALING_DEPTH + 1, dtype=float)
@@ -227,9 +227,9 @@ if __name__ == "__main__":
 
         # Minimizing set of parameters T1, T2, T3, T4:
         T1_mid = t1_array[ind[0]]
-        T4_mid = t1_array[ind[1]]
-        T2_mid = t1_array[ind[2]]
-        T3_mid = t1_array[ind[3]]
+        T4_mid = t4_array[ind[1]]
+        T2_mid = t2_array[ind[2]]
+        T3_mid = t3_array[ind[3]]
 
         print('T1_mid:', T1_mid)
         print('T4_mid:', T4_mid)
@@ -248,14 +248,14 @@ if __name__ == "__main__":
         T3_max_arr[p + 1] = T3_mid + T3_step
 
         # Check boundaries.
-        if T1_min_arr[p + 1] < min_bound:
-            T1_min_arr[p + 1] = min_bound
-        if T1_max_arr[p + 1] > max_bound:
-            T1_max_arr[p + 1] = max_bound
-        if T4_min_arr[p + 1] < min_bound:
-            T4_min_arr[p + 1] = min_bound
-        if T4_max_arr[p + 1] > max_bound:
-            T4_max_arr[p + 1] = max_bound
+        if T1_min_arr[p + 1] < 0:
+            T1_min_arr[p + 1] = 0
+        if T1_max_arr[p + 1] > 1:
+            T1_max_arr[p + 1] = 1
+        if T4_min_arr[p + 1] < 0:
+            T4_min_arr[p + 1] = 0
+        if T4_max_arr[p + 1] > 1:
+            T4_max_arr[p + 1] = 1
         if T2_min_arr[p + 1] < min_bound:
             T2_min_arr[p + 1] = min_bound
         if T2_max_arr[p + 1] > max_bound:
