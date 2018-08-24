@@ -46,9 +46,10 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = args.det
 
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
@@ -77,10 +78,10 @@ T3_min = 0.001
 T3_max = 0.999
 
 # Varying BSs.
-t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
-t4_array, r4_array = bs_params(T4_min, T4_max, r4_grid)
-t2_array, r2_array = bs_params(T2_min, T2_max, r2_grid)
-t3_array, r3_array = bs_params(T3_min, T3_max, r3_grid)
+t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
+t4_array, r4_array = bs_parameters(T4_min, T4_max, r4_grid)
+t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
+t3_array, r3_array = bs_parameters(T3_min, T3_max, r3_grid)
 
 
 det_prob_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
@@ -116,6 +117,9 @@ if __name__ == "__main__":
                         'r3': r3_array[n3],
                     }
                     final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+                    if final_dens_matrix is None or det_prob is None:
+                        print('Warning: the norm is zero.')
+                        pass
 
                     det_prob_array[n1, n4, n2, n3] = det_prob
 

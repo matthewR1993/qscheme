@@ -4,7 +4,6 @@ if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 
 import numpy as np
-import tensorflow as tf
 from time import gmtime, strftime
 import argparse
 
@@ -14,8 +13,6 @@ from core.sytem_setup import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 
-
-sess = tf.Session()
 
 # Parameters for states
 series_length = 10
@@ -42,16 +39,8 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
-in_state_tf = tf.constant(input_st, tf.float64)
-aux_state_tf = tf.constant(auxiliary_st, tf.float64)
-
 # Building a mutual state via tensor product, that returns numpy array.
-mut_state_unappl = tf.tensordot(
-    in_state_tf,
-    aux_state_tf,
-    axes=0,
-    name=None
-).eval(session=sess)
+mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 
 # The phase difference before last BS

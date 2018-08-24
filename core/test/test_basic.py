@@ -475,10 +475,10 @@ def make_state_appliable_4ch():
     assert_array_equal(state_appl2, state_appl_expected2)
 
 
-def test_bs_params():
+def test_bs_parameters():
     T_min = 0.35
     T_max = 0.73
 
-    assert_array_equal(bs_params(T_min, T_max, 1), (np.array([sqrt(0.35)]), np.array([sqrt(1 - 0.35)])))
-    assert_array_equal(bs_params(T_min, T_max, 2), (np.array([sqrt(0.35), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.73)])))
-    assert_array_equal(bs_params(T_min, T_max, 3), (np.array([sqrt(0.35), sqrt(0.54), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.54), sqrt(1 - 0.73)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 1), (np.array([sqrt(0.35)]), np.array([sqrt(1 - 0.35)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 2), (np.array([sqrt(0.35), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.73)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 3), (np.array([sqrt(0.35), sqrt(0.54), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.54), sqrt(1 - 0.73)])))

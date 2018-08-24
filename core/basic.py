@@ -73,28 +73,28 @@ def detection(input_state, detection_event):
     '''
     size = len(input_state)
     output_state = np.zeros((size,) * 4, dtype=complex)
-    if detection_event is 'BOTH':
+    if detection_event == 'BOTH':
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
                         if p1 is not 0 and p3 is not 0:
                             output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
-    elif detection_event is 'NONE':
+    elif detection_event == 'NONE':
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
                         if p1 is 0 and p3 is 0:
                             output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
-    elif detection_event is 'FIRST':
+    elif detection_event == 'FIRST':
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
                     for p4 in range(size):
                         if p1 > 0 and p3 is 0:
                             output_state[p1, p2, p3, p4] = input_state[p1, p2, p3, p4]
-    elif detection_event is 'THIRD':
+    elif detection_event == 'THIRD':
         for p1 in range(size):
             for p2 in range(size):
                 for p3 in range(size):
@@ -220,14 +220,14 @@ def trace_channel(input_matrix, channel=4):
     '''
     size = len(input_matrix)
     reduced_matrix = np.zeros((size, size), dtype=complex)
-    if channel is 4:
+    if channel == 4:
         for p2 in range(size):
             for p2_ in range(size):
                 sum = 0
                 for n in range(size):
                     sum = sum + input_matrix[p2, n, p2_, n]
                 reduced_matrix[p2, p2_] = sum
-    elif channel is 2:
+    elif channel == 2:
         for p4 in range(size):
             for p4_ in range(size):
                 sum = 0
@@ -365,9 +365,9 @@ def negativity(rho, neg_type='logarithmic'):
     for eigval in w:
         if np.real(eigval) < 0:
             neg = neg + np.abs(np.real(eigval))
-    if neg_type is 'logarithmic':
+    if neg_type == 'logarithmic':
         return np.log2(2 * neg + 1)
-    elif neg_type is 'raw':
+    elif neg_type == 'raw':
         return neg
     else:
         raise ValueError('Incorrect configuration')
@@ -380,7 +380,7 @@ def phase_modulation(rho, phase):
     :param phase: Phase.
     :return: Modulated density matrix in 2 channels.
     '''
-    if phase is 0:
+    if phase == 0:
         return rho
     size = len(rho)
     rho_out = np.zeros((size,)*4, dtype=complex)
@@ -437,7 +437,7 @@ def make_state_appliable_4ch(state):
     return st_appl
 
 
-def bs_params(T_min, T_max, num):
+def bs_parameters(T_min, T_max, num):
     '''
     Generating BS's t and r parameters arrays.
     :param T_min: T min.

@@ -35,9 +35,11 @@ def process_all(input_state, bs_params, phase_diff, det_event):
 
     # The normalised state.
     state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
+    if norm_after_det < 1e-12:
+        return None, None
 
-    # trim the state
-    trim_state = 8
+    # Trim the state, 8 is min.
+    trim_state = 4
     state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]
     # sm_state = np.sum(np.abs(state_after_dett_unappl_norm)) - np.sum(np.abs(state_after_dett_unappl_norm[:trim_state, :trim_state, :trim_state, :trim_state]))
     # print('State trim norm:', sm_state)
@@ -48,8 +50,8 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     # Phase modulation
     dens_matrix_2channels_withph = phase_modulation(dens_matrix_2ch, phase_diff)
 
-    # The transformation at last BS
-    trim_dm = 7
+    # The transformation at last BS, 7 is min.
+    trim_dm = 4
     final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
     # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
     # print('Dens. matr. trim norm:', sm_dm)
