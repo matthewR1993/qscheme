@@ -67,10 +67,10 @@ T3_min = 0.001
 T3_max = 0.001
 
 # Varying BSs.
-t1_array, r1_array = bs_params(T1_min, T1_max, r4_grid)
-t4_array, r4_array = bs_params(T4_min, T4_max, r4_grid)
-t2_array, r2_array = bs_params(T2_min, T2_max, r2_grid)
-t3_array, r3_array = bs_params(T3_min, T3_max, r3_grid)
+t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
+t4_array, r4_array = bs_parameters(T4_min, T4_max, r4_grid)
+t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
+t3_array, r3_array = bs_parameters(T3_min, T3_max, r3_grid)
 
 
 det_prob_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
