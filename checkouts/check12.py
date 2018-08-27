@@ -78,9 +78,13 @@ print('BS 2 and 3 time:', end - start)
 
 # Todo
 def two_bs2x4_transform(t1, r1, t2, r2, input_state):
-
     size = len(input_state)
     output_state = np.zeros((size,) * 4, dtype=complex)
+
+    fact_arr = np.array([factorial(x) for x in range(size)])
+    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+    input_state_appl = np.multiply(input_state, tf2)
+
     for m in range(size):
         for n in range(size):
 
@@ -95,6 +99,37 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
                     output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
 
     return output_state
+
+size = 3
+ind_arr = np.zeros((size,)*4, dtype=int)
+for m in range(size):
+    for n in range(size):
+
+        for k in range(m + 1):
+            for l in range(n + 1):
+                # channels indexes
+                ind1 = k
+                ind2 = m - k
+                ind3 = l
+                ind4 = n - l
+                print(ind1, ind2, ind3, ind4)
+                ind_arr[ind1, ind2, ind3, ind4] = ind_arr[ind1, ind2, ind3, ind4] + 1
+
+for k1 in range(size):
+    for k2 in range(size):
+        for k3 in range(size):
+            for k4 in range(size):
+                if ind_arr[k1, k2, k3, k4] > 1:
+                    print(ind_arr[k1, k2, k3, k4])
+
+
+def coef(k1, k2, k3, k4):
+    return t1**(k2) * (1j*r1)**k1 * t2**(k4) * (1j*r2)**k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
+
+
+vcoef = np.vectorize(coef)
+
+
 
 
 start = time.time()
