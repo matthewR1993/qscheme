@@ -3,7 +3,6 @@ from math import sqrt
 import numpy as np
 
 from ..optimized.transformations import bs_matrix_transform_opt
-# from .core.op.transformations import bs_matrix_transform_opt
 
 
 def test_bs_matrix_transform_opt():
