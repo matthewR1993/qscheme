@@ -13,6 +13,7 @@ from core.basic import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
+from core.optimized import transformations as trans
 
 
 # Parameters for states
@@ -50,12 +51,12 @@ phase_diff = ph_inpi * np.pi
 # BS2, BS3.
 t1 = sqrt(0.73)
 r1 = sqrt(1 - t1**2)
-t4 = sqrt(0.35)
+t4 = sqrt(0.17)
 r4 = sqrt(1 - t4**2)
 
-t2 = sqrt(0.6)
+t2 = sqrt(0.55)
 r2 = sqrt(1 - t2**2)
-t3 = sqrt(0.4)
+t3 = sqrt(0.43)
 r3 = sqrt(1 - t3**2)
 
 # Measurements start here.
@@ -79,13 +80,25 @@ print('BS 2 and 3 time:', end - start)
 start = time.time()
 # Gives non-normalised state.
 state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=DET_CONF)
-# Calculating the norm.
-norm_after_det = state_norm(state_after_dett_unappl)
-print('Norm after det.:', norm_after_det)
-# The normalised state.
-state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 end = time.time()
 print('Detection:', end - start)
+# Calculating the norm.
+# start = time.time()
+# norm_after_det = state_norm(state_after_dett_unappl)
+# end = time.time()
+# print('Calc norm after det:', end - start)
+# print('Norm after det.:', norm_after_det)
+# The normalised state.
+
+# New norm
+start = time.time()
+norm_after_det_new = state_norm_opt(state_after_dett_unappl)
+end = time.time()
+print('State norm after det NEW:', end - start, '\n')
+# print(norm_after_det - norm_after_det_new)
+
+state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det_new
+
 
 trim_st = 8
 state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_st, :trim_st, :trim_st, :trim_st]
@@ -94,7 +107,64 @@ state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_st, :trim_s
 start = time.time()
 dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
-print('Dens. matrix with trace, TRIMMED:', end - start)
+print('Dens. matrix with trace, TRIMMED:', end - start, '\n')
+
+
+# TODO new dens_matrix_with_trace
+def dens_matrix_with_trace_opt(left_vector, right_vector):
+    size = len(left_vector)
+    if len(left_vector) != len(right_vector):
+        raise ValueError('Incorrect dimensions')
+
+    right_vector_conj = np.conj(right_vector)
+    dm = np.zeros((size,) * 4, dtype=complex)
+
+    fact_arr = np.array([factorial(x) for x in range(size)])
+    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p4 in range(size):
+                for p4_ in range(size):
+                    prod1 = np.multiply(left_vector[:, p2, :, p4], right_vector_conj[:, p2_, :, p4_])
+                    prod2 = prod1 * sqrt(factorial(p2) * factorial(p4) * factorial(p2_) * factorial(p4_))
+                    prod3 = np.multiply(prod2, tf2)
+                    dm[p2, p4, p2_, p4_] = np.sum(prod3)
+    return dm
+
+
+def dens_matrix_with_trace_opt2(left_vector, right_vector):
+    size = len(left_vector)
+    if len(left_vector) != len(right_vector):
+        raise ValueError('Incorrect dimensions')
+
+    right_vector_conj = np.conj(right_vector)
+    # dm = np.zeros((size,) * 4, dtype=complex)
+
+    fact_arr = np.array([factorial(x) for x in range(size)])
+    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+
+    # [p1, p2, p3, p4, p1_, p2_, p3_, p4_]
+    dprod = np.tensordot(left_vector, right_vector_conj, axes=0)
+
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p4 in range(size):
+                for p4_ in range(size):
+                    prod1 = np.multiply(left_vector[:, p2, :, p4], right_vector_conj[:, p2_, :, p4_])
+                    prod2 = prod1 * sqrt(factorial(p2) * factorial(p4) * factorial(p2_) * factorial(p4_))
+                    prod3 = np.multiply(prod2, tf2)
+                    dm[p2, p4, p2_, p4_] = np.sum(prod3)
+    return dm
+
+
+start = time.time()
+dens_matrix_2channels_opt = dens_matrix_with_trace_opt(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+end = time.time()
+print('Dens. matrix with trace, OPT:', end - start, '\n')
+
+print('Diff', np.sum(dens_matrix_2channels - dens_matrix_2channels_opt))
+
 
 
 # Phase modulation
@@ -112,13 +182,12 @@ end = time.time()
 print('BS4 density matrix transformation:', end - start)
 
 
-from core.optimized import transformations
 start = time.time()
-final_dens_matrix_new = transformations.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+final_dens_matrix_new = trans.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 end = time.time()
 print('BS4 density matrix transformation NEW:', end - start)
 
-# TODO compare difference of matrices
+# Comparing difference of matrices
 print(np.sum(final_dens_matrix - final_dens_matrix_new))
 
 # end1 = time.time()

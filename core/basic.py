@@ -142,6 +142,20 @@ def state_norm(state):
     return sqrt(norm_)
 
 
+def state_norm_opt(state):
+    '''
+    Optimized function for the norm of the state.
+    :param state: Unapplied state in 4 channels.
+    :return: Norm of the state.
+    '''
+    fact_arr = np.array([factorial(x) for x in range(len(state))])
+    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+    tf4 = np.tensordot(tf2, tf2, axes=0)
+    st_abs_quad = np.power(np.abs(state), 2)
+    mult = np.multiply(st_abs_quad, tf4)
+    return sqrt(np.sum(mult))
+
+
 def dens_matrix_with_trace(left_vector, right_vector):
     '''
     Composing density matrix from projected vectors and partially trace.

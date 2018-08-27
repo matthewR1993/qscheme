@@ -59,11 +59,11 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 11
-r4_grid = 11
+r1_grid = 4
+r4_grid = 4
 
-r2_grid = 11
-r3_grid = 11
+r2_grid = 4
+r3_grid = 4
 
 
 # BS values range.
@@ -72,10 +72,10 @@ T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
 
-T2_min = 0.001
-T2_max = 0.999
-T3_min = 0.001
-T3_max = 0.999
+T2_min = 0.0001
+T2_max = 0.9999
+T3_min = 0.0001
+T3_max = 0.9999
 
 # Varying BSs.
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
@@ -119,7 +119,6 @@ if __name__ == "__main__":
                         'r3': r3_array[n3],
                     }
 
-                    start1 = time.time()
                     final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
                     if final_dens_matrix is None or det_prob is None:
                         print('Warning: the norm is zero.')
@@ -164,9 +163,6 @@ if __name__ == "__main__":
                     epr_correl_x[n1, n4, n2, n3] = epr_x
                     epr_correl_p[n1, n4, n2, n3] = epr_p
                     # print('erp_X:', erp_x, ' erp_P:', erp_p)
-
-                    end1 = time.time()
-                    print('Whole iter. time:', end1 - start1)
 
     # Save it.
     fl = {

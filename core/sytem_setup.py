@@ -1,4 +1,5 @@
 from .basic import *
+from core.optimized import transformations as trans
 import time
 
 
@@ -53,10 +54,8 @@ def process_all(input_state, bs_params, phase_diff, det_event):
 
     # The transformation at last BS, 7 is min.
     trim_dm = 7
-    start = time.time()
-    final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
-    end = time.time()
-    print('Bs dens. matrix transform:', end - start)
+    # final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
+    final_dens_matrix = trans.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
     # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
     # print('Dens. matr. trim norm:', sm_dm)
 
