@@ -59,11 +59,11 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 4
-r4_grid = 4
+r1_grid = 11
+r4_grid = 11
 
-r2_grid = 4
-r3_grid = 4
+r2_grid = 11
+r3_grid = 11
 
 
 # BS values range.

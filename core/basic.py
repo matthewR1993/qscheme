@@ -50,7 +50,7 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     output_state = np.zeros((size,) * 4, dtype=complex)
     for m in range(size):
         for n in range(size):
-            # two sums up to m and n
+
             for k in range(m + 1):
                 for l in range(n + 1):
                     # channels indexes
@@ -114,16 +114,9 @@ def det_probability(input_state, detection_event):
     :param detection_event: Detection event.
     :return: Probability of the detection.
     '''
-    size = len(input_state)
     st_aft_det_unappl = detection(input_state, detection_event)
-    st_aft_det_unappl_conj = np.conj(st_aft_det_unappl)
-    trace = 0
-    for p1 in range(size):
-        for p2 in range(size):
-            for p3 in range(size):
-                for p4 in range(size):
-                    trace = trace + input_state[p1, p2, p3, p4] * st_aft_det_unappl_conj[p1, p2, p3, p4]
-    return 1 - trace
+    st = np.multiply(st_aft_det_unappl, np.conj(st_aft_det_unappl))
+    return 1 - np.sum(st)
 
 
 def state_norm(state):
@@ -180,6 +173,35 @@ def dens_matrix_with_trace(left_vector, right_vector):
                             matrix_sum = matrix_sum + left_vector[k1, p2, k3, p4] * right_vector_conj[k1, p2_, k3, p4_] * factorial(k1) * factorial(k3) * sqrt(factorial(p2)*factorial(p4)*factorial(p2_)*factorial(p4_))
                     dm[p2, p4, p2_, p4_] = matrix_sum
 
+    return dm
+
+
+def dens_matrix_with_trace_opt(left_vector, right_vector):
+    '''
+    Optimized version.
+    Composing density matrix from projected vectors and partially trace.
+    :param left_vector: Ket unapplied state in 4 channels.
+    :param right_vector: Bra unapplied state in 4 channels.
+    :return: Applied dens matrix for 2 channels.
+    '''
+    size = len(left_vector)
+    if len(left_vector) != len(right_vector):
+        raise ValueError('Incorrect dimensions')
+
+    right_vector_conj = np.conj(right_vector)
+    dm = np.zeros((size,) * 4, dtype=complex)
+
+    fact_arr = np.array([factorial(x) for x in range(size)])
+    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+
+    for p2 in range(size):
+        for p2_ in range(size):
+            for p4 in range(size):
+                for p4_ in range(size):
+                    prod1 = np.multiply(left_vector[:, p2, :, p4], right_vector_conj[:, p2_, :, p4_])
+                    prod2 = prod1 * sqrt(factorial(p2) * factorial(p4) * factorial(p2_) * factorial(p4_))
+                    prod3 = np.multiply(prod2, tf2)
+                    dm[p2, p4, p2_, p4_] = np.sum(prod3)
     return dm
 
 
@@ -272,17 +294,16 @@ def bs_densmatrix_transform(input_matrix, t, r):
             for p1_ in range(size):
                 for p2_ in range(size):
 
-                    # four sums
                     for n in range(p1 + 1):
                         for k in range(p2 + 1):
                             for n_ in range(p1_ + 1):
                                 for k_ in range(p2_ + 1):
                                     d1 = p1 - n + k
                                     d2 = n + p2 - k
-                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2) * factorial(p1) * factorial(p2)) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
-
                                     d1_ = p1_ - n_ + k_
                                     d2_ = n_ + p2_ - k_
+
+                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2) * factorial(p1) * factorial(p2)) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
                                     coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_) * factorial(p1_) * factorial(p2_)) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
 
                                     output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2

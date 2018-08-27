@@ -180,6 +180,37 @@ def test_dens_matrix_with_trace():
     assert_array_equal(rho3, rho_expected3)
 
 
+def test_dens_matrix_with_trace_opt():
+    with pytest.raises(ValueError):
+        dens_matrix_with_trace_opt(np.array([1, 2, 3]), np.array([1, 2]))
+
+    size = 3
+
+    state1 = np.zeros((size,) * 4, dtype=complex)
+    rho_expected1 = np.zeros((size,) * 4, dtype=complex)
+    rho1 = dens_matrix_with_trace_opt(state1, state1)
+    assert_array_equal(rho1, rho_expected1)
+
+    state2 = np.zeros((size,) * 4, dtype=complex)
+    state2[1, 0, 1, 0] = 1
+    rho_expected2 = np.zeros((size,) * 4, dtype=complex)
+    rho_expected2[0, 0, 0, 0] = 1
+    rho2 = dens_matrix_with_trace_opt(state2, state2)
+    assert_array_equal(rho2, rho_expected2)
+
+    state3 = np.zeros((size,) * 4, dtype=complex)
+    state3[1, 1, 2, 0] = 3
+    state3[1, 2, 2, 1] = 5 + 3j
+    state3[1, 1, 1, 0] = 7 - 1j
+    rho_expected3 = np.zeros((size,) * 4, dtype=complex)
+    rho_expected3[1, 0, 1, 0] = 18 + 50
+    rho_expected3[1, 0, 2, 1] = 6 * sqrt(2) * (5 - 3j)
+    rho_expected3[2, 1, 1, 0] = 6 * sqrt(2) * (5 + 3j)
+    rho_expected3[2, 1, 2, 1] = 4 * 34
+    rho3 = dens_matrix_with_trace_opt(state3, state3)
+    assert_array_equal(rho3, rho_expected3)
+
+
 def test_dens_matrix():
     size = 4
 

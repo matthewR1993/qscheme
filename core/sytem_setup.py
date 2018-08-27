@@ -32,7 +32,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     state_after_dett_unappl = detection(state_aft2bs_unappl, detection_event=det_event)
 
     # Calculating the norm.
-    norm_after_det = state_norm(state_after_dett_unappl)
+    norm_after_det = state_norm_opt(state_after_dett_unappl)
     # print('Norm after det.:', norm_after_det)
 
     # The normalised state.
@@ -47,7 +47,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     # print('State trim norm:', sm_state)
 
     # Building dens. matrix and trace.
-    dens_matrix_2ch = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+    dens_matrix_2ch = dens_matrix_with_trace_opt(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 
     # Phase modulation
     dens_matrix_2channels_withph = phase_modulation(dens_matrix_2ch, phase_diff)

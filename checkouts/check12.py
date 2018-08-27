@@ -76,6 +76,32 @@ end = time.time()
 print('BS 2 and 3 time:', end - start)
 
 
+# Todo
+def two_bs2x4_transform(t1, r1, t2, r2, input_state):
+
+    size = len(input_state)
+    output_state = np.zeros((size,) * 4, dtype=complex)
+    for m in range(size):
+        for n in range(size):
+
+            for k in range(m + 1):
+                for l in range(n + 1):
+                    # channels indexes
+                    ind1 = k
+                    ind2 = m - k
+                    ind3 = l
+                    ind4 = n - l
+                    coeff = input_state[m, n] * t1**(m - k) * (1j*r1)**k * t2**(n - l) * (1j*r2)**l * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
+                    output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
+
+    return output_state
+
+
+start = time.time()
+det_prob = det_probability(state_aft2bs_unappl, detection_event=DET_CONF)
+end = time.time()
+print('Det prob. time:', end - start)
+
 # The detection event.
 start = time.time()
 # Gives non-normalised state.
@@ -104,77 +130,27 @@ trim_st = 8
 state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_st, :trim_st, :trim_st, :trim_st]
 
 # Trimmed! 2 sec.
-start = time.time()
-dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
-end = time.time()
-print('Dens. matrix with trace, TRIMMED:', end - start, '\n')
-
-
-# TODO new dens_matrix_with_trace
-def dens_matrix_with_trace_opt(left_vector, right_vector):
-    size = len(left_vector)
-    if len(left_vector) != len(right_vector):
-        raise ValueError('Incorrect dimensions')
-
-    right_vector_conj = np.conj(right_vector)
-    dm = np.zeros((size,) * 4, dtype=complex)
-
-    fact_arr = np.array([factorial(x) for x in range(size)])
-    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
-
-    for p2 in range(size):
-        for p2_ in range(size):
-            for p4 in range(size):
-                for p4_ in range(size):
-                    prod1 = np.multiply(left_vector[:, p2, :, p4], right_vector_conj[:, p2_, :, p4_])
-                    prod2 = prod1 * sqrt(factorial(p2) * factorial(p4) * factorial(p2_) * factorial(p4_))
-                    prod3 = np.multiply(prod2, tf2)
-                    dm[p2, p4, p2_, p4_] = np.sum(prod3)
-    return dm
-
-
-def dens_matrix_with_trace_opt2(left_vector, right_vector):
-    size = len(left_vector)
-    if len(left_vector) != len(right_vector):
-        raise ValueError('Incorrect dimensions')
-
-    right_vector_conj = np.conj(right_vector)
-    # dm = np.zeros((size,) * 4, dtype=complex)
-
-    fact_arr = np.array([factorial(x) for x in range(size)])
-    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
-
-    # [p1, p2, p3, p4, p1_, p2_, p3_, p4_]
-    dprod = np.tensordot(left_vector, right_vector_conj, axes=0)
-
-    for p2 in range(size):
-        for p2_ in range(size):
-            for p4 in range(size):
-                for p4_ in range(size):
-                    prod1 = np.multiply(left_vector[:, p2, :, p4], right_vector_conj[:, p2_, :, p4_])
-                    prod2 = prod1 * sqrt(factorial(p2) * factorial(p4) * factorial(p2_) * factorial(p4_))
-                    prod3 = np.multiply(prod2, tf2)
-                    dm[p2, p4, p2_, p4_] = np.sum(prod3)
-    return dm
-
+# start = time.time()
+# dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
+# end = time.time()
+#print('Dens. matrix with trace, TRIMMED:', end - start, '\n')
 
 start = time.time()
 dens_matrix_2channels_opt = dens_matrix_with_trace_opt(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
 print('Dens. matrix with trace, OPT:', end - start, '\n')
 
-print('Diff', np.sum(dens_matrix_2channels - dens_matrix_2channels_opt))
+# print('Diff', np.sum(dens_matrix_2channels - dens_matrix_2channels_opt))
 
 
-
-# Phase modulation
+# Phase modulation.
 start = time.time()
-dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels, phase_diff)
+dens_matrix_2channels_withph = phase_modulation(dens_matrix_2channels_opt, phase_diff)
 end = time.time()
 print('Phase modulation:', end - start)
 
 
-# TODO Slow! 69 sec. for trim=10.
+# Dens matrix BS transform.
 trim_size = 7
 start = time.time()
 final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
@@ -189,6 +165,37 @@ print('BS4 density matrix transformation NEW:', end - start)
 
 # Comparing difference of matrices
 print(np.sum(final_dens_matrix - final_dens_matrix_new))
+
+# print(np.sum(final_dens_matrix) - np.sum(final_dens_matrix[:10, :10, :10, :10]))
+
+
+# Todo, another optimisation.
+def bs_densmatrix_transform_opt2(input_matrix, t, r):
+    size = len(input_matrix)
+    output_matrix = np.zeros((size*2,) * 4, dtype=complex)
+
+    for p1 in range(size):
+        for p2 in range(size):
+            for p1_ in range(size):
+                for p2_ in range(size):
+
+                    # four sums
+                    for n in range(p1 + 1):
+                        for k in range(p2 + 1):
+                            for n_ in range(p1_ + 1):
+                                for k_ in range(p2_ + 1):
+                                    d1 = p1 - n + k
+                                    d2 = n + p2 - k
+                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2) * factorial(p1) * factorial(p2)) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
+
+                                    d1_ = p1_ - n_ + k_
+                                    d2_ = n_ + p2_ - k_
+                                    coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_) * factorial(p1_) * factorial(p2_)) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
+
+                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2
+
+    return output_matrix
+
 
 # end1 = time.time()
 # print('Overall:', end1 - start1)
