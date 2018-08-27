@@ -6,8 +6,6 @@ try:
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 except: pass
 
-import tensorflow as tf
-import scipy
 from time import gmtime, strftime
 
 from customutils.utils import *
@@ -16,8 +14,6 @@ from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
 
-
-sess = tf.Session()
 
 # Parameters for states
 series_length = 10
@@ -44,38 +40,26 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
-in_state_tf = tf.constant(input_st, tf.float64)
-aux_state_tf = tf.constant(auxiliary_st, tf.float64)
+mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
-# Building a mutual state via tensor product, that returns numpy array.
-mut_state_unappl = tf.tensordot(
-    in_state_tf,
-    aux_state_tf,
-    axes=0,
-    name=None
-).eval(session=sess)
-
-# Start time.
-print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-
-# The first and the last BS grids.
-r1_grid = 1
-r4_grid = 11
-
-# If BS1 is 50:50 symetrical.
-bs1_is_symmetrical = True
 
 # The phase difference before last BS
 ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS2, BS3.
+t1 = sqrt(0.73)
+r1 = sqrt(1 - t1**2)
+t4 = sqrt(0.35)
+r4 = sqrt(1 - t4**2)
+
 t2 = sqrt(0.6)
 r2 = sqrt(1 - t2**2)
 t3 = sqrt(0.4)
 r3 = sqrt(1 - t3**2)
 
 # Measurements start here.
+start1 = time.time()
 
 # First BS.
 start = time.time()
@@ -103,40 +87,14 @@ state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
 end = time.time()
 print('Detection:', end - start)
 
-
-# Trim the state
-start = time.time()
-state_after_dett_unappl_norm_tr = trim_state(state_after_dett_unappl_norm, error=1e-9, start_index=12)
-end = time.time()
-print('Trim the state in 4 chann.:', end - start)
-
-
-state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:8, :8, :8, :8]
-
-sm_state = np.sum(np.abs(state_after_dett_unappl_norm[0:, 0:, 0:, 0:]))
-
-# Old method
-# start = time.time()
-# dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-# end = time.time()
-# print('Dens. metrix with trace, OLD:', end - start)
+trim_st = 8
+state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_st, :trim_st, :trim_st, :trim_st]
 
 # Trimmed! 2 sec.
 start = time.time()
 dens_matrix_2channels = dens_matrix_with_trace(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
-print('Dens. metrix with trace, TRIMMED, OLD:', end - start)
-
-# A new method.
-# from core.optimized import transformations
-# start = time.time()
-# dens_matrix_2channels = transformations.dm_with_trace(state_after_dett_unappl_norm, state_after_dett_unappl_norm)
-# end = time.time()
-# print('Dens. metrix with trace, NEW:', end - start)
-
-
-# Comparing an old and a new
-#np.testing.assert_allclose(dens_matrix_2channels_old, dens_matrix_2channels)
+print('Dens. matrix with trace, TRIMMED:', end - start)
 
 
 # Phase modulation
@@ -146,45 +104,67 @@ end = time.time()
 print('Phase modulation:', end - start)
 
 
-# TODO Slow! 69 sec.
-trim_size = 6
+# TODO Slow! 69 sec. for trim=10.
+trim_size = 7
 start = time.time()
 final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 end = time.time()
 print('BS4 density matrix transformation:', end - start)
 
-np.sum(np.abs(dens_matrix_2channels_withph[6:, 6:, 6:, 6:]))
 
-
+from core.optimized import transformations
 start = time.time()
-final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
+final_dens_matrix_new = transformations.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
 end = time.time()
-print('Trace one channel out of the final ds. matrix:', end - start)
+print('BS4 density matrix transformation NEW:', end - start)
 
-start = time.time()
-log_entanglement_subs1 = log_entropy(final_traced_subs1)
-end = time.time()
-print('Log. entropy:', end - start)
+# TODO compare difference of matrices
+print(np.sum(final_dens_matrix - final_dens_matrix_new))
 
-start = time.time()
-final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
-full_entr = log_entropy(final_reorg_matr)
-end = time.time()
-print('Full entropy:', end - start)
+# end1 = time.time()
+# print('Overall:', end1 - start1)
+#
+#
+# start = time.time()
+# final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
+# end = time.time()
+# print('Trace one channel out of the final ds. matrix:', end - start)
+#
+# start = time.time()
+# log_entanglement_subs1 = log_entropy(final_traced_subs1)
+# end = time.time()
+# print('Log. entropy:', end - start)
+#
+# start = time.time()
+# final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
+# full_entr = log_entropy(final_reorg_matr)
+# end = time.time()
+# print('Full entropy:', end - start)
+#
+# start = time.time()
+# negativity(final_dens_matrix, neg_type='logarithmic')
+# end = time.time()
+# print('Negativity:', end - start)
+#
+# start = time.time()
+# # Squeezing quadratures.
+# dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
+# end = time.time()
+# print('Squezing quadratures:', end - start)
+#
+# start = time.time()
+# # ERP correlations.
+# erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
+# end = time.time()
+# print('EPR correlations:', end - start)
+#
+# end1 = time.time()
+# print('Overall:', end1 - start1)
 
-start = time.time()
-negativity(final_dens_matrix, neg_type='logarithmic')
-end = time.time()
-print('Negativity:', end - start)
 
-start = time.time()
-# Squeezing quadratures.
-dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
-end = time.time()
-print('Squezing quadratures:', end - start)
+# import numpy as np
+# from core.optimized import transformations
+# dm = np.zeros((10,) * 4, dtype=complex)
+# cc = transformations.bs_matrix_transform_opt(dm, 0.37, 0.57)
+# print(cc[0, 0, 0, 0])
 
-start = time.time()
-# ERP correlations.
-erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
-end = time.time()
-print('EPR correlations:', end - start)

@@ -21,7 +21,7 @@ parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=Tr
 args = parser.parse_args()
 
 save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-# save_root = '/home/matthew/qscheme/results/res15/'
+# save_root = '/home/matthew/qscheme/results/res16/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 
@@ -96,6 +96,8 @@ sqeez_dX = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 epr_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 epr_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+norm_after_det_arr = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+final_dens_matrix_list = []
 
 
 if __name__ == "__main__":
@@ -116,35 +118,39 @@ if __name__ == "__main__":
                         't3': t3_array[n3],
                         'r3': r3_array[n3],
                     }
-                    final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+
+                    start1 = time.time()
+                    final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
                     if final_dens_matrix is None or det_prob is None:
                         print('Warning: the norm is zero.')
                         pass
 
                     det_prob_array[n1, n4, n2, n3] = det_prob
+                    norm_after_det_arr[n1, n4, n2, n3] = norm
+                    final_dens_matrix_list.append({'dm': final_dens_matrix, 'keys': [n1, n4, n2, n3]})
 
                     # Trace one channel out of final state
-                    final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
+                    # final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
                     # print('trace of final reduced matrix 2nd channel:', np.trace(final_traced_subs1))
 
                     # Other channel traced
-                    final_traced_subs2 = trace_channel(final_dens_matrix, channel=2)
+                    # final_traced_subs2 = trace_channel(final_dens_matrix, channel=2)
                     # print('trace of final reduced matrix 4th channel:', np.trace(final_traced_subs2))
 
                     # Calculate entropy
-                    log_entanglement_subs1 = log_entropy(final_traced_subs1)
-                    log_entanglement_subs2 = log_entropy(final_traced_subs2)
-                    log_entropy_subs1_array[n1, n4, n2, n3] = log_entanglement_subs1
-                    log_entropy_subs2_array[n1, n4, n2, n3] = log_entanglement_subs2
+                    # log_entanglement_subs1 = log_entropy(final_traced_subs1)
+                    # log_entanglement_subs2 = log_entropy(final_traced_subs2)
+                    # log_entropy_subs1_array[n1, n4, n2, n3] = log_entanglement_subs1
+                    # log_entropy_subs2_array[n1, n4, n2, n3] = log_entanglement_subs2
 
                     # Full entropy and the mutual information
-                    final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
-                    full_entr = log_entropy(final_reorg_matr)
+                    # final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
+                    # full_entr = log_entropy(final_reorg_matr)
 
-                    mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
-                    full_fn_entropy[n1, n4, n2, n3] = full_entr
+                    # mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
+                    # full_fn_entropy[n1, n4, n2, n3] = full_entr
 
-                    log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
+                    # log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
                     # print('Log. negativity: ', log_negativity[n1, n4, n2, n3])
 
                     # Squeezing quadratures.
@@ -159,9 +165,14 @@ if __name__ == "__main__":
                     epr_correl_p[n1, n4, n2, n3] = epr_p
                     # print('erp_X:', erp_x, ' erp_P:', erp_p)
 
+                    end1 = time.time()
+                    print('Whole iter. time:', end1 - start1)
+
     # Save it.
     fl = {
         'det_prob': det_prob_array,
+        'norm_aft_det': norm_after_det_arr,
+        'final_dens_matrix': final_dens_matrix_list,
         'log_negativity': log_negativity,
         'mut_inform': mut_information,
         'squeez_dx': sqeez_dX,

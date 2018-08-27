@@ -14,5 +14,6 @@ build
 .pytest_cache
 .DS_Store
 *.c
+*.cpp
 *.so
 *.o
