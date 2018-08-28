@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
                     det_prob_array[n1, n4, n2, n3] = det_prob
                     norm_after_det_arr[n1, n4, n2, n3] = norm
-                    final_dens_matrix_list.append({'dm': final_dens_matrix, 'keys': [n1, n4, n2, n3]})
+                    # final_dens_matrix_list.append({'dm': final_dens_matrix, 'keys': [n1, n4, n2, n3]})
 
                     # Trace one channel out of final state
                     # final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
@@ -168,9 +168,9 @@ if __name__ == "__main__":
     fl = {
         'det_prob': det_prob_array,
         'norm_aft_det': norm_after_det_arr,
-        'final_dens_matrix': final_dens_matrix_list,
-        'log_negativity': log_negativity,
-        'mut_inform': mut_information,
+        # 'final_dens_matrix': final_dens_matrix_list,
+        # 'log_negativity': log_negativity,
+        # 'mut_inform': mut_information,
         'squeez_dx': sqeez_dX,
         'squeez_dp': sqeez_dP,
         'epr_correl_x': epr_correl_x,

@@ -75,12 +75,12 @@ plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
 # EPR:
-plt.plot(phases, epr_x_min_arr, 'r.')
+plt.plot(phases, epr_x_min_arr, 'r-o')
 plt.title('$EPR \ X^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-plt.plot(phases, epr_p_min_arr, 'r.')
+plt.plot(phases, epr_p_min_arr, 'r-o')
 plt.title('$EPR \ P^{min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()

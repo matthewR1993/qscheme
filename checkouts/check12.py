@@ -70,10 +70,14 @@ print('First BS time:', end - start)
 
 
 # 2d and 3rd BS.
+trm = 12
 start = time.time()
+# state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 end = time.time()
 print('BS 2 and 3 time:', end - start)
+
+# np.sum(state_after_bs_unappl[:trm, :trm]) - np.sum(state_after_bs_unappl)
 
 
 # Todo
@@ -100,7 +104,8 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
     return output_state
 
-size = 3
+
+size = len(state_after_bs_unappl)
 ind_arr = np.zeros((size,)*4, dtype=int)
 for m in range(size):
     for n in range(size):
@@ -114,6 +119,7 @@ for m in range(size):
                 ind4 = n - l
                 print(ind1, ind2, ind3, ind4)
                 ind_arr[ind1, ind2, ind3, ind4] = ind_arr[ind1, ind2, ind3, ind4] + 1
+
 
 for k1 in range(size):
     for k2 in range(size):
@@ -129,7 +135,76 @@ def coef(k1, k2, k3, k4):
 
 vcoef = np.vectorize(coef)
 
+pr1 = np.fromfunction(vcoef, (size,)*4)
 
+fact_arr = np.array([factorial(x) for x in range(size)])
+tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
+input_state_appl = np.multiply(state_after_bs_unappl, tf2)
+
+
+def func3(m, n, k, l):
+    if k <= m and l <= n:
+        return k, m - k, l, n - l
+    else:
+        return None, None, None, None
+
+
+def func4(m, n, k, l):
+    return k, m - k, l, n - l
+
+
+vec_func4 = np.vectorize(func4)
+
+pr2 = np.fromfunction(func4, (size,)*4)
+
+
+gamma_arr[func4(m, n, k, l)] = input_state_appl[m, n]
+
+
+def func5(p1, p2, p3, p4):
+    return input_state_appl[p1 + p2, p3 + p4]
+
+
+def func6(p1, p2, p3, p4):
+    return p1 + p2, p3 + p4
+
+
+vec_func5 = np.vectorize(func5, otypes=[np.complex])
+
+vec_func5([1, 1, 1, 1])
+
+
+vec_func5(np.array([(1, 1, 1, 1), (1, 1, 1, 1)]))
+
+
+
+vec_func5(1, 1, 1, 1)
+func5(1, 1, 1, 1)
+input_state_appl[1, 1]
+
+input_state_appl[[[2, 2], [1, 1]]]
+
+
+
+
+ind_arr2 = np.fromfunction(lambda p1, p2, p3, p4: p1 + p2 + p3 + p4, (size,)*4)
+
+gamma_arr = np.zeros((size,)*4, dtype=complex)
+for m in range(size):
+    for n in range(size):
+
+        # indexes can me extended up to the size, but controll negarive indexes.
+        for k in range(m + 1):
+            for l in range(n + 1):
+                # channels indexes
+                # ind1 = k
+                # ind2 = m - k
+                # ind3 = l
+                # ind4 = n - l
+                gamma_arr[k, m - k, l, n - l] = input_state_appl[m, n]
+
+
+# np.fromfunction(coef, (10,)*4, dtype=int)
 
 
 start = time.time()
