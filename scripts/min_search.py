@@ -96,4 +96,31 @@ plt.title('$P[EPR \ P]$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
+epr_x_min_ind
 
+
+r2_grid = 11
+r3_grid = 11
+
+
+# BS values range.
+T1_min = 0.0
+T1_max = 1.0
+T4_min = 0.0
+T4_max = 1.0
+
+T2_min = 0.0001
+T2_max = 0.9999
+T3_min = 0.0001
+T3_max = 0.9999
+
+tarr1 = np.linspace(T1_min, T1_max, 11)
+
+[7, 8, 10, 1]
+
+tarr1[7]
+tarr1[8]
+tarr1[10]
+tarr1[1]
+
+epr_x_min_ind

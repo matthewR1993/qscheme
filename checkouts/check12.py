@@ -156,8 +156,18 @@ final_dens_matrix_new = trans.bs_matrix_transform_opt(dens_matrix_2channels_with
 end = time.time()
 print('BS4 density matrix transformation NEW:', end - start)
 
-# Comparing difference of matrices
 print(np.sum(final_dens_matrix - final_dens_matrix_new))
+
+
+start = time.time()
+state_in = dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size].copy(order='C')
+final_dens_matrix_new2 = trans.bs_matrix_transform_opt2(state_in, t4, r4)
+end = time.time()
+print('BS4 density matrix transformation NEW 2:', end - start)
+
+
+# Comparing difference of matrices
+print(np.sum(final_dens_matrix - np.array(final_dens_matrix_new2)))
 
 # print(np.sum(final_dens_matrix) - np.sum(final_dens_matrix[:10, :10, :10, :10]))
 
