@@ -71,7 +71,7 @@ print('First BS time:', end - start)
 
 
 # 2d and 3rd BS.
-trm = 12
+# trm = 12
 start = time.time()
 # state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
@@ -80,65 +80,20 @@ print('BS 2 and 3 time:', end - start)
 
 # np.sum(state_after_bs_unappl[:trm, :trm]) - np.sum(state_after_bs_unappl)
 
-#
-# def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
-#     size = len(input_state)
-#     output_state = np.zeros((size,) * 4, dtype=complex)
-#
-#     def coef(k1, k2, k3, k4): return t1 ** (k2) * (1j * r1) ** k1 * t2 ** (k4) * (1j * r2) ** k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
-#
-#     # index 'i' => (m,n,k,l)
-#     for i in np.ndindex(size, size, size, size):
-#         if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
-#             output_state[i[2], i[0] - i[2], i[3], i[1] - i[3]] = coef(i[2], i[0] - i[2], i[3], i[1] - i[3]) * input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1])
-#
-#     return output_state
-
-
 start = time.time()
 state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl)
 # state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
 end = time.time()
 print('BS 2 and 3 time OPT:', end - start)
 
-assert_allclose(state_aft2bs_unappl_opt, state_aft2bs_unappl)
-
 print(np.sum(state_aft2bs_unappl_opt - state_aft2bs_unappl))
 
-
-print(t1, r1, t2, r2)
-
-state2 = np.tensordot(fock_state(2, series_length), fock_state(2, series_length), axes=0)
-out_state2 = np.zeros((series_length,) * 4, dtype=complex)
-out_state2[0, 2, 0, 2] = t1 ** 2 * t2 ** 2
-out_state2[0, 2, 1, 1] = 2j * t1 ** 2 * t2 * r2
-out_state2[0, 2, 2, 0] = - t1 ** 2 * r2 ** 2
-out_state2[1, 1, 0, 2] = 2j * t1 * r1 * t2 ** 2
-out_state2[1, 1, 1, 1] = - 4 * t1 * r1 * t2 * r2
-out_state2[1, 1, 2, 0] = - 2j * t1 * r1 * r2 ** 2
-out_state2[2, 0, 0, 2] = - r1 ** 2 * t2 ** 2
-out_state2[2, 0, 1, 1] = - 2j * r1 ** 2 * t2 * r2
-out_state2[2, 0, 2, 0] = r1 ** 2 * r2 ** 2
-out_state2 = out_state2 * 0.5  # initial state is unapplied
-
-state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t1, r1, t2, r2, state2)
-state_aft2bs_unappl = two_bs2x4_transform(t1, r1, t2, r2, state2)
-
-print(np.sum(state_aft2bs_unappl_opt - out_state2))
-print(np.sum(state_aft2bs_unappl - out_state2))
-
-# for i in np.ndindex(size, size, size, size):
-#     k2 = i[0] - i[2]
-#     k4 = i[1] - i[3]
-#     if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
-#         output_state[i[2], k2, i[3], k4] = input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1]) * t1 ** (k2) * (
-#                     1j * r1) ** i[2] * t2 ** (k4) * (1j * r2) ** i[3] / (
-#                                                    factorial(i[2]) * factorial(k2) * factorial(i[3]) * factorial(k4))
 
 start = time.time()
 det_prob = det_probability(state_aft2bs_unappl, detection_event=DET_CONF)
 end = time.time()
 print('Det prob. time:', end - start)
+
 
 # The detection event.
 start = time.time()
@@ -158,7 +113,7 @@ print('Detection:', end - start)
 start = time.time()
 norm_after_det_new = state_norm_opt(state_after_dett_unappl)
 end = time.time()
-print('State norm after det NEW:', end - start, '\n')
+print('State norm after det NEW:', end - start,)
 # print(norm_after_det - norm_after_det_new)
 
 state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det_new
@@ -176,7 +131,7 @@ state_after_dett_unappl_norm_tr = state_after_dett_unappl_norm[:trim_st, :trim_s
 start = time.time()
 dens_matrix_2channels_opt = dens_matrix_with_trace_opt(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 end = time.time()
-print('Dens. matrix with trace, OPT:', end - start, '\n')
+print('Dens. matrix with trace, OPT:', end - start)
 
 # print('Diff', np.sum(dens_matrix_2channels - dens_matrix_2channels_opt))
 
@@ -205,35 +160,6 @@ print('BS4 density matrix transformation NEW:', end - start)
 print(np.sum(final_dens_matrix - final_dens_matrix_new))
 
 # print(np.sum(final_dens_matrix) - np.sum(final_dens_matrix[:10, :10, :10, :10]))
-
-
-# Todo, another optimisation.
-def bs_densmatrix_transform_opt2(input_matrix, t, r):
-    size = len(input_matrix)
-    output_matrix = np.zeros((size*2,) * 4, dtype=complex)
-
-    for p1 in range(size):
-        for p2 in range(size):
-            for p1_ in range(size):
-                for p2_ in range(size):
-
-                    # four sums
-                    for n in range(p1 + 1):
-                        for k in range(p2 + 1):
-                            for n_ in range(p1_ + 1):
-                                for k_ in range(p2_ + 1):
-                                    d1 = p1 - n + k
-                                    d2 = n + p2 - k
-                                    coeff1 = t**(p1 - n + p2 - k) * (1j*r)**(n + k) * sqrt(factorial(d1) * factorial(d2) * factorial(p1) * factorial(p2)) / (factorial(n) * factorial(p1 - n) * factorial(k) * factorial(p2 - k))
-
-                                    d1_ = p1_ - n_ + k_
-                                    d2_ = n_ + p2_ - k_
-                                    coeff2 = t**(p1_ - n_ + p2_ - k_) * (-1j*r)**(n_ + k_) * sqrt(factorial(d1_) * factorial(d2_) * factorial(p1_) * factorial(p2_)) / (factorial(n_) * factorial(p1_ - n_) * factorial(k_) * factorial(p2_ - k_))
-
-                                    output_matrix[d1, d2, d1_, d2_] = output_matrix[d1, d2, d1_, d2_] + input_matrix[p1, p2, p1_, p2_] * coeff1 * coeff2
-
-    return output_matrix
-
 
 # end1 = time.time()
 # print('Overall:', end1 - start1)

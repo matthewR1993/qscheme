@@ -82,7 +82,7 @@ def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
     :return: Four channels(modes) unapllied state.
     '''
     size = len(input_state)
-    output_state = np.zeros((size,) * 4, dtype=complex)
+    out = np.zeros((size,) * 4, dtype=complex)
 
     def coef(k1, k2, k3, k4):
         return t1 ** k2 * (1j * r1) ** k1 * t2 ** k4 * (1j * r2) ** k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
@@ -90,8 +90,9 @@ def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
     # index 'i' = (m,n,k,l)
     for i in np.ndindex(size, size, size, size):
         if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
-            output_state[i[2], i[0] - i[2], i[3], i[1] - i[3]] = coef(i[2], i[0] - i[2], i[3], i[1] - i[3]) * input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1])
-    return output_state
+            out[i[2], i[0] - i[2], i[3], i[1] - i[3]] = coef(i[2], i[0] - i[2], i[3], i[1] - i[3]) * input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1])
+
+    return out
 
 
 def detection(input_state, detection_event):

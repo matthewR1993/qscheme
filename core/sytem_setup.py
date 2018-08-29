@@ -21,7 +21,8 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     state_after_bs_unappl = bs2x2_transform(t1, r1, input_state)
 
     # 2d and 3rd BS.
-    state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
+    # state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
+    state_aft2bs_unappl = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl)
 
     # Detection probability
     det_prob = det_probability(state_aft2bs_unappl, detection_event=det_event)

@@ -8,7 +8,6 @@ from ..optimized.transformations import bs_matrix_transform_opt
 def test_bs_matrix_transform_opt():
     size = 4
 
-    # [(t, r),]
     bs_vals = [(0, 1), (sqrt(0.5), sqrt(0.5)), (sqrt(0.73), sqrt(0.27)), (1, 0)]
 
     for val in bs_vals:
