@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 det = 'FIRST'
 
-phases = [x * 0.125 for x in range(13)]
+phases = [x * 0.125 for x in range(17)]
 # phases = [0.0, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
 size = len(phases)
 
