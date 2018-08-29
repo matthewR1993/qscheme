@@ -53,6 +53,41 @@ def test_two_bs2x4_transform():
         assert_allclose(two_bs2x4_transform(t1, r1, t2, r2, state2), out_state2)
 
 
+def test_two_bs2x4_transform_opt():
+    series_length = 3
+    bs_vals = [(sqrt(0.73), sqrt(0.27)), (sqrt(0.5), sqrt(0.5))]
+    # bs_vals = [(0, 1), (sqrt(0.5), sqrt(0.5)), (sqrt(0.73), sqrt(0.27)), (1, 0)]
+
+    for val in bs_vals:
+        t1, r1 = val[0], val[1]
+        t2, r2 = val[1], val[0]
+        # Two single photons.
+        state1 = np.tensordot(single_photon(series_length), single_photon(series_length), axes=0)
+        out_state1 = np.zeros((series_length,) * 4, dtype=complex)
+        out_state1[0, 1, 0, 1] = t1 * t2
+        out_state1[0, 1, 1, 0] = 1j * t1 * r2
+        out_state1[1, 0, 0, 1] = 1j * r1 * t2
+        out_state1[1, 0, 1, 0] = - r1 * r2
+        assert_array_equal(two_bs2x4_transform_opt(t1, r1, t2, r2, state1), out_state1)
+
+        # TODO. Two Fock states with n=2.
+        # state2 = np.tensordot(fock_state(2, series_length), fock_state(2, series_length), axes=0)
+        # out_state2 = np.zeros((series_length,) * 4, dtype=complex)
+        # out_state2[0, 2, 0, 2] = t1**2 * t2**2
+        # out_state2[0, 2, 1, 1] = 2j * t1**2 * t2 * r2
+        # out_state2[0, 2, 2, 0] = - t1**2 * r2**2
+        # out_state2[1, 1, 0, 2] = 2j * t1 * r1 * t2**2
+        # out_state2[1, 1, 1, 1] = - 4 * t1 * r1 * t2 * r2
+        # out_state2[1, 1, 2, 0] = - 2j * t1 * r1 * r2**2
+        # out_state2[2, 0, 0, 2] = - r1**2 * t2**2
+        # out_state2[2, 0, 1, 1] = - 2j * r1**2 * t2 * r2
+        # out_state2[2, 0, 2, 0] = r1**2 * r2**2
+        # out_state2 = out_state2 * 0.5  # initial state is unapplied
+        # print(t1, r1, t2, r2)
+        # print(np.sum(two_bs2x4_transform_opt(t1, r1, t2, r2, state2) - out_state2))
+        # assert_allclose(two_bs2x4_transform_opt(t1, r1, t2, r2, state2), out_state2)
+
+
 def test_detection():
     with pytest.raises(ValueError):
         detection([], 'Invalid option')

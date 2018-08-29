@@ -7,6 +7,7 @@ try:
 except: pass
 
 from time import gmtime, strftime
+from numpy.testing import assert_array_equal, assert_allclose
 
 from customutils.utils import *
 from core.basic import *
@@ -25,14 +26,14 @@ max_power = input_series_length + auxiliary_series_length
 
 # INPUT - the state in the first(at the bottom) channel
 # input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
-# input_st = fock_state(n=2, series_length=input_series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
+input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
-# auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
+# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
@@ -49,14 +50,14 @@ ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 # BS2, BS3.
-t1 = sqrt(0.73)
+t1 = sqrt(0.5)
 r1 = sqrt(1 - t1**2)
-t4 = sqrt(0.17)
+t4 = sqrt(0.5)
 r4 = sqrt(1 - t4**2)
 
-t2 = sqrt(0.55)
+t2 = sqrt(0.5)
 r2 = sqrt(1 - t2**2)
-t3 = sqrt(0.43)
+t3 = sqrt(0.5)
 r3 = sqrt(1 - t3**2)
 
 # Measurements start here.
@@ -79,133 +80,60 @@ print('BS 2 and 3 time:', end - start)
 
 # np.sum(state_after_bs_unappl[:trm, :trm]) - np.sum(state_after_bs_unappl)
 
-
-# Todo
-def two_bs2x4_transform(t1, r1, t2, r2, input_state):
-    size = len(input_state)
-    output_state = np.zeros((size,) * 4, dtype=complex)
-
-    fact_arr = np.array([factorial(x) for x in range(size)])
-    tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
-    input_state_appl = np.multiply(input_state, tf2)
-
-    for m in range(size):
-        for n in range(size):
-
-            for k in range(m + 1):
-                for l in range(n + 1):
-                    # channels indexes
-                    ind1 = k
-                    ind2 = m - k
-                    ind3 = l
-                    ind4 = n - l
-                    coeff = input_state[m, n] * t1**(m - k) * (1j*r1)**k * t2**(n - l) * (1j*r2)**l * factorial(m) * factorial(n) / (factorial(k) * factorial(m - k) * factorial(l) * factorial(n - l))
-                    output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
-
-    return output_state
+#
+# def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
+#     size = len(input_state)
+#     output_state = np.zeros((size,) * 4, dtype=complex)
+#
+#     def coef(k1, k2, k3, k4): return t1 ** (k2) * (1j * r1) ** k1 * t2 ** (k4) * (1j * r2) ** k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
+#
+#     # index 'i' => (m,n,k,l)
+#     for i in np.ndindex(size, size, size, size):
+#         if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
+#             output_state[i[2], i[0] - i[2], i[3], i[1] - i[3]] = coef(i[2], i[0] - i[2], i[3], i[1] - i[3]) * input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1])
+#
+#     return output_state
 
 
-size = len(state_after_bs_unappl)
-ind_arr = np.zeros((size,)*4, dtype=int)
-for m in range(size):
-    for n in range(size):
+start = time.time()
+state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl)
+# state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
+end = time.time()
+print('BS 2 and 3 time OPT:', end - start)
 
-        for k in range(m + 1):
-            for l in range(n + 1):
-                # channels indexes
-                ind1 = k
-                ind2 = m - k
-                ind3 = l
-                ind4 = n - l
-                print(ind1, ind2, ind3, ind4)
-                ind_arr[ind1, ind2, ind3, ind4] = ind_arr[ind1, ind2, ind3, ind4] + 1
+assert_allclose(state_aft2bs_unappl_opt, state_aft2bs_unappl)
+
+print(np.sum(state_aft2bs_unappl_opt - state_aft2bs_unappl))
 
 
-for k1 in range(size):
-    for k2 in range(size):
-        for k3 in range(size):
-            for k4 in range(size):
-                if ind_arr[k1, k2, k3, k4] > 1:
-                    print(ind_arr[k1, k2, k3, k4])
+print(t1, r1, t2, r2)
 
+state2 = np.tensordot(fock_state(2, series_length), fock_state(2, series_length), axes=0)
+out_state2 = np.zeros((series_length,) * 4, dtype=complex)
+out_state2[0, 2, 0, 2] = t1 ** 2 * t2 ** 2
+out_state2[0, 2, 1, 1] = 2j * t1 ** 2 * t2 * r2
+out_state2[0, 2, 2, 0] = - t1 ** 2 * r2 ** 2
+out_state2[1, 1, 0, 2] = 2j * t1 * r1 * t2 ** 2
+out_state2[1, 1, 1, 1] = - 4 * t1 * r1 * t2 * r2
+out_state2[1, 1, 2, 0] = - 2j * t1 * r1 * r2 ** 2
+out_state2[2, 0, 0, 2] = - r1 ** 2 * t2 ** 2
+out_state2[2, 0, 1, 1] = - 2j * r1 ** 2 * t2 * r2
+out_state2[2, 0, 2, 0] = r1 ** 2 * r2 ** 2
+out_state2 = out_state2 * 0.5  # initial state is unapplied
 
-def coef(k1, k2, k3, k4):
-    return t1**(k2) * (1j*r1)**k1 * t2**(k4) * (1j*r2)**k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
+state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t1, r1, t2, r2, state2)
+state_aft2bs_unappl = two_bs2x4_transform(t1, r1, t2, r2, state2)
 
+print(np.sum(state_aft2bs_unappl_opt - out_state2))
+print(np.sum(state_aft2bs_unappl - out_state2))
 
-vcoef = np.vectorize(coef)
-
-pr1 = np.fromfunction(vcoef, (size,)*4)
-
-fact_arr = np.array([factorial(x) for x in range(size)])
-tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
-input_state_appl = np.multiply(state_after_bs_unappl, tf2)
-
-
-def func3(m, n, k, l):
-    if k <= m and l <= n:
-        return k, m - k, l, n - l
-    else:
-        return None, None, None, None
-
-
-def func4(m, n, k, l):
-    return k, m - k, l, n - l
-
-
-vec_func4 = np.vectorize(func4)
-
-pr2 = np.fromfunction(func4, (size,)*4)
-
-
-gamma_arr[func4(m, n, k, l)] = input_state_appl[m, n]
-
-
-def func5(p1, p2, p3, p4):
-    return input_state_appl[p1 + p2, p3 + p4]
-
-
-def func6(p1, p2, p3, p4):
-    return p1 + p2, p3 + p4
-
-
-vec_func5 = np.vectorize(func5, otypes=[np.complex])
-
-vec_func5([1, 1, 1, 1])
-
-
-vec_func5(np.array([(1, 1, 1, 1), (1, 1, 1, 1)]))
-
-
-
-vec_func5(1, 1, 1, 1)
-func5(1, 1, 1, 1)
-input_state_appl[1, 1]
-
-input_state_appl[[[2, 2], [1, 1]]]
-
-
-
-
-ind_arr2 = np.fromfunction(lambda p1, p2, p3, p4: p1 + p2 + p3 + p4, (size,)*4)
-
-gamma_arr = np.zeros((size,)*4, dtype=complex)
-for m in range(size):
-    for n in range(size):
-
-        # indexes can me extended up to the size, but controll negarive indexes.
-        for k in range(m + 1):
-            for l in range(n + 1):
-                # channels indexes
-                # ind1 = k
-                # ind2 = m - k
-                # ind3 = l
-                # ind4 = n - l
-                gamma_arr[k, m - k, l, n - l] = input_state_appl[m, n]
-
-
-# np.fromfunction(coef, (10,)*4, dtype=int)
-
+# for i in np.ndindex(size, size, size, size):
+#     k2 = i[0] - i[2]
+#     k4 = i[1] - i[3]
+#     if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
+#         output_state[i[2], k2, i[3], k4] = input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1]) * t1 ** (k2) * (
+#                     1j * r1) ** i[2] * t2 ** (k4) * (1j * r2) ** i[3] / (
+#                                                    factorial(i[2]) * factorial(k2) * factorial(i[3]) * factorial(k4))
 
 start = time.time()
 det_prob = det_probability(state_aft2bs_unappl, detection_event=DET_CONF)

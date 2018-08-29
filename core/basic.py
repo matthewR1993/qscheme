@@ -64,6 +64,36 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     return output_state
 
 
+def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
+    '''
+    Transformation at 2 beam splitters. Optimised version
+    Two input channels and four output channles - 2x4 transformation.
+    Creation operators transformation:
+    a1 => t1 a2 + i r1 a1.
+    a2 => t2 a4 + i r2 a3.
+    With transmission and reflection coefficients:
+    t1^2 + r1^2 = 1.
+    t2^2 + r2^2 = 1.
+    :param t1: BS1 transmission.
+    :param r1: BS1 reflection.
+    :param t2: BS2 transmission.
+    :param r2: BS2 reflection.
+    :param input_state: Two channels(modes) unapllied state.
+    :return: Four channels(modes) unapllied state.
+    '''
+    size = len(input_state)
+    output_state = np.zeros((size,) * 4, dtype=complex)
+
+    def coef(k1, k2, k3, k4):
+        return t1 ** k2 * (1j * r1) ** k1 * t2 ** k4 * (1j * r2) ** k3 / (factorial(k1) * factorial(k2) * factorial(k3) * factorial(k4))
+
+    # index 'i' = (m,n,k,l)
+    for i in np.ndindex(size, size, size, size):
+        if i[2] <= i[0] and i[3] <= i[1] and i[0] + i[1] < size:
+            output_state[i[2], i[0] - i[2], i[3], i[1] - i[3]] = coef(i[2], i[0] - i[2], i[3], i[1] - i[3]) * input_state[i[0], i[1]] * factorial(i[0]) * factorial(i[1])
+    return output_state
+
+
 def detection(input_state, detection_event):
     '''
     Tranformation of the state with POVM operator.
