@@ -1,5 +1,5 @@
 # This submodule consist of functions for different state configurations.
-# All state configurations are with not applied operators!!!
+# All state configurations are normalised and with not applied operators!!!
 import numpy as np
 from math import factorial, exp, sqrt
 import cmath as cm
