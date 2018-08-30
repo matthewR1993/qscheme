@@ -4,13 +4,11 @@ from Cython.Build import cythonize
 import numpy as np
 
 extensions = [
-    Extension(
-        name='transformations',
-        sources=['core/src/transformations.pyx']),
+    Extension('*', ["*.pyx"]),
 ]
 
 setup(
-    name="qscheme",
+    name="MyProject",
     ext_modules=cythonize(extensions),
     include_dirs=[np.get_include()],
     extra_compile_args=['-Ofast', '-frename-registers', '-funroll-loops', '-Wall', '-Wextra', '-ffast-math',
