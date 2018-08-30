@@ -89,19 +89,15 @@ print(np.sum(state_aft2bs_unappl_opt - state_aft2bs_unappl))
 
 start = time.time()
 state_aft2bs_unappl_opt2 = trans.two_bs2x4_transform_copt(t2, r2, t3, r3, state_after_bs_unappl)
-state_aft2bs_unappl_opt2 = np.asarray(state_aft2bs_unappl_opt2)
 end = time.time()
 print('BS 2 and 3 time OPT 2:', end - start)
 
 print(np.sum(state_aft2bs_unappl_opt2 - state_aft2bs_unappl))
 
-
-
 start = time.time()
 det_prob = det_probability(state_aft2bs_unappl, detection_event=DET_CONF)
 end = time.time()
 print('Det prob. time:', end - start)
-
 
 # The detection event.
 start = time.time()
@@ -160,18 +156,23 @@ print('BS4 density matrix transformation:', end - start)
 
 
 start = time.time()
-final_dens_matrix_new = trans.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
-final_dens_matrix_new = np.asarray(final_dens_matrix_new)
-end = time.time()
-print('BS4 density matrix transformation NEW:', end - start)
-print(np.sum(final_dens_matrix - final_dens_matrix_new))
-
-
 state_in = dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size].copy(order='C')
-start = time.time()
 final_dens_matrix_new2 = trans.bs_matrix_transform_copt(state_in, t4, r4)
 end = time.time()
 print('BS4 density matrix transformation NEW 2:', end - start)
 print(np.sum(final_dens_matrix - final_dens_matrix_new2))
 
-print(timeit.timeit('trans.bs_matrix_transform_copt(state_in, t4, r4)', globals=globals(), number=10) / 10)
+# print(timeit.timeit('trans.bs_matrix_transform_copt(state_in, t4, r4)', globals=globals(), number=20) / 20)
+# 0.9265
+
+start = time.time()
+dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
+end = time.time()
+print('Squeez quadr.:', end - start)
+
+
+# ERP correlations.
+start = time.time()
+epr_x, epr_p = erp_squeezing_correlations(final_dens_matrix)
+end = time.time()
+print('EPR:', end - start)

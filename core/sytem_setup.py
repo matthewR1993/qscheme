@@ -22,7 +22,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
 
     # 2d and 3rd BS.
     # state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
-    state_aft2bs_unappl = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl)
+    state_aft2bs_unappl = trans.two_bs2x4_transform_copt(t2, r2, t3, r3, state_after_bs_unappl)
 
     # Detection probability
     det_prob = det_probability(state_aft2bs_unappl, detection_event=det_event)
@@ -56,7 +56,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     # The transformation at last BS, 7 is min.
     trim_dm = 7
     # final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
-    final_dens_matrix = trans.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
+    final_dens_matrix = trans.bs_matrix_transform_copt(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm].copy(order='C'), t4, r4)
     # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
     # print('Dens. matr. trim norm:', sm_dm)
 

@@ -56,13 +56,11 @@ def test_two_bs2x4_transform_copt():
         out_state1[0, 1, 1, 0] = 1j * t1 * r2
         out_state1[1, 0, 0, 1] = 1j * r1 * t2
         out_state1[1, 0, 1, 0] = - r1 * r2
-        print(state1)
-        st1 = two_bs2x4_transform_copt(t1, r1, t2, r2, state1)
-        print(st1)
         assert_array_equal(two_bs2x4_transform_copt(t1, r1, t2, r2, state1), out_state1)
 
         # Two Fock states with n=2.
         state2 = np.tensordot(fock_state(2, series_length), fock_state(2, series_length), axes=0)
+        state2 = np.array(state2, dtype=complex)
         out_state2 = np.zeros((series_length,) * 4, dtype=complex)
         out_state2[0, 2, 0, 2] = t1**2 * t2**2
         out_state2[0, 2, 1, 1] = 2j * t1**2 * t2 * r2

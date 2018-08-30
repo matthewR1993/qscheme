@@ -46,7 +46,7 @@ cpdef bs_matrix_transform_copt(cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] rho_
 
                                     mv_rho_out[d1, d2, d1_, d2_] = mv_rho_out[d1, d2, d1_, d2_] + mv_rho_in[p1, p2, p1_, p2_] * coeff1 * coeff2
 
-    return mv_rho_out
+    return np.asarray(mv_rho_out)
 
 
 @cython.boundscheck(False)
@@ -70,4 +70,4 @@ cpdef two_bs2x4_transform_copt(double t1, double r1, double t2, double r2, cnp.n
                     coeff = mv_state_in[m, n] * pow(tc1, m - k) * pow(1j * rc1, k) * pow(tc2, (n - l)) * pow(1j * rc2, l) * fact_arr[m] * fact_arr[n] / (fact_arr[k] * fact_arr[m - k] * fact_arr[l] * fact_arr[n - l])
                     mv_state_out[k, m - k, l, n - l] = mv_state_out[k, m - k, l, n - l] + coeff
 
-    return np.mv_state_out
+    return np.asarray(mv_state_out)
