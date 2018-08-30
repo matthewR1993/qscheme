@@ -15,6 +15,7 @@ from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 from setup_parameters import *
 from core.optimized import transformations as trans
+import timeit
 
 
 # Parameters for states
@@ -25,15 +26,15 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-# input_st = single_photon(series_length)
+input_st = single_photon(series_length)
 # input_st = coherent_state(input_series_length, alpha=1)
-input_st = fock_state(n=2, series_length=input_series_length)
+# input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-# auxiliary_st = single_photon(series_length)
+auxiliary_st = single_photon(series_length)
 # auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
-auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
+# auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
@@ -71,9 +72,7 @@ print('First BS time:', end - start)
 
 
 # 2d and 3rd BS.
-# trm = 12
 start = time.time()
-# state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
 state_aft2bs_unappl = two_bs2x4_transform(t2, r2, t3, r3, state_after_bs_unappl)
 end = time.time()
 print('BS 2 and 3 time:', end - start)
@@ -82,11 +81,20 @@ print('BS 2 and 3 time:', end - start)
 
 start = time.time()
 state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl)
-# state_aft2bs_unappl_opt = two_bs2x4_transform_opt(t2, r2, t3, r3, state_after_bs_unappl[:trm, :trm])
 end = time.time()
 print('BS 2 and 3 time OPT:', end - start)
 
 print(np.sum(state_aft2bs_unappl_opt - state_aft2bs_unappl))
+
+
+start = time.time()
+state_aft2bs_unappl_opt2 = trans.two_bs2x4_transform_copt(t2, r2, t3, r3, state_after_bs_unappl)
+state_aft2bs_unappl_opt2 = np.asarray(state_aft2bs_unappl_opt2)
+end = time.time()
+print('BS 2 and 3 time OPT 2:', end - start)
+
+print(np.sum(state_aft2bs_unappl_opt2 - state_aft2bs_unappl))
+
 
 
 start = time.time()
@@ -153,68 +161,17 @@ print('BS4 density matrix transformation:', end - start)
 
 start = time.time()
 final_dens_matrix_new = trans.bs_matrix_transform_opt(dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size], t4, r4)
+final_dens_matrix_new = np.asarray(final_dens_matrix_new)
 end = time.time()
 print('BS4 density matrix transformation NEW:', end - start)
-
 print(np.sum(final_dens_matrix - final_dens_matrix_new))
 
 
-start = time.time()
 state_in = dens_matrix_2channels_withph[:trim_size, :trim_size, :trim_size, :trim_size].copy(order='C')
-final_dens_matrix_new2 = trans.bs_matrix_transform_opt2(state_in, t4, r4)
+start = time.time()
+final_dens_matrix_new2 = trans.bs_matrix_transform_copt(state_in, t4, r4)
 end = time.time()
 print('BS4 density matrix transformation NEW 2:', end - start)
+print(np.sum(final_dens_matrix - final_dens_matrix_new2))
 
-
-# Comparing difference of matrices
-print(np.sum(final_dens_matrix - np.array(final_dens_matrix_new2)))
-
-# print(np.sum(final_dens_matrix) - np.sum(final_dens_matrix[:10, :10, :10, :10]))
-
-# end1 = time.time()
-# print('Overall:', end1 - start1)
-#
-#
-# start = time.time()
-# final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
-# end = time.time()
-# print('Trace one channel out of the final ds. matrix:', end - start)
-#
-# start = time.time()
-# log_entanglement_subs1 = log_entropy(final_traced_subs1)
-# end = time.time()
-# print('Log. entropy:', end - start)
-#
-# start = time.time()
-# final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
-# full_entr = log_entropy(final_reorg_matr)
-# end = time.time()
-# print('Full entropy:', end - start)
-#
-# start = time.time()
-# negativity(final_dens_matrix, neg_type='logarithmic')
-# end = time.time()
-# print('Negativity:', end - start)
-#
-# start = time.time()
-# # Squeezing quadratures.
-# dX, dP = squeezing_quadratures(final_dens_matrix, channel=1)
-# end = time.time()
-# print('Squezing quadratures:', end - start)
-#
-# start = time.time()
-# # ERP correlations.
-# erp_x, erp_p = erp_squeezing_correlations(final_dens_matrix)
-# end = time.time()
-# print('EPR correlations:', end - start)
-#
-# end1 = time.time()
-# print('Overall:', end1 - start1)
-
-
-# import numpy as np
-# from core.optimized import transformations
-# dm = np.zeros((10,) * 4, dtype=complex)
-# cc = transformations.bs_matrix_transform_opt(dm, 0.37, 0.57)
-# print(cc[0, 0, 0, 0])
-
+print(timeit.timeit('trans.bs_matrix_transform_copt(state_in, t4, r4)', globals=globals(), number=10) / 10)
