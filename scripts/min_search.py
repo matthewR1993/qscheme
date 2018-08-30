@@ -1,11 +1,17 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+from math import sqrt
 
 
-det = 'FIRST'
+QUADR_VAR_X_VAC = 1/2
+QUADR_VAR_P_VAC = 1/2
 
-phases = [x * 0.125 for x in range(17)]
-# phases = [0.0, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
+# det = 'FIRST'
+det = 'THIRD'
+
+phases = [x * 0.25 for x in range(9)]
+# phases = [x * 0.125 for x in range(17)]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
@@ -56,6 +62,8 @@ for i in range(size):
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
 
 
+line = [1] * len(phases)
+
 # Uncertainty.
 plt.plot(phases, uncert_min_arr, 'r.')
 plt.title('$dPdX^{min}$')
@@ -64,63 +72,74 @@ plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
 # Quadratures.
-plt.plot(phases, dX_min_arr, 'r.')
-plt.title('$dX^{min}$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, 10*np.log10(dX_min_arr/QUADR_VAR_X_VAC), 'r-o')
+plt.title(r'$10\log_{10}{\frac{\Delta X^{(out)}}{\Delta X^{(vac)}}}$')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
-plt.plot(phases, dP_min_arr, 'r.')
-plt.title('$dP^{min}$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, 10*np.log10(dP_min_arr/QUADR_VAR_P_VAC), 'b-o')
+plt.title(r'$10\log_{10}{\frac{\Delta P^{(out)}}{\Delta P^{(vac)}}}$')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
 # EPR:
-plt.plot(phases, epr_x_min_arr, 'r-o')
-plt.title('$EPR \ X^{min}$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, epr_x_min_arr / sqrt(1/2), 'r-o')
+plt.title(r'$\frac{1}{\sqrt{2}} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$')
+plt.plot(phases, line, '-.')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
-plt.plot(phases, epr_p_min_arr, 'r-o')
-plt.title('$EPR \ P^{min}$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, epr_p_min_arr / sqrt(1/2), 'b-o')
+plt.title(r'$\frac{1}{\sqrt{2}} \ \Delta[P^{(1)} + P^{(2)}]^{(out)}$')
+plt.plot(phases, line, '-.')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
 # Probabilities of realisation for EPR:
-plt.plot(phases, epr_x_min_prob_arr, 'r.')
-plt.title('$P[EPR \ X]$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, epr_x_min_prob_arr, 'r-o')
+plt.title('$Prob[EPR[X]^{min}]$')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
-plt.plot(phases, epr_p_min_prob_arr, 'r.')
-plt.title('$P[EPR \ P]$')
-plt.xlabel('$phase \ in \ \pi$')
+plt.plot(phases, epr_p_min_prob_arr, 'r-o')
+plt.title('$Prob[EPR[P]^{min}]$')
+plt.xlabel('$Phase, [\pi]$')
+plt.grid(True)
 plt.show()
 
-epr_x_min_ind
+# Minimizing T points.
+dX_min_ind_arr = np.array([np.array(x) for x in dX_min_ind]) / 10
+dP_min_ind_arr = np.array([np.array(x) for x in dP_min_ind]) / 10
+epr_x_min_ind_arr = np.array([np.array(x) for x in epr_x_min_ind]) / 10
+epr_p_min_ind_arr = np.array([np.array(x) for x in epr_p_min_ind]) / 10
 
 
-r2_grid = 11
-r3_grid = 11
+df_phase = pd.DataFrame(np.array(phases))
+
+df_dX_min_ind = pd.concat([df_phase, pd.DataFrame(dX_min_ind_arr)], axis=1, ignore_index=True)
+df_dX_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
+df_dP_min_ind = pd.concat([df_phase, pd.DataFrame(dP_min_ind_arr)], axis=1, ignore_index=True)
+df_dP_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
+df_epr_x_min_ind = pd.concat([df_phase, pd.DataFrame(epr_x_min_ind_arr)], axis=1, ignore_index=True)
+df_epr_x_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
+df_epr_p_min_ind = pd.concat([df_phase, pd.DataFrame(epr_p_min_ind_arr)], axis=1, ignore_index=True)
+df_epr_p_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
 
 
-# BS values range.
-T1_min = 0.0
-T1_max = 1.0
-T4_min = 0.0
-T4_max = 1.0
-
-T2_min = 0.0001
-T2_max = 0.9999
-T3_min = 0.0001
-T3_max = 0.9999
-
-tarr1 = np.linspace(T1_min, T1_max, 11)
-
-[7, 8, 10, 1]
-
-tarr1[7]
-tarr1[8]
-tarr1[10]
-tarr1[1]
-
-epr_x_min_ind
+# Plot tables.
+fig, ax = plt.subplots()
+fig.patch.set_visible(False)
+ax.axis('off')
+ax.axis('tight')
+df = df_dX_min_ind
+# df = df_dP_min_ind
+# df = df_epr_x_min_ind
+# df = df_epr_p_min_ind
+ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+fig.tight_layout()
+plt.show()
