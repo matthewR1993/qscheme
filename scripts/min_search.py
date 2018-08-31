@@ -10,8 +10,8 @@ QUADR_VAR_P_VAC = 1/2
 # det = 'FIRST'
 det = 'THIRD'
 
-phases = [x * 0.25 for x in range(9)]
-# phases = [x * 0.125 for x in range(17)]
+# phases = [x * 0.25 for x in range(9)]
+phases = [x * 0.125 for x in range(17)]
 size = len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
