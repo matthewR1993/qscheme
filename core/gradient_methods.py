@@ -2,23 +2,22 @@ from core.sytem_setup import *
 from core.squeezing import *
 
 
-def gradient_descent(state, phase_diff, det_event, params, quantity=None):
+def gradient_descent(algo_params, funct_params):
     '''
     A gradient descent method with the momentum.
-    :param state: Input state.
-    :param phase_diff: Phase.
-    :param det_event: Detection event.
-    :param params: Algorithm parameters.
-    :param quantity: Minimized quantity.
-    :return: Object.
     '''
-    delta_t = params['alpha']
-    prec_t = params['target_prec']
-    betta = params['betta']
-    start_point = params['start_point']
-    par_keys = params['par_keys']  # ['t1', 't2', 't3', 't4']
-    fixed_params = params['fixed_parameters']  # [{'t2': 0.5}, {'t3': 0.5}]
-    search_iter_max = params['search_iter_max']  # 40
+    delta_t = algo_params['alpha']
+    prec_t = algo_params['target_prec']
+    betta = algo_params['betta']
+    start_point = algo_params['start_point']
+    par_keys = algo_params['par_keys']  # ['t1', 't2', 't3', 't4']
+    fixed_params = algo_params['fixed_parameters']  # [{'t2': 0.5}, {'t3': 0.5}]
+    search_iter_max = algo_params['search_iter_max']  # 40
+
+    quantity = funct_params['min_quantity']
+    det_event = funct_params['det_event']
+    phase_diff = funct_params['phase']
+    state = funct_params['input_state']
 
     bs_params_arr = np.zeros(search_iter_max + 1, dtype=dict)
     bs_params_arr[0] = start_point
