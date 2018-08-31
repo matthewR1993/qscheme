@@ -2,28 +2,39 @@ from core.sytem_setup import *
 from core.squeezing import *
 
 
-# Maximum number of iterations for a gradient descent.
-SEARCH_ITER_MAX = 40
+def gradient_descent(state, phase_diff, det_event, params, quantity=None):
+    '''
+    A gradient descent method with the momentum.
+    :param state: Input state.
+    :param phase_diff: Phase.
+    :param det_event: Detection event.
+    :param params: Algorithm parameters.
+    :param quantity: Minimized quantity.
+    :return: Object.
+    '''
+    delta_t = params['alpha']
+    prec_t = params['target_prec']
+    betta = params['betta']
+    start_point = params['start_point']
+    par_keys = params['par_keys']  # ['t1', 't2', 't3', 't4']
+    fixed_params = params['fixed_parameters']  # [{'t2': 0.5}, {'t3': 0.5}]
+    search_iter_max = params['search_iter_max']  # 40
 
-PAR_KEYS = ['t1', 't2', 't3', 't4']
-
-
-def gradient_descent(start_point, state, phase_diff, det_event, quantity=None, delta_t=1e-6, prec_t=1e-4):
-    bs_params_arr = np.zeros(SEARCH_ITER_MAX + 1, dtype=dict)
+    bs_params_arr = np.zeros(search_iter_max + 1, dtype=dict)
     bs_params_arr[0] = start_point
 
     # Calculating gradients.
-    for i in range(SEARCH_ITER_MAX):
+    for i in range(search_iter_max):
         dm, _ = process_all(state, bs_params_arr[i], phase_diff=phase_diff, det_event=det_event)
         if quantity in ['EPR_X', 'EPR_P']:
             epr_x, epr_p = erp_squeezing_correlations(dm)
         elif quantity in ['QUADR_X', 'QUADR_P']:
             dX, dP = squeezing_quadratures(dm, channel=1)
 
-        grads = np.zeros(len(PAR_KEYS), dtype=complex)
-        for j in range(len(PAR_KEYS)):
+        grads = np.zeros(len(par_keys), dtype=complex)
+        for j in range(len(par_keys)):
             bs_params_upp = bs_params_arr[i].copy()
-            bs_params_upp[PAR_KEYS[j]] += delta_t
+            bs_params_upp[par_keys[j]] += delta_t
             dm_up, _ = process_all(state, bs_params_upp, phase_diff=phase_diff, det_event=det_event)
             if quantity is 'EPR_X':
                 epr_x_up, _ = erp_squeezing_correlations(dm_up)
@@ -47,8 +58,8 @@ def gradient_descent(start_point, state, phase_diff, det_event, quantity=None, d
         print(grads)
         # Build up the next step by adding gradient.
         bs_params_next = bs_params_arr[i].copy()
-        for j in range(len(PAR_KEYS)):
-            bs_params_next[PAR_KEYS[j]] -= delta_t * grads[j]
+        for j in range(len(par_keys)):
+            bs_params_next[par_keys[j]] -= delta_t * grads[j]
         bs_params_arr[i + 1] = bs_params_next
 
         print(bs_params_next)
