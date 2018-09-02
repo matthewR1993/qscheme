@@ -3,15 +3,11 @@ import platform
 if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 
-import tensorflow as tf
-
 from customutils.utils import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
-from core.gradient_methods import gradient_descent
+from core.gradient_methods import gd_with_momentum
 
-
-sess = tf.Session()
 
 # Parameters for states
 series_length = 10
@@ -38,42 +34,39 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
-in_state_tf = tf.constant(input_st, tf.float64)
-aux_state_tf = tf.constant(auxiliary_st, tf.float64)
-
 # Building a mutual state via tensor product, that returns numpy array.
-mut_state_unappl = tf.tensordot(
-    in_state_tf,
-    aux_state_tf,
-    axes=0,
-    name=None
-).eval(session=sess)
-
+mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
-ph_inpi = 0.25
+ph_inpi = 0.0
 phase_diff = ph_inpi * np.pi
 
 start_point = {
     't1': sqrt(0.5),
-    'r1': sqrt(0.5),
     't4': sqrt(0.5),
-    'r4': sqrt(0.5),
     't2': sqrt(0.5),
-    'r2': sqrt(0.5),
     't3': sqrt(0.5),
-    'r3': sqrt(0.5),
 }
 
 
-res = gradient_descent(
-    start_point,
-    mut_state_unappl,
-    phase_diff,
-    quantity='EPR_X',
-    det_event=DET_CONF,
-    delta_t=1e-3,
-    prec_t=1e-6
-)
+algo_params = {
+    'alpha': 3e-2,
+    'alpha_scale': 1.2,
+    'betta': 0.999,
+    'target_prec': 1e-3,
+    'search_iter_max': 40,
+    'start_point': start_point,
 
-print(res)
+}
+
+funct_params = {
+    'free_par_keys': ['t1', 't4'],
+    'target_quantity_min': 'EPR_X',
+    'det_event': DET_CONF,
+    'phase': 0.0,
+    'input_state': mut_state_unappl
+}
+
+result = gd_with_momentum(algo_params=algo_params, funct_params=funct_params)
+
+# print(result)

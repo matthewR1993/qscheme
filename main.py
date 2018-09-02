@@ -20,8 +20,8 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-# save_root = '/home/matthew/qscheme/results/res16/'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+save_root = '/home/matthew/qscheme/results/res18/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 
@@ -59,25 +59,37 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 11
-r4_grid = 11
+r1_grid = 1
+r4_grid = 1
 
-r2_grid = 11
-r3_grid = 11
+r2_grid = 101
+r3_grid = 101
 
+min_bound = 1e-5
+max_bound = 1 - 1e-5
 
 # BS values range.
-T1_min = 0.0
-T1_max = 1.0
-T4_min = 0.0
-T4_max = 1.0
+# T1_min = 0.0
+# T1_max = 1.0
+# T4_min = 0.0
+# T4_max = 1.0
 
-T2_min = 0.0001
-T2_max = 0.9999
-T3_min = 0.0001
-T3_max = 0.9999
+T1_min = 0.5
+T1_max = 0.5
+T4_min = 0.5
+T4_max = 0.5
 
-# Varying BSs.
+# T2_min = 0.5
+# T2_max = 0.5
+# T3_min = 0.5
+# T3_max = 0.5
+
+T2_min = min_bound
+T2_max = max_bound
+T3_min = min_bound
+T3_max = max_bound
+
+# Varying BSs. Small t, r parameters.
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
 t4_array, r4_array = bs_parameters(T4_min, T4_max, r4_grid)
 t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
@@ -110,13 +122,9 @@ if __name__ == "__main__":
                     print('Steps [n1, n4, n2, n3]:', n1, n4, n2, n3)
                     bs_params = {
                         't1': t1_array[n1],
-                        'r1': r1_array[n1],
                         't4': t4_array[n4],
-                        'r4': r4_array[n4],
                         't2': t2_array[n2],
-                        'r2': r2_array[n2],
                         't3': t3_array[n3],
-                        'r3': r3_array[n3],
                     }
 
                     final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
