@@ -119,17 +119,21 @@ plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
 plt.show()
 
-# Minimizing 't' points.
-dX_min_t_arr = np.array([np.array(x) for x in dX_min_ind]) / 10
-dP_min_t_arr = np.array([np.array(x) for x in dP_min_ind]) / 10
-epr_x_min_t_arr = np.array([np.array(x) for x in epr_x_min_ind]) / 10
-epr_p_min_t_arr = np.array([np.array(x) for x in epr_p_min_ind]) / 10
+t1_arr = fl.item().get('t1_arr')
+t4_arr = fl.item().get('t4_arr')
+t2_arr = fl.item().get('t2_arr')
+t3_arr = fl.item().get('t3_arr')
+
+T1_arr = np.square(t1_arr)
+T4_arr = np.square(t4_arr)
+T2_arr = np.square(t2_arr)
+T3_arr = np.square(t3_arr)
 
 # Minimizing 'T' points.
-dX_min_T_arr = np.square(dX_min_t_arr)
-dP_min_T_arr = np.square(dP_min_t_arr)
-epr_x_min_T_arr = np.square(epr_x_min_t_arr)
-epr_p_min_T_arr = np.square(epr_p_min_t_arr)
+dX_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in dX_min_ind])
+dP_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in dP_min_ind])
+epr_x_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in epr_x_min_ind])
+epr_p_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in epr_p_min_ind])
 
 
 df_phase = pd.DataFrame(np.array(phases))
@@ -156,44 +160,3 @@ df = df_dX_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
 plt.show()
-
-
-
-# check
-
-phase = 0.75
-
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-# save_root = '/home/matthew/qscheme/results/res14/'
-fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
-
-fl = np.load(save_root + fname)
-
-sqeez_dX = fl.item().get('squeez_dx')
-sqeez_dP = fl.item().get('squeez_dp')
-erp_correl_x = fl.item().get('epr_correl_x')
-erp_correl_p = fl.item().get('epr_correl_p')
-prob = fl.item().get('det_prob')
-
-uncert_min_arr = np.amin(np.multiply(sqeez_dX, sqeez_dP))
-dX_min_arr = np.amin(sqeez_dX)
-dP_min_arr = np.amin(sqeez_dP)
-epr_x_min_arr = np.amin(erp_correl_x)   # (0.6681201664702057-3.3279364972464006e-18j)
-epr_p_min_arr = np.amin(erp_correl_p)   # (0.6386907549307812-8.975688942858437e-17j)
-
-uncert = np.multiply(sqeez_dX, sqeez_dP)
-
-uncert_min_ind = list(np.unravel_index(np.argmin(uncert, axis=None), uncert.shape))
-dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
-dP_min_ind = list(np.unravel_index(np.argmin(sqeez_dP, axis=None), sqeez_dP.shape))
-epr_x_min_ind = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))  # [8, 5, 0, 10]
-epr_p_min_ind = list(np.unravel_index(np.argmin(erp_correl_p, axis=None), erp_correl_p.shape))  # [8, 3, 10, 10]
-
-erp_correl_x[8, 5, 0, 10]
-erp_correl_p[8, 3, 10, 10]
-
-epr_x_min_t_arr = np.array(epr_x_min_ind) / 10
-epr_p_min_t_arr = np.array(epr_p_min_ind) / 10
-
-epr_x_min_T_arr = np.square(epr_x_min_t_arr)
-epr_p_min_T_arr = np.square(epr_p_min_t_arr)

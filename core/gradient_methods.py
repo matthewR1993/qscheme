@@ -29,19 +29,12 @@ def gd_with_momentum(algo_params, funct_params):
 
     # Calculating gradients.
     for i in range(search_iter_max):
-        # state = funct_params['input_state'].copy()
-        #print(state, type(state))
-        #print(state.shape)
         print('step:', i)
         for j in range(len(free_par_keys)):
-            # state = funct_params['input_state'].copy()
             bs_params_upp = bs_params_arr[i].copy()
             bs_params_upp[free_par_keys[j]] += alphas[i]
             bs_params_down = bs_params_arr[i].copy()
             bs_params_down[free_par_keys[j]] -= alphas[i]
-            # print(state)
-            # print('bs params upp', bs_params_upp)
-            # print('bs params down', bs_params_down)
             dm_up, _, _ = process_all(state, bs_params_upp, phase_diff=phase_diff, det_event=det_event)
             dm_down, _, _ = process_all(state, bs_params_down, phase_diff=phase_diff, det_event=det_event)
             if quantity is 'EPR_X':
@@ -76,10 +69,6 @@ def gd_with_momentum(algo_params, funct_params):
         for j in range(len(free_par_keys)):
             bs_params_next[free_par_keys[j]] -= alphas[i] * np.real(grads[i, j])
         bs_params_arr[i + 1] = bs_params_next
-
-        # print('bs_params_next:', bs_params_next)
-        # print('grads:', grads[i, :])
-        # print(np.max(np.abs(grads[i, :])))
 
         if np.max(np.real(grads[i, :])) <= target_prec:
             return {
