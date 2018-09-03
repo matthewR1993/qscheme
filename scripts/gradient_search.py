@@ -1,5 +1,7 @@
 import sys
 import platform
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
 
@@ -50,8 +52,8 @@ start_point = {
 
 
 algo_params = {
-    'alpha': 3e-2,
-    'alpha_scale': 1.2,
+    'alpha': 5e-2,
+    'alpha_scale': 1.0,
     'betta': 0.999,
     'target_prec': 1e-3,
     'search_iter_max': 40,
@@ -69,4 +71,39 @@ funct_params = {
 
 result = gd_with_momentum(algo_params=algo_params, funct_params=funct_params)
 
-# print(result)
+# Visualise.
+parms = result['params_arr']
+t1_coord = np.zeros(result['step'])
+t4_coord = np.zeros(result['step'])
+for i in range(result['step']):
+    t1_coord[i] = parms[i]['t1']
+    t4_coord[i] = parms[i]['t1']
+
+T1_coord = np.square(t1_coord)
+T4_coord = np.square(t4_coord)
+
+filepath = '/Users/matvei/PycharmProjects/qscheme/results/res18/coh(chan-1)_single(chan-2)_phase-0.0pi_det-FIRST_T1_T4.npy'
+fl = np.load(filepath)
+
+T1_arr = np.square(fl.item().get('t1_arr'))
+T4_arr = np.square(fl.item().get('t4_arr'))
+epr_x = fl.item().get('epr_correl_x')
+epr_x_2d = np.real(epr_x[:, :, 0, 0])
+
+# TODO mapping from t to T
+epr_x_amin = np.amin(epr_x_2d)
+epr_x_amin_ind = list(np.unravel_index(np.argmin(epr_x_2d, axis=None), epr_x_2d.shape))
+epr_x_amin_Tcoord = [T1_arr[epr_x_amin_ind[0]], T4_arr[epr_x_amin_ind[1]]]
+
+# epr x plot
+plt.imshow(epr_x_2d, origin='lower', cmap=cm.GnBu_r)
+plt.colorbar()
+plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
+plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
+plt.plot(T1_coord*100, T4_coord*100)
+plt.xlabel('T4')
+plt.ylabel('T1')
+plt.show()
+
+plt.plot(T1_coord*100, T4_coord*100, 'r-o')
+plt.show()

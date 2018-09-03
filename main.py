@@ -20,8 +20,8 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-save_root = '/home/matthew/qscheme/results/res18/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+# save_root = '/home/matthew/qscheme/results/res18/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 
@@ -59,25 +59,25 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
-r1_grid = 1
-r4_grid = 1
+r1_grid = 11
+r4_grid = 11
 
-r2_grid = 101
-r3_grid = 101
+r2_grid = 11
+r3_grid = 11
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-# T1_min = 0.0
-# T1_max = 1.0
-# T4_min = 0.0
-# T4_max = 1.0
+T1_min = 0.0
+T1_max = 1.0
+T4_min = 0.0
+T4_max = 1.0
 
-T1_min = 0.5
-T1_max = 0.5
-T4_min = 0.5
-T4_max = 0.5
+# T1_min = 0.5
+# T1_max = 0.5
+# T4_min = 0.5
+# T4_max = 0.5
 
 # T2_min = 0.5
 # T2_max = 0.5
@@ -90,7 +90,7 @@ T3_min = min_bound
 T3_max = max_bound
 
 # Varying BSs. Small t, r parameters.
-t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
+t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
 t4_array, r4_array = bs_parameters(T4_min, T4_max, r4_grid)
 t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
 t3_array, r3_array = bs_parameters(T3_min, T3_max, r3_grid)
