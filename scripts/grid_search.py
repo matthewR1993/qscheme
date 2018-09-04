@@ -28,7 +28,7 @@ source_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.ph
 print('Source file path:', source_root + source_fname)
 
 save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
-save_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
+save_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(args.phase, args.det, args.quant)
 print('Saving path:', save_root + save_fname)
 
 phase_diff = args.phase

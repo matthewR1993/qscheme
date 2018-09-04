@@ -12,10 +12,10 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-# det = 'FIRST'
+det = 'FIRST'
 # det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
 # phases = [x * 0.25 for x in range(9)]
 phases = [x * 0.125 for x in range(17)]
@@ -40,7 +40,7 @@ for i in range(size):
     phase = phases[i]
 
     save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-    # save_root = '/home/matthew/qscheme/results/res14/'
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     fl = np.load(save_root + fname)
