@@ -12,10 +12,12 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-det = 'FIRST'
+# det = 'FIRST'
 # det = 'THIRD'
 # det = 'NONE'
-# det = 'BOTH'
+det = 'BOTH'
+
+quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
 phases = [x * 0.125 for x in range(17)]
@@ -39,9 +41,9 @@ uncert_min_ind = np.zeros(size, dtype=list)
 for i in range(size):
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 

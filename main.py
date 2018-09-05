@@ -157,7 +157,7 @@ if __name__ == "__main__":
                     # mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
                     # full_fn_entropy[n1, n4, n2, n3] = full_entr
 
-                    # log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
+                    log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
                     # print('Log. negativity: ', log_negativity[n1, n4, n2, n3])
 
                     # Squeezing quadratures.
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         'det_prob': det_prob_array,
         'norm_aft_det': norm_after_det_arr,
         # 'final_dens_matrix': final_dens_matrix_list,
-        # 'log_negativity': log_negativity,
+        'log_negativity': log_negativity,
         # 'mut_inform': mut_information,
         'squeez_dx': sqeez_dX,
         'squeez_dp': sqeez_dP,

@@ -35,8 +35,8 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
-# DET_CONF = 'THIRD'  # 3rd detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
+DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
 # Building a mutual state via tensor product, that returns numpy array.
@@ -56,15 +56,15 @@ r3_grid = 1
 
 
 # BS values range.
-T1_min = 0.8
-T1_max = 0.8
-T4_min = 0.001
-T4_max = 0.001
+T1_min = 0.3
+T1_max = 0.3
+T4_min = 0.2
+T4_max = 0.2
 
-T2_min = 0.999
-T2_max = 0.999
-T3_min = 0.001
-T3_max = 0.001
+T2_min = 0.10008
+T2_max = 0.10008
+T3_min = 0.9999
+T3_max = 0.9999
 
 # Varying BSs.
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
@@ -85,6 +85,7 @@ sqeez_dX = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 epr_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 epr_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+norm_after_det_arr = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
 
 
 # Start time.
@@ -96,17 +97,14 @@ for n1 in range(r1_grid):
                 print('Steps [n1, n4, n2, n3]:', n1, n4, n2, n3)
                 bs_params = {
                     't1': t1_array[n1],
-                    'r1': r1_array[n1],
                     't4': t4_array[n4],
-                    'r4': r4_array[n4],
                     't2': t2_array[n2],
-                    'r2': r2_array[n2],
                     't3': t3_array[n3],
-                    'r3': r3_array[n3],
                 }
-                final_dens_matrix, det_prob = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+                final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
 
                 det_prob_array[n1, n4, n2, n3] = det_prob
+                norm_after_det_arr[n1, n4, n2, n3] = norm
 
                 # Trace one channel out of final state
                 final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
@@ -117,17 +115,17 @@ for n1 in range(r1_grid):
                 # print('trace of final reduced matrix 4th channel:', np.trace(final_traced_subs2))
 
                 # Calculate entropy
-                log_entanglement_subs1 = log_entropy(final_traced_subs1)
-                log_entanglement_subs2 = log_entropy(final_traced_subs2)
-                log_entropy_subs1_array[n1, n4, n2, n3] = log_entanglement_subs1
-                log_entropy_subs2_array[n1, n4, n2, n3] = log_entanglement_subs2
+                # log_entanglement_subs1 = log_entropy(final_traced_subs1)
+                # log_entanglement_subs2 = log_entropy(final_traced_subs2)
+                # log_entropy_subs1_array[n1, n4, n2, n3] = log_entanglement_subs1
+                # log_entropy_subs2_array[n1, n4, n2, n3] = log_entanglement_subs2
 
                 # Full entropy and the mutual information
-                final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
-                full_entr = log_entropy(final_reorg_matr)
+                # final_reorg_matr = reorganise_dens_matrix(final_dens_matrix)
+                # full_entr = log_entropy(final_reorg_matr)
 
-                mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
-                full_fn_entropy[n1, n4, n2, n3] = full_entr
+                # mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
+                # full_fn_entropy[n1, n4, n2, n3] = full_entr
 
                 log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
                 # print('Log. negativity: ', log_negativity[n1, n4, n2, n3])
@@ -149,3 +147,5 @@ print('dXdP:', sqeez_dX[0, 0, 0, 0] * sqeez_dP[0, 0, 0, 0])
 print('EPR dXdP:', epr_correl_x[0, 0, 0, 0] * epr_correl_p[0, 0, 0, 0])
 print('EPR X:', epr_correl_x[0, 0, 0, 0])
 print('EPR P:', epr_correl_p[0, 0, 0, 0])
+print('Prob of det:', det_prob_array[0, 0, 0, 0])
+print('Norm after det:', norm_after_det_arr[0, 0, 0, 0])
