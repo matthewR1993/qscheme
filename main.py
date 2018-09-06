@@ -65,8 +65,8 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-min_bound = 1e-5
-max_bound = 1 - 1e-5
+min_bound = 1e-4
+max_bound = 1 - 1e-4
 
 # BS values range.
 T1_min = 0.0
