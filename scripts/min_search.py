@@ -13,9 +13,9 @@ r2_grid = 11
 r3_grid = 11
 
 # det = 'FIRST'
-# det = 'THIRD'
+det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
 quant = 'EPR_X'
 
@@ -41,9 +41,11 @@ uncert_min_ind = np.zeros(size, dtype=list)
 for i in range(size):
     phase = phases[i]
 
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
+    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 
@@ -95,14 +97,14 @@ plt.show()
 
 # EPR:
 plt.plot(phases, epr_x_min_arr / sqrt(1/2), 'r-o')
-plt.title(r'$\frac{1}{\sqrt{2}} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$')
+plt.title(r'$\sqrt{2} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$')
 plt.plot(phases, line, '-.')
 plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
 plt.show()
 
 plt.plot(phases, epr_p_min_arr / sqrt(1/2), 'b-o')
-plt.title(r'$\frac{1}{\sqrt{2}} \ \Delta[P^{(1)} + P^{(2)}]^{(out)}$')
+plt.title(r'$\sqrt{2} \ \Delta[P^{(1)} + P^{(2)}]^{(out)}$')
 plt.plot(phases, line, '-.')
 plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
@@ -155,9 +157,9 @@ fig, ax = plt.subplots()
 fig.patch.set_visible(False)
 ax.axis('off')
 ax.axis('tight')
-df = df_dX_min_ind
+# df = df_dX_min_ind
 # df = df_dP_min_ind
-# df = df_epr_x_min_ind
+df = df_epr_x_min_ind
 # df = df_epr_p_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()

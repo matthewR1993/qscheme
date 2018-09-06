@@ -145,7 +145,7 @@ for n1 in range(r1_grid):
 
 print('dXdP:', sqeez_dX[0, 0, 0, 0] * sqeez_dP[0, 0, 0, 0])
 print('EPR dXdP:', epr_correl_x[0, 0, 0, 0] * epr_correl_p[0, 0, 0, 0])
-print('EPR X:', epr_correl_x[0, 0, 0, 0])
-print('EPR P:', epr_correl_p[0, 0, 0, 0])
+print('EPR X, normald:', epr_correl_x[0, 0, 0, 0] / sqrt(1/2))  # 0.93497
+print('EPR P, normald:', epr_correl_p[0, 0, 0, 0] / sqrt(1/2))  # 1.11778
 print('Prob of det:', det_prob_array[0, 0, 0, 0])
 print('Norm after det:', norm_after_det_arr[0, 0, 0, 0])
