@@ -138,6 +138,7 @@ def detection(input_state, detection_event):
     return output_state
 
 
+# TODO incorrect.
 def det_probability(input_state, detection_event):
     '''
     Calculating a probability of an event realisation.
@@ -145,6 +146,7 @@ def det_probability(input_state, detection_event):
     :param detection_event: Detection event.
     :return: Probability of the detection.
     '''
+    # TODO incorrect.
     st_aft_det_unappl = detection(input_state, detection_event)
     st_aft_det_conj_unapp = np.conj(make_state_appliable_4ch(st_aft_det_unappl))
     input_state_appl = make_state_appliable_4ch(input_state)

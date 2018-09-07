@@ -12,8 +12,8 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-# det = 'FIRST'
-det = 'THIRD'
+det = 'FIRST'
+# det = 'THIRD'
 # det = 'NONE'
 # det = 'BOTH'
 

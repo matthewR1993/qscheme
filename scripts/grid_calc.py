@@ -35,8 +35,8 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector is clicked
-DET_CONF = 'THIRD'  # 3rd detector is clicked
+DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'THIRD'  # 3rd detector is clicked
 # DET_CONF = 'NONE'  # None of detectors were clicked
 
 # Building a mutual state via tensor product, that returns numpy array.
@@ -56,13 +56,13 @@ r3_grid = 1
 
 
 # BS values range.
-T1_min = 0.3
+T1_min = 0.3  # 0.3
 T1_max = 0.3
-T4_min = 0.2
+T4_min = 0.2  # 0.2
 T4_max = 0.2
 
-T2_min = 0.10008
-T2_max = 0.10008
+T2_min = 0.10008   # 0.10008
+T2_max = 0.10008   # 0.10008
 T3_min = 0.9999
 T3_max = 0.9999
 

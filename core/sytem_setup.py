@@ -3,15 +3,15 @@ from core.optimized import transformations as trans
 import time
 
 
-# Process the whole system.
-# Input:
-#  input_state - input unapplied state in 2 channels
-#  bs_params - BS parameters as a dict.
-#  phase_diff - phase modulation in [rad]
-#  det_event - detection option
-# Output:
-#  applied density matrix in 2 channels
 def process_all(input_state, bs_params, phase_diff, det_event):
+    '''
+    Process the whole system.
+    :param input_state: input unapplied state in 2 channels
+    :param bs_params: BS parameters as a dict.
+    :param phase_diff: phase modulation in [rad]
+    :param det_event: detection option
+    :return: applied density matrix in 2 channels
+    '''
     t1, r1 = bs_params['t1'], sqrt(1 - bs_params['t1']**2)
     t2, r2 = bs_params['t2'], sqrt(1 - bs_params['t2']**2)
     t3, r3 = bs_params['t3'], sqrt(1 - bs_params['t3']**2)
