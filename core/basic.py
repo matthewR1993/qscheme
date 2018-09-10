@@ -138,7 +138,6 @@ def detection(input_state, detection_event):
     return output_state
 
 
-# TODO incorrect.
 def det_probability(input_state, detection_event):
     '''
     Calculating a probability of an event realisation.
@@ -146,12 +145,11 @@ def det_probability(input_state, detection_event):
     :param detection_event: Detection event.
     :return: Probability of the detection.
     '''
-    # TODO incorrect.
     st_aft_det_unappl = detection(input_state, detection_event)
     st_aft_det_conj_unapp = np.conj(make_state_appliable_4ch(st_aft_det_unappl))
     input_state_appl = make_state_appliable_4ch(input_state)
     st = np.multiply(input_state_appl, st_aft_det_conj_unapp)
-    return 1 - np.sum(st)
+    return np.sum(st)
 
 
 def state_norm(state):
@@ -510,13 +508,29 @@ def make_state_appliable_4ch(state):
 def bs_parameters(T_min, T_max, num):
     '''
     Generating BS's t and r parameters arrays.
+    The step is taken in relation to "big" T coordinate.
     :param T_min: T min.
     :param T_max: T max.
     :param num: length.
-    :return: BS's t and r small coeficients.
+    :return: BS's t and r small coefficients.
     '''
     T_array = np.linspace(T_min, T_max, num)
     t_array = np.sqrt(T_array)
+    rf = np.vectorize(lambda t: sqrt(1 - pow(t, 2)))
+    r_array = rf(t_array)
+    return t_array, r_array
+
+
+def bs_parameters_small(t_min, t_max, num):
+    '''
+    Generating BS's t and r parameters arrays.
+    The step is taken in relation to "small" t coordinate.
+    :param t_min: t min.
+    :param t_max: t max.
+    :param num: length.
+    :return: BS's t and r small coefficients.
+    '''
+    t_array = np.linspace(t_min, t_max, num)
     rf = np.vectorize(lambda t: sqrt(1 - pow(t, 2)))
     r_array = rf(t_array)
     return t_array, r_array

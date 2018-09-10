@@ -35,9 +35,9 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 
 # Building a mutual state via tensor product, that returns numpy array.
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
@@ -58,13 +58,13 @@ r3_grid = 1
 # BS values range.
 T1_min = 0.3  # 0.3
 T1_max = 0.3
-T4_min = 0.2  # 0.2
-T4_max = 0.2
+T4_min = 0.8  # 0.2
+T4_max = 0.8
 
-T2_min = 0.10008   # 0.10008
-T2_max = 0.10008   # 0.10008
-T3_min = 0.9999
-T3_max = 0.9999
+T2_min = 0.1 # 0.10008
+T2_max = 0.1  # 0.10008
+T3_min = 0.56
+T3_max = 0.56
 
 # Varying BSs.
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
@@ -102,7 +102,6 @@ for n1 in range(r1_grid):
                     't3': t3_array[n3],
                 }
                 final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
-
                 det_prob_array[n1, n4, n2, n3] = det_prob
                 norm_after_det_arr[n1, n4, n2, n3] = norm
 

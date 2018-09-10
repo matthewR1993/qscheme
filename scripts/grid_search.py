@@ -7,6 +7,7 @@ import argparse
 
 if platform.system() == 'Linux':
     sys.path.append('/usr/local/lib/python3.5/dist-packages')
+    sys.path.append('/home/matthew/qscheme')
 elif platform.system() == 'Darwin':
     sys.path.append('/Users/matvei/PycharmProjects/qscheme')
 
@@ -23,16 +24,20 @@ parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=Tr
 parser.add_argument("-q", "--quant", help="A quantity to minimize", type=str, required=True)
 args = parser.parse_args()
 
-source_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+# source_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+source_root = '/home/matthew/qscheme/results/res19_rough/'
 source_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Source file path:', source_root + source_fname)
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
+save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
 save_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(args.phase, args.det, args.quant)
 print('Saving path:', save_root + save_fname)
 
 phase_diff = args.phase
 DET_CONF = args.det
+
+crit_probability = 0.1
 
 # Find minimum
 fl = np.load(source_root + source_fname)
@@ -59,18 +64,25 @@ delta_T3 = T3_arr[1] - T3_arr[0]
 
 print('Delta T1, T4, T2, T3:', delta_T1, delta_T4, delta_T2, delta_T3)
 
+# TODO: Exclude all low probability events.
+
 # Minimizing indexes.
 dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
 dP_min_ind = list(np.unravel_index(np.argmin(sqeez_dP, axis=None), sqeez_dP.shape))
 epr_x_min_ind = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
 epr_p_min_ind = list(np.unravel_index(np.argmin(erp_correl_p, axis=None), erp_correl_p.shape))
 
-
 # Minimizing T coordinates.
 dX_min_ind_T_arr = np.array([T1_arr[dX_min_ind[0]], T4_arr[dX_min_ind[1]], T2_arr[dX_min_ind[2]], T3_arr[dX_min_ind[3]]])
 dP_min_ind_T_arr = np.array([T1_arr[dP_min_ind[0]], T4_arr[dP_min_ind[1]], T2_arr[dP_min_ind[2]], T3_arr[dP_min_ind[3]]])
 epr_x_min_T_arr = np.array([T1_arr[epr_x_min_ind[0]], T4_arr[epr_x_min_ind[1]], T2_arr[epr_x_min_ind[2]], T3_arr[epr_x_min_ind[3]]])
 epr_p_min_T_arr = np.array([T1_arr[epr_p_min_ind[0]], T4_arr[epr_p_min_ind[1]], T2_arr[epr_p_min_ind[2]], T3_arr[epr_p_min_ind[3]]])
+
+# Minimizing t coordinates.
+dX_min_ind_t_arr = np.array([t1_arr[dX_min_ind[0]], t4_arr[dX_min_ind[1]], t2_arr[dX_min_ind[2]], t3_arr[dX_min_ind[3]]])
+dP_min_ind_t_arr = np.array([t1_arr[dP_min_ind[0]], t4_arr[dP_min_ind[1]], t2_arr[dP_min_ind[2]], t3_arr[dP_min_ind[3]]])
+epr_x_min_t_arr = np.array([t1_arr[epr_x_min_ind[0]], t4_arr[epr_x_min_ind[1]], t2_arr[epr_x_min_ind[2]], t3_arr[epr_x_min_ind[3]]])
+epr_p_min_t_arr = np.array([t1_arr[epr_p_min_ind[0]], t4_arr[epr_p_min_ind[1]], t2_arr[epr_p_min_ind[2]], t3_arr[epr_p_min_ind[3]]])
 
 
 # Building a new coordinate grid around minimum point.
@@ -92,6 +104,7 @@ else:
     raise ValueError
 
 print('Min. T values from the previous step [T1, T4, T2, T3]:', min_T_coord)
+
 
 delta = 0.1
 
@@ -138,6 +151,23 @@ t1_array, _ = bs_parameters(T1_new_min, T1_new_max, grd_mut)
 t4_array, _ = bs_parameters(T4_new_min, T4_new_max, grd_mut)
 t2_array, _ = bs_parameters(T2_new_min, T2_new_max, grd_mut)
 t3_array, _ = bs_parameters(T3_new_min, T3_new_max, grd_mut)
+
+# Adding previous values
+t1_array = np.append(t1_array, np.sqrt(min_T_coord)[0])
+t4_array = np.append(t4_array, np.sqrt(min_T_coord)[1])
+t2_array = np.append(t2_array, np.sqrt(min_T_coord)[2])
+t3_array = np.append(t3_array, np.sqrt(min_T_coord)[3])
+
+
+print("New t1 array:", t1_array)
+print("New t4 array:", t4_array)
+print("New t2 array:", t2_array)
+print("New t3 array:", t3_array)
+
+print("New T1 array:", np.square(t1_array))
+print("New T4 array:", np.square(t4_array))
+print("New T2 array:", np.square(t2_array))
+print("New T3 array:", np.square(t3_array))
 
 
 # Parameters for states
@@ -215,7 +245,7 @@ if __name__ == "__main__":
                     # mut_information[n1, n4, n2, n3] = log_entanglement_subs1 + log_entanglement_subs2 - full_entr
                     # full_fn_entropy[n1, n4, n2, n3] = full_entr
 
-                    # log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
+                    log_negativity[n1, n4, n2, n3] = negativity(final_dens_matrix, neg_type='logarithmic')
                     # print('Log. negativity: ', log_negativity[n1, n4, n2, n3])
 
                     # Squeezing quadratures.
@@ -235,7 +265,7 @@ if __name__ == "__main__":
         'det_prob': det_prob_array,
         'norm_aft_det': norm_after_det_arr,
         # 'final_dens_matrix': final_dens_matrix_list,
-        # 'log_negativity': log_negativity,
+        'log_negativity': log_negativity,
         # 'mut_inform': mut_information,
         'squeez_dx': sqeez_dX,
         'squeez_dp': sqeez_dP,

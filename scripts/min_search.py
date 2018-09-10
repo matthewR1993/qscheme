@@ -21,7 +21,11 @@ quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
 phases = [x * 0.125 for x in range(17)]
+# phases = [1.5]
+
 size = len(phases)
+
+line = [1] * len(phases)
 
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
@@ -39,11 +43,14 @@ uncert_min_ind = np.zeros(size, dtype=list)
 
 
 for i in range(size):
+    print('step:', i)
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
+    save_root = '/home/matthew/qscheme/results/res15/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
+    # save_root = '/home/matthew/qscheme/results/res15_incr_accuracy/'
     # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
     # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
@@ -61,6 +68,8 @@ for i in range(size):
     epr_x_min_arr[i] = np.amin(erp_correl_x)
     epr_p_min_arr[i] = np.amin(erp_correl_p)
 
+    print('EPR_X_MIN:', epr_x_min_arr[i])
+
     uncert = np.multiply(sqeez_dX, sqeez_dP)
 
     uncert_min_ind[i] = list(np.unravel_index(np.argmin(uncert, axis=None), uncert.shape))
@@ -72,8 +81,9 @@ for i in range(size):
     epr_x_min_prob_arr[i] = prob[tuple(epr_x_min_ind[i])]
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
 
+    print('EPR_X_MIN_INDEX:', epr_x_min_ind[i])
+    print('EPR_X_MIN_CHECKED:', erp_correl_x[tuple(epr_x_min_ind[i])])
 
-line = [1] * len(phases)
 
 # Uncertainty.
 plt.plot(phases, uncert_min_arr, 'r.')
@@ -164,3 +174,5 @@ df = df_epr_x_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
 plt.show()
+
+erp_correl_x[tuple(epr_x_min_ind[12])]
