@@ -1,4 +1,4 @@
-# Usage: python3 grid_search.py --det THIRD --phase 0.0 --quant EPR_X
+# Usage: python3 grid_search.py --det FIRST --phase 0.0 --quant EPR_X
 import numpy as np
 from time import gmtime, strftime
 import sys

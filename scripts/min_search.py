@@ -20,8 +20,8 @@ det = 'FIRST'
 quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
-# phases = [x * 0.125 for x in range(17)]
-phases = [0.2]
+phases = [x * 0.125 for x in range(17)]
+# phases = [0.0]
 
 size = len(phases)
 
@@ -41,7 +41,7 @@ epr_x_min_ind = np.zeros(size, dtype=list)
 epr_p_min_ind = np.zeros(size, dtype=list)
 uncert_min_ind = np.zeros(size, dtype=list)
 
-crit_prob = 0.0
+crit_prob = 0.1
 
 for i in range(size):
     print('step:', i)
@@ -52,7 +52,7 @@ for i in range(size):
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res15_incr_accuracy/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
     # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
@@ -63,7 +63,7 @@ for i in range(size):
     erp_correl_p = fl.item().get('epr_correl_p')
     prob = fl.item().get('det_prob')
 
-    args_lower = np.argwhere(np.real(prob) <= crit_prob)
+    args_lower = np.argwhere(np.real(prob) < crit_prob)
     for k in range(len(args_lower)):
         index = tuple(args_lower[k, :])
         sqeez_dX[index] = 100
