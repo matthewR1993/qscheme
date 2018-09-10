@@ -24,13 +24,13 @@ parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=Tr
 parser.add_argument("-q", "--quant", help="A quantity to minimize", type=str, required=True)
 args = parser.parse_args()
 
-# source_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-source_root = '/home/matthew/qscheme/results/res19_rough/'
+source_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
+# source_root = '/home/matthew/qscheme/results/res19_rough/'
 source_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Source file path:', source_root + source_fname)
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15_incr_accuracy/'
-save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
+# save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
 save_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(args.phase, args.det, args.quant)
 print('Saving path:', save_root + save_fname)
 
@@ -46,6 +46,7 @@ sqeez_dX = fl.item().get('squeez_dx')
 sqeez_dP = fl.item().get('squeez_dp')
 erp_correl_x = fl.item().get('epr_correl_x')
 erp_correl_p = fl.item().get('epr_correl_p')
+prob = fl.item().get('det_prob')
 
 t1_arr = fl.item().get('t1_arr')
 t4_arr = fl.item().get('t4_arr')
@@ -64,7 +65,13 @@ delta_T3 = T3_arr[1] - T3_arr[0]
 
 print('Delta T1, T4, T2, T3:', delta_T1, delta_T4, delta_T2, delta_T3)
 
-# TODO: Exclude all low probability events.
+prob_args_lower = np.argwhere(np.real(prob) < crit_probability)
+for i in range(len(prob_args_lower)):
+    index = tuple(prob_args_lower[i, :])
+    erp_correl_x[index] = 100
+    erp_correl_p[index] = 100
+    sqeez_dX[index] = 100
+    sqeez_dP[index] = 100
 
 # Minimizing indexes.
 dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
@@ -184,29 +191,32 @@ auxiliary_st = single_photon(series_length)
 
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
-det_prob_array = np.zeros((grd_mut,)*4, dtype=complex)
-log_entropy_subs1_array = np.zeros((grd_mut,)*4, dtype=complex)
-log_entropy_subs2_array = np.zeros((grd_mut,)*4, dtype=complex)
-lin_entropy_subs1 = np.zeros((grd_mut,)*4, dtype=complex)
-lin_entropy_subs2 = np.zeros((grd_mut,)*4, dtype=complex)
-log_negativity = np.zeros((grd_mut,)*4, dtype=complex)
-mut_information = np.zeros((grd_mut,)*4, dtype=complex)
-full_fn_entropy = np.zeros((grd_mut,)*4, dtype=complex)
-sqeez_dX = np.zeros((grd_mut,)*4, dtype=complex)
-sqeez_dP = np.zeros((grd_mut,)*4, dtype=complex)
-epr_correl_x = np.zeros((grd_mut,)*4, dtype=complex)
-epr_correl_p = np.zeros((grd_mut,)*4, dtype=complex)
-norm_after_det_arr = np.zeros((grd_mut,)*4, dtype=complex)
+# Building a new coordinate grid around minimum point.
+grd_mut = 11
+
+det_prob_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
+log_entropy_subs1_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
+log_entropy_subs2_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
+lin_entropy_subs1 = np.zeros((grd_mut + 1,)*4, dtype=complex)
+lin_entropy_subs2 = np.zeros((grd_mut + 1,)*4, dtype=complex)
+log_negativity = np.zeros((grd_mut + 1,)*4, dtype=complex)
+mut_information = np.zeros((grd_mut + 1,)*4, dtype=complex)
+full_fn_entropy = np.zeros((grd_mut + 1,)*4, dtype=complex)
+sqeez_dX = np.zeros((grd_mut + 1,)*4, dtype=complex)
+sqeez_dP = np.zeros((grd_mut + 1,)*4, dtype=complex)
+epr_correl_x = np.zeros((grd_mut + 1,)*4, dtype=complex)
+epr_correl_p = np.zeros((grd_mut + 1,)*4, dtype=complex)
+norm_after_det_arr = np.zeros((grd_mut + 1,)*4, dtype=complex)
 final_dens_matrix_list = []
 
 
 if __name__ == "__main__":
     # Start time.
     print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-    for n1 in range(grd_mut):
-        for n4 in range(grd_mut):
-            for n2 in range(grd_mut):
-                for n3 in range(grd_mut):
+    for n1 in range(grd_mut + 1):
+        for n4 in range(grd_mut + 1):
+            for n2 in range(grd_mut + 1):
+                for n3 in range(grd_mut + 1):
                     print('Steps [n1, n4, n2, n3]:', n1, n4, n2, n3)
                     bs_params = {
                         't1': t1_array[n1],

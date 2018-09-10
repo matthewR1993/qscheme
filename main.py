@@ -20,8 +20,8 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
-save_root = '/home/matthew/qscheme/results/res19_rough/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
+# save_root = '/home/matthew/qscheme/results/res19_rough/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
 

@@ -20,8 +20,8 @@ det = 'FIRST'
 quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
-phases = [x * 0.125 for x in range(17)]
-# phases = [1.5]
+# phases = [x * 0.125 for x in range(17)]
+phases = [0.2]
 
 size = len(phases)
 
@@ -41,13 +41,14 @@ epr_x_min_ind = np.zeros(size, dtype=list)
 epr_p_min_ind = np.zeros(size, dtype=list)
 uncert_min_ind = np.zeros(size, dtype=list)
 
+crit_prob = 0.0
 
 for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res15/'
-    save_root = '/home/matthew/qscheme/results/res15/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
+    # save_root = '/home/matthew/qscheme/results/res15/'
     fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res15_incr_accuracy/'
@@ -62,13 +63,19 @@ for i in range(size):
     erp_correl_p = fl.item().get('epr_correl_p')
     prob = fl.item().get('det_prob')
 
+    args_lower = np.argwhere(np.real(prob) <= crit_prob)
+    for k in range(len(args_lower)):
+        index = tuple(args_lower[k, :])
+        sqeez_dX[index] = 100
+        sqeez_dP[index] = 100
+        erp_correl_x[index] = 100
+        erp_correl_p[index] = 100
+
     uncert_min_arr[i] = np.amin(np.multiply(sqeez_dX, sqeez_dP))
     dX_min_arr[i] = np.amin(sqeez_dX)
     dP_min_arr[i] = np.amin(sqeez_dP)
     epr_x_min_arr[i] = np.amin(erp_correl_x)
     epr_p_min_arr[i] = np.amin(erp_correl_p)
-
-    print('EPR_X_MIN:', epr_x_min_arr[i])
 
     uncert = np.multiply(sqeez_dX, sqeez_dP)
 
@@ -80,9 +87,6 @@ for i in range(size):
 
     epr_x_min_prob_arr[i] = prob[tuple(epr_x_min_ind[i])]
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
-
-    print('EPR_X_MIN_INDEX:', epr_x_min_ind[i])
-    print('EPR_X_MIN_CHECKED:', erp_correl_x[tuple(epr_x_min_ind[i])])
 
 
 # Uncertainty.
@@ -174,5 +178,3 @@ df = df_epr_x_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
 plt.show()
-
-erp_correl_x[tuple(epr_x_min_ind[12])]

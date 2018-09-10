@@ -146,10 +146,10 @@ def det_probability(input_state, detection_event):
     :return: Probability of the detection.
     '''
     st_aft_det_unappl = detection(input_state, detection_event)
-    st_aft_det_conj_unapp = np.conj(make_state_appliable_4ch(st_aft_det_unappl))
+    st_aft_det_conj_app = np.conj(make_state_appliable_4ch(st_aft_det_unappl))
     input_state_appl = make_state_appliable_4ch(input_state)
-    st = np.multiply(input_state_appl, st_aft_det_conj_unapp)
-    return np.sum(st)
+    st = np.multiply(input_state_appl, st_aft_det_conj_app)
+    return np.real(np.sum(st))
 
 
 def state_norm(state):

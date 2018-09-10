@@ -137,16 +137,20 @@ def test_det_probability():
 
     series_length = 3
     state = np.zeros((series_length,) * 4, dtype=complex)
-    state[0, 0, 0, 0] = 1
-    state[0, 1, 1, 0] = 0.3
+    state[0, 0, 0, 0] = 0.33
+    state[0, 1, 0, 1] = 0.35
+    state[0, 1, 1, 2] = 0.37
+    state[1, 2, 0, 0] = 0.78
+    state[1, 0, 0, 0] = 0.13
+    state[0, 0, 1, 0] = 0.27
     state[2, 1, 1, 0] = 0.4
     state[1, 0, 2, 0] = 0.5
     state[1, 1, 1, 2] = 0.7
 
-    assert det_probability(state, 'FIRST') == 1
-    assert det_probability(state, 'THIRD') == 0.91
-    assert det_probability(state, 'NONE') == 0
-    assert cmath.isclose(det_probability(state, 'BOTH'), 1 - (0.4**2 + 0.5**2 + 0.7**2), rel_tol=1e-8)
+    assert cmath.isclose(det_probability(state, 'FIRST'), 0.78**2 * 2 + 0.13**2)
+    assert cmath.isclose(det_probability(state, 'THIRD'), 0.37**2 * 2 + 0.27**2)
+    assert cmath.isclose(det_probability(state, 'NONE'), 0.33**2 + 0.35**2)
+    assert cmath.isclose(det_probability(state, 'BOTH'), 0.4**2 * 2 + 0.5**2 * 2 + 0.7**2 * 2, rel_tol=1e-8)
 
 
 def test_state_norm():
@@ -563,6 +567,15 @@ def test_bs_parameters():
     T_min = 0.35
     T_max = 0.73
 
-    assert_array_equal(bs_parameters(T_min, T_max, 1), (np.array([sqrt(0.35)]), np.array([sqrt(1 - 0.35)])))
-    assert_array_equal(bs_parameters(T_min, T_max, 2), (np.array([sqrt(0.35), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.73)])))
-    assert_array_equal(bs_parameters(T_min, T_max, 3), (np.array([sqrt(0.35), sqrt(0.54), sqrt(0.73)]), np.array([sqrt(1 - 0.35), sqrt(1 - 0.54), sqrt(1 - 0.73)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 1), (np.array([sqrt(T_min)]), np.array([sqrt(1 - T_min)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 2), (np.array([sqrt(T_min), sqrt(T_max)]), np.array([sqrt(1 - T_min), sqrt(1 - T_max)])))
+    assert_array_equal(bs_parameters(T_min, T_max, 3), (np.array([sqrt(T_min), sqrt(0.54), sqrt(T_max)]), np.array([sqrt(1 -T_min), sqrt(1 - 0.54), sqrt(1 - T_max)])))
+
+
+def test_bs_parameters_small():
+    t_min = 0.35
+    t_max = 0.73
+
+    assert_array_equal(bs_parameters_small(t_min, t_max, 1), (np.array([t_min]), np.array([sqrt(1 - t_min**2)])))
+    assert_array_equal(bs_parameters_small(t_min, t_max, 2), (np.array([t_min, t_max]), np.array([sqrt(1 - t_min**2), sqrt(1 - t_max**2)])))
+    assert_array_equal(bs_parameters_small(t_min, t_max, 3), (np.array([t_min, 0.54, t_max]), np.array([sqrt(1 - t_min**2), sqrt(1 - 0.54**2), sqrt(1 - t_max**2)])))
