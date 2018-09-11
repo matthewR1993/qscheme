@@ -35,16 +35,16 @@ print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector is clicked
+DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'NONE'  # None of detectors were clicked
 
 # Building a mutual state via tensor product, that returns numpy array.
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
-
+# (1.648721086990572+0j)
 
 # The phase difference before last BS
-ph_inpi = 0.0
+ph_inpi = 1.625
 phase_diff = ph_inpi * np.pi
 
 # BS grids.
@@ -56,15 +56,15 @@ r3_grid = 1
 
 
 # BS values range.
-T1_min = 0.3  # 0.3
+T1_min = 0.3
 T1_max = 0.3
-T4_min = 0.8  # 0.2
-T4_max = 0.8
+T4_min = 1.0
+T4_max = 1.0
 
-T2_min = 0.1 # 0.10008
-T2_max = 0.1  # 0.10008
-T3_min = 0.56
-T3_max = 0.56
+T2_min = 0.799994
+T2_max = 0.799994
+T3_min = 0.799994
+T3_max = 0.799994
 
 # Varying BSs.
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r4_grid)
@@ -73,19 +73,20 @@ t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
 t3_array, r3_array = bs_parameters(T3_min, T3_max, r3_grid)
 
 
-det_prob_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-log_entropy_subs1_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-log_entropy_subs2_array = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-lin_entropy_subs1 = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-lin_entropy_subs2 = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-log_negativity = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-mut_information = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-full_fn_entropy = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-sqeez_dX = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-sqeez_dP = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-epr_correl_x = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-epr_correl_p = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
-norm_after_det_arr = np.zeros((r1_grid, r4_grid, r2_grid, r3_grid), dtype=complex)
+sz = (r1_grid, r4_grid, r2_grid, r3_grid)
+det_prob_array = np.zeros(sz, dtype=complex)
+log_entropy_subs1_array = np.zeros(sz, dtype=complex)
+log_entropy_subs2_array = np.zeros(sz, dtype=complex)
+lin_entropy_subs1 = np.zeros(sz, dtype=complex)
+lin_entropy_subs2 = np.zeros(sz, dtype=complex)
+log_negativity = np.zeros(sz, dtype=complex)
+mut_information = np.zeros(sz, dtype=complex)
+full_fn_entropy = np.zeros(sz, dtype=complex)
+sqeez_dX = np.zeros(sz, dtype=complex)
+sqeez_dP = np.zeros(sz, dtype=complex)
+epr_correl_x = np.zeros(sz, dtype=complex)
+epr_correl_p = np.zeros(sz, dtype=complex)
+norm_after_det_arr = np.zeros(sz, dtype=complex)
 
 
 # Start time.
@@ -139,12 +140,12 @@ for n1 in range(r1_grid):
                 epr_x, epr_p = erp_squeezing_correlations(final_dens_matrix)
                 epr_correl_x[n1, n4, n2, n3] = epr_x
                 epr_correl_p[n1, n4, n2, n3] = epr_p
-                # print('erp_X:', erp_x, ' erp_P:', erp_p)
+                # print('epr_X:', epr_x, ' epr_P:', epr_p)
 
 
 print('dXdP:', sqeez_dX[0, 0, 0, 0] * sqeez_dP[0, 0, 0, 0])
 print('EPR dXdP:', epr_correl_x[0, 0, 0, 0] * epr_correl_p[0, 0, 0, 0])
-print('EPR X, normald:', epr_correl_x[0, 0, 0, 0] / sqrt(1/2))  # 0.93497
-print('EPR P, normald:', epr_correl_p[0, 0, 0, 0] / sqrt(1/2))  # 1.11778
+print('EPR X:', epr_correl_x[0, 0, 0, 0])
+print('EPR P:', epr_correl_p[0, 0, 0, 0])
 print('Prob of det:', det_prob_array[0, 0, 0, 0])
 print('Norm after det:', norm_after_det_arr[0, 0, 0, 0])

@@ -34,7 +34,8 @@ save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
 save_fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(args.phase, args.det, args.quant)
 print('Saving path:', save_root + save_fname)
 
-phase_diff = args.phase
+ph_inpi = args.phase
+phase_diff = ph_inpi * np.pi
 DET_CONF = args.det
 
 crit_probability = 0.1
@@ -42,61 +43,68 @@ crit_probability = 0.1
 # Find minimum
 fl = np.load(source_root + source_fname)
 
-sqeez_dX = fl.item().get('squeez_dx')
-sqeez_dP = fl.item().get('squeez_dp')
-erp_correl_x = fl.item().get('epr_correl_x')
-erp_correl_p = fl.item().get('epr_correl_p')
-prob = fl.item().get('det_prob')
+sqeez_dX_old = fl.item().get('squeez_dx')
+sqeez_dP_old = fl.item().get('squeez_dp')
+erp_correl_x_old = fl.item().get('epr_correl_x')
+erp_correl_p_old = fl.item().get('epr_correl_p')
+prob_old = fl.item().get('det_prob')
 
-t1_arr = fl.item().get('t1_arr')
-t4_arr = fl.item().get('t4_arr')
-t2_arr = fl.item().get('t2_arr')
-t3_arr = fl.item().get('t3_arr')
+t1_arr_old = fl.item().get('t1_arr')
+t4_arr_old = fl.item().get('t4_arr')
+t2_arr_old = fl.item().get('t2_arr')
+t3_arr_old = fl.item().get('t3_arr')
 
-T1_arr = np.square(t1_arr)
-T4_arr = np.square(t4_arr)
-T2_arr = np.square(t2_arr)
-T3_arr = np.square(t3_arr)
+T1_arr_old = np.square(t1_arr_old)
+T4_arr_old = np.square(t4_arr_old)
+T2_arr_old = np.square(t2_arr_old)
+T3_arr_old = np.square(t3_arr_old)
 
-delta_T1 = T1_arr[1] - T1_arr[0]
-delta_T4 = T4_arr[1] - T4_arr[0]
-delta_T2 = T2_arr[1] - T2_arr[0]
-delta_T3 = T3_arr[1] - T3_arr[0]
+print('Old t1 array:', t1_arr_old)
+print('Old t4 array:', t4_arr_old)
+print('Old t2 array:', t2_arr_old)
+print('Old t3 array:', t3_arr_old)
+
+print('Old T1 array:', T1_arr_old)
+print('Old T4 array:', T4_arr_old)
+print('Old T2 array:', T2_arr_old)
+print('Old T3 array:', T3_arr_old)
+
+delta_T1 = T1_arr_old[1] - T1_arr_old[0]
+delta_T4 = T4_arr_old[1] - T4_arr_old[0]
+delta_T2 = T2_arr_old[1] - T2_arr_old[0]
+delta_T3 = T3_arr_old[1] - T3_arr_old[0]
 
 print('Delta T1, T4, T2, T3:', delta_T1, delta_T4, delta_T2, delta_T3)
 
-prob_args_lower = np.argwhere(np.real(prob) < crit_probability)
+prob_args_lower = np.argwhere(np.real(prob_old) < crit_probability)
 for i in range(len(prob_args_lower)):
     index = tuple(prob_args_lower[i, :])
-    erp_correl_x[index] = 100
-    erp_correl_p[index] = 100
-    sqeez_dX[index] = 100
-    sqeez_dP[index] = 100
+    erp_correl_x_old[index] = 100
+    erp_correl_p_old[index] = 100
+    sqeez_dX_old[index] = 100
+    sqeez_dP_old[index] = 100
 
 # Minimizing indexes.
-dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX, axis=None), sqeez_dX.shape))
-dP_min_ind = list(np.unravel_index(np.argmin(sqeez_dP, axis=None), sqeez_dP.shape))
-epr_x_min_ind = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
-epr_p_min_ind = list(np.unravel_index(np.argmin(erp_correl_p, axis=None), erp_correl_p.shape))
+dX_min_ind = list(np.unravel_index(np.argmin(sqeez_dX_old, axis=None), sqeez_dX_old.shape))
+dP_min_ind = list(np.unravel_index(np.argmin(sqeez_dP_old, axis=None), sqeez_dP_old.shape))
+epr_x_min_ind = list(np.unravel_index(np.argmin(erp_correl_x_old, axis=None), erp_correl_x_old.shape))
+epr_p_min_ind = list(np.unravel_index(np.argmin(erp_correl_p_old, axis=None), erp_correl_p_old.shape))
 
 # Minimizing T coordinates.
-dX_min_ind_T_arr = np.array([T1_arr[dX_min_ind[0]], T4_arr[dX_min_ind[1]], T2_arr[dX_min_ind[2]], T3_arr[dX_min_ind[3]]])
-dP_min_ind_T_arr = np.array([T1_arr[dP_min_ind[0]], T4_arr[dP_min_ind[1]], T2_arr[dP_min_ind[2]], T3_arr[dP_min_ind[3]]])
-epr_x_min_T_arr = np.array([T1_arr[epr_x_min_ind[0]], T4_arr[epr_x_min_ind[1]], T2_arr[epr_x_min_ind[2]], T3_arr[epr_x_min_ind[3]]])
-epr_p_min_T_arr = np.array([T1_arr[epr_p_min_ind[0]], T4_arr[epr_p_min_ind[1]], T2_arr[epr_p_min_ind[2]], T3_arr[epr_p_min_ind[3]]])
-
-# Minimizing t coordinates.
-dX_min_ind_t_arr = np.array([t1_arr[dX_min_ind[0]], t4_arr[dX_min_ind[1]], t2_arr[dX_min_ind[2]], t3_arr[dX_min_ind[3]]])
-dP_min_ind_t_arr = np.array([t1_arr[dP_min_ind[0]], t4_arr[dP_min_ind[1]], t2_arr[dP_min_ind[2]], t3_arr[dP_min_ind[3]]])
-epr_x_min_t_arr = np.array([t1_arr[epr_x_min_ind[0]], t4_arr[epr_x_min_ind[1]], t2_arr[epr_x_min_ind[2]], t3_arr[epr_x_min_ind[3]]])
-epr_p_min_t_arr = np.array([t1_arr[epr_p_min_ind[0]], t4_arr[epr_p_min_ind[1]], t2_arr[epr_p_min_ind[2]], t3_arr[epr_p_min_ind[3]]])
-
+dX_min_ind_T_arr = np.array([T1_arr_old[dX_min_ind[0]], T4_arr_old[dX_min_ind[1]], T2_arr_old[dX_min_ind[2]], T3_arr_old[dX_min_ind[3]]])
+dP_min_ind_T_arr = np.array([T1_arr_old[dP_min_ind[0]], T4_arr_old[dP_min_ind[1]], T2_arr_old[dP_min_ind[2]], T3_arr_old[dP_min_ind[3]]])
+epr_x_min_T_arr = np.array([T1_arr_old[epr_x_min_ind[0]], T4_arr_old[epr_x_min_ind[1]], T2_arr_old[epr_x_min_ind[2]], T3_arr_old[epr_x_min_ind[3]]])
+epr_p_min_T_arr = np.array([T1_arr_old[epr_p_min_ind[0]], T4_arr_old[epr_p_min_ind[1]], T2_arr_old[epr_p_min_ind[2]], T3_arr_old[epr_p_min_ind[3]]])
 
 # Building a new coordinate grid around minimum point.
 grd_mut = 11
 
 min_quantity = args.quant
+
 print('Quantity to miminize:', min_quantity)
+print('Phase:', phase_diff)
+print('Phase in [pi]:', ph_inpi)
+print('Detection event:', DET_CONF)
 
 # A new grid's center.
 if min_quantity == 'EPR_X':
@@ -111,7 +119,7 @@ else:
     raise ValueError
 
 print('Min. T values from the previous step [T1, T4, T2, T3]:', min_T_coord)
-
+print('Min. t values from the previous step [t1, t4, t2, t3]:', np.sqrt(min_T_coord))
 
 delta = 0.1
 
@@ -183,40 +191,35 @@ input_series_length = series_length
 auxiliary_series_length = series_length
 max_power = input_series_length + auxiliary_series_length
 
-# INPUT - the state in the first(at the bottom) channel
+# Preparing input state.
 input_st = coherent_state(input_series_length, alpha=1)
-
-# AUXILIARY - the state in the second(on top) channel
 auxiliary_st = single_photon(series_length)
-
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
-# Building a new coordinate grid around minimum point.
-grd_mut = 11
-
-det_prob_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
-log_entropy_subs1_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
-log_entropy_subs2_array = np.zeros((grd_mut + 1,)*4, dtype=complex)
-lin_entropy_subs1 = np.zeros((grd_mut + 1,)*4, dtype=complex)
-lin_entropy_subs2 = np.zeros((grd_mut + 1,)*4, dtype=complex)
-log_negativity = np.zeros((grd_mut + 1,)*4, dtype=complex)
-mut_information = np.zeros((grd_mut + 1,)*4, dtype=complex)
-full_fn_entropy = np.zeros((grd_mut + 1,)*4, dtype=complex)
-sqeez_dX = np.zeros((grd_mut + 1,)*4, dtype=complex)
-sqeez_dP = np.zeros((grd_mut + 1,)*4, dtype=complex)
-epr_correl_x = np.zeros((grd_mut + 1,)*4, dtype=complex)
-epr_correl_p = np.zeros((grd_mut + 1,)*4, dtype=complex)
-norm_after_det_arr = np.zeros((grd_mut + 1,)*4, dtype=complex)
+sz = (len(t1_array), len(t4_array), len(t2_array), len(t3_array))
+det_prob_array = np.zeros(sz, dtype=complex)
+log_entropy_subs1_array = np.zeros(sz, dtype=complex)
+log_entropy_subs2_array = np.zeros(sz, dtype=complex)
+lin_entropy_subs1 = np.zeros(sz, dtype=complex)
+lin_entropy_subs2 = np.zeros(sz, dtype=complex)
+log_negativity = np.zeros(sz, dtype=complex)
+mut_information = np.zeros(sz, dtype=complex)
+full_fn_entropy = np.zeros(sz, dtype=complex)
+sqeez_dX = np.zeros(sz, dtype=complex)
+sqeez_dP = np.zeros(sz, dtype=complex)
+epr_correl_x = np.zeros(sz, dtype=complex)
+epr_correl_p = np.zeros(sz, dtype=complex)
+norm_after_det_arr = np.zeros(sz, dtype=complex)
 final_dens_matrix_list = []
 
 
 if __name__ == "__main__":
     # Start time.
     print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-    for n1 in range(grd_mut + 1):
-        for n4 in range(grd_mut + 1):
-            for n2 in range(grd_mut + 1):
-                for n3 in range(grd_mut + 1):
+    for n1 in range(len(t1_array)):
+        for n4 in range(len(t4_array)):
+            for n2 in range(len(t2_array)):
+                for n3 in range(len(t3_array)):
                     print('Steps [n1, n4, n2, n3]:', n1, n4, n2, n3)
                     bs_params = {
                         't1': t1_array[n1],
@@ -224,7 +227,6 @@ if __name__ == "__main__":
                         't2': t2_array[n2],
                         't3': t3_array[n3],
                     }
-
                     final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
                     if final_dens_matrix is None or det_prob is None:
                         print('Warning: the norm is zero.')
