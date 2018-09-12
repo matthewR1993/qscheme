@@ -36,6 +36,8 @@ epr_p_min_arr = np.zeros(size, dtype=complex)
 uncert_min_arr = np.zeros(size, dtype=complex)
 epr_x_min_prob_arr = np.zeros(size, dtype=complex)
 epr_p_min_prob_arr = np.zeros(size, dtype=complex)
+dX_min_prob_arr = np.zeros(size, dtype=complex)
+dP_min_prob_arr = np.zeros(size, dtype=complex)
 
 dX_min_ind = np.zeros(size, dtype=list)
 dP_min_ind = np.zeros(size, dtype=list)
@@ -48,13 +50,13 @@ for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
     # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
+    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
-    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 
@@ -88,6 +90,8 @@ for i in range(size):
 
     epr_x_min_prob_arr[i] = prob[tuple(epr_x_min_ind[i])]
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
+    dX_min_prob_arr[i] = prob[tuple(dX_min_ind[i])]
+    dP_min_prob_arr[i] = prob[tuple(dP_min_ind[i])]
 
 
 # Uncertainty.
@@ -157,14 +161,14 @@ epr_p_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], 
 
 df_phase = pd.DataFrame(np.array(phases))
 
-df_dX_min_ind = pd.concat([df_phase, pd.DataFrame(dX_min_T_arr)], axis=1, ignore_index=True)
-df_dX_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
-df_dP_min_ind = pd.concat([df_phase, pd.DataFrame(dP_min_T_arr)], axis=1, ignore_index=True)
-df_dP_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
-df_epr_x_min_ind = pd.concat([df_phase, pd.DataFrame(epr_x_min_T_arr)], axis=1, ignore_index=True)
-df_epr_x_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
-df_epr_p_min_ind = pd.concat([df_phase, pd.DataFrame(epr_p_min_T_arr)], axis=1, ignore_index=True)
-df_epr_p_min_ind.columns = ['Phase, [pi]', 'T1', 'T4', 'T2', 'T3']
+df_dX_min_ind = pd.concat([df_phase, pd.DataFrame(np.real(dX_min_prob_arr)), pd.DataFrame(dX_min_T_arr)], axis=1, ignore_index=True)
+df_dX_min_ind.columns = ['Phase, [pi]', 'Probab.', 'T1', 'T4', 'T2', 'T3']
+df_dP_min_ind = pd.concat([df_phase, pd.DataFrame(np.real(dP_min_prob_arr)), pd.DataFrame(dP_min_T_arr)], axis=1, ignore_index=True)
+df_dP_min_ind.columns = ['Phase, [pi]', 'Probab.', 'T1', 'T4', 'T2', 'T3']
+df_epr_x_min_ind = pd.concat([df_phase, pd.DataFrame(np.real(epr_x_min_prob_arr)), pd.DataFrame(epr_x_min_T_arr)], axis=1, ignore_index=True)
+df_epr_x_min_ind.columns = ['Phase, [pi]', 'Probab.', 'T1', 'T4', 'T2', 'T3']
+df_epr_p_min_ind = pd.concat([df_phase, pd.DataFrame(np.real(epr_p_min_prob_arr)), pd.DataFrame(epr_p_min_T_arr)], axis=1, ignore_index=True)
+df_epr_p_min_ind.columns = ['Phase, [pi]', 'Probab.', 'T1', 'T4', 'T2', 'T3']
 
 
 # Plot tables.
@@ -174,7 +178,7 @@ ax.axis('off')
 ax.axis('tight')
 # df = df_dX_min_ind
 # df = df_dP_min_ind
-df = df_epr_x_min_ind
+df = df_epr_x_min_ind.round(4)
 # df = df_epr_p_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
