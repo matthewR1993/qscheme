@@ -71,3 +71,26 @@ dxdy = np.real(np.multiply(squeez_dx[0, 0, :, :], squeez_dp[0, 0, :, :]))
 plt.imshow(dxdy)
 plt.colorbar()
 plt.show()
+
+#
+
+phase = 0.25
+
+fpath = '/Users/matvei/PycharmProjects/qscheme/results/res21/'
+file = 'NO_DET_vary_T4/coh(chan-1)_single(chan-2)_phase-{}pi_det-NONE.npy'.format(phase)
+fl = np.load(fpath + file)
+
+squeez_dx = fl.item().get('squeez_dx')
+squeez_dp = fl.item().get('squeez_dp')
+epr_correl_x = fl.item().get('epr_correl_x')
+epr_correl_p = fl.item().get('epr_correl_p')
+log_negativity = fl.item().get('log_negativity')
+
+
+T4_arr = np.square(fl.item().get('t4_arr'))
+
+# plt.plot(T4_arr, log_negativity[0, :, 0, 0])
+# plt.show()
+
+plt.plot(T4_arr, epr_correl_x[0, :, 0, 0])
+plt.show()

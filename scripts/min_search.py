@@ -21,7 +21,7 @@ quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
 phases = [x * 0.125 for x in range(17)]
-# phases = [1.625]
+# phases = [0.25]
 
 size = len(phases)
 
@@ -51,12 +51,12 @@ for i in range(size):
     phase = phases[i]
 
     # save_root = '/home/matthew/qscheme/results/res19_rough/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
+    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
-    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 
@@ -182,4 +182,20 @@ df = df_epr_x_min_ind.round(4)
 # df = df_epr_p_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
+plt.show()
+
+
+import matplotlib.cm as cm
+
+t1 = fl.item().get("t1_arr")
+t4 = fl.item().get("t4_arr")
+
+
+plt.imshow(np.real(prob[4, 0, :, :]), origin='lower', cmap=cm.GnBu_r)
+plt.colorbar()
+#plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
+#plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
+#plt.plot(T1_coord*100, T4_coord*100)
+plt.xlabel('T3')
+plt.ylabel('T2')
 plt.show()
