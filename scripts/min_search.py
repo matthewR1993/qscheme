@@ -20,8 +20,8 @@ det = 'THIRD'
 quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
-phases = [x * 0.125 for x in range(17)]
-# phases = [0.25]
+# phases = [x * 0.125 for x in range(17)]
+phases = [0.25]
 
 size = len(phases)
 
@@ -44,6 +44,11 @@ dP_min_ind = np.zeros(size, dtype=list)
 epr_x_min_ind = np.zeros(size, dtype=list)
 epr_p_min_ind = np.zeros(size, dtype=list)
 uncert_min_ind = np.zeros(size, dtype=list)
+
+t1_arr_list = np.zeros(size, dtype=list)
+t4_arr_list = np.zeros(size, dtype=list)
+t2_arr_list = np.zeros(size, dtype=list)
+t3_arr_list = np.zeros(size, dtype=list)
 
 
 for i in range(size):
@@ -92,6 +97,11 @@ for i in range(size):
     epr_p_min_prob_arr[i] = prob[tuple(epr_p_min_ind[i])]
     dX_min_prob_arr[i] = prob[tuple(dX_min_ind[i])]
     dP_min_prob_arr[i] = prob[tuple(dP_min_ind[i])]
+
+    t1_arr_list[i] = fl.item().get('t1_arr')
+    t4_arr_list[i] = fl.item().get('t4_arr')
+    t2_arr_list[i] = fl.item().get('t2_arr')
+    t3_arr_list[i] = fl.item().get('t3_arr')
 
 
 # Uncertainty.
@@ -142,21 +152,18 @@ plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
 plt.show()
 
-t1_arr = fl.item().get('t1_arr')
-t4_arr = fl.item().get('t4_arr')
-t2_arr = fl.item().get('t2_arr')
-t3_arr = fl.item().get('t3_arr')
 
-T1_arr = np.square(t1_arr)
-T4_arr = np.square(t4_arr)
-T2_arr = np.square(t2_arr)
-T3_arr = np.square(t3_arr)
-
-# Minimizing 'T' points.
-dX_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in dX_min_ind])
-dP_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in dP_min_ind])
-epr_x_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in epr_x_min_ind])
-epr_p_min_T_arr = np.array([np.array([T1_arr[x[0]], T4_arr[x[1]], T2_arr[x[2]], T3_arr[x[3]]]) for x in epr_p_min_ind])
+# Minimizing 'T' points for each phase.
+epr_x_min_T_arr = np.zeros((size, 4), dtype=float)
+epr_p_min_T_arr = np.zeros((size, 4), dtype=float)
+dX_min_T_arr = np.zeros((size, 4), dtype=float)
+dP_min_T_arr = np.zeros((size, 4), dtype=float)
+for j in range(size):
+    T1_arr = np.square(t1_arr_list[j])
+    T4_arr = np.square(t4_arr_list[j])
+    T2_arr = np.square(t2_arr_list[j])
+    T3_arr = np.square(t3_arr_list[j])
+    epr_x_min_T_arr[j, :] = np.array([T1_arr[epr_x_min_ind[j][0]], T4_arr[epr_x_min_ind[j][1]], T2_arr[epr_x_min_ind[j][2]], T3_arr[epr_x_min_ind[j][3]]])
 
 
 df_phase = pd.DataFrame(np.array(phases))
@@ -185,17 +192,17 @@ fig.tight_layout()
 plt.show()
 
 
-import matplotlib.cm as cm
-
-t1 = fl.item().get("t1_arr")
-t4 = fl.item().get("t4_arr")
-
-
-plt.imshow(np.real(prob[4, 0, :, :]), origin='lower', cmap=cm.GnBu_r)
-plt.colorbar()
-#plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
-#plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
-#plt.plot(T1_coord*100, T4_coord*100)
-plt.xlabel('T3')
-plt.ylabel('T2')
-plt.show()
+# import matplotlib.cm as cm
+#
+# t1 = fl.item().get("t1_arr")
+# t4 = fl.item().get("t4_arr")
+#
+#
+# plt.imshow(np.real(prob[4, 0, :, :]), origin='lower', cmap=cm.GnBu_r)
+# plt.colorbar()
+# #plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
+# #plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
+# #plt.plot(T1_coord*100, T4_coord*100)
+# plt.xlabel('T3')
+# plt.ylabel('T2')
+# plt.show()
