@@ -12,16 +12,16 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-# det = 'FIRST'
-det = 'THIRD'
+det = 'FIRST'
+# det = 'THIRD'
 # det = 'NONE'
 # det = 'BOTH'
 
 quant = 'EPR_X'
 
 # phases = [x * 0.25 for x in range(9)]
-# phases = [x * 0.125 for x in range(17)]
-phases = [0.25]
+phases = [x * 0.125 for x in range(17)]
+# phases = [0.25]
 
 size = len(phases)
 
