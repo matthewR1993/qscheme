@@ -20,7 +20,7 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res21/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
 # save_root = '/home/matthew/qscheme/results/res19_rough/'
 fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
 print('Saving path:', save_root + fname)
@@ -33,16 +33,19 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
+
+states_config = 'single(chan-1)_coher(chan-2)'
+# states_config = 'coher(chan-1)_single(chan-2)'
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
@@ -89,7 +92,7 @@ T3_max = max_bound
 # T3_min = 0.5
 # T3_max = 0.5
 
-# Varying BSs. Small t, r parameters, with step regarding big "T".
+# Varying BSs. Small t, r parameters, with step regarding to big "T".
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
 t4_array, r4_array = bs_parameters(T4_min, T4_max, r4_grid)
 t2_array, r2_array = bs_parameters(T2_min, T2_max, r2_grid)
@@ -189,6 +192,6 @@ if __name__ == "__main__":
         't4_arr': t4_array,
         't2_arr': t2_array,
         't3_arr': t3_array,
-        'states_config': 'coh(chan-1)_single(chan-2)'
+        'states_config': states_config
     }
     np.save(save_root + fname, fl)

@@ -13,9 +13,9 @@ r2_grid = 11
 r3_grid = 11
 
 # det = 'FIRST'
-# det = 'THIRD'
+det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
 quant = 'EPR_X'
 
@@ -192,17 +192,3 @@ fig.tight_layout()
 plt.show()
 
 
-# import matplotlib.cm as cm
-#
-# t1 = fl.item().get("t1_arr")
-# t4 = fl.item().get("t4_arr")
-#
-#
-# plt.imshow(np.real(prob[4, 0, :, :]), origin='lower', cmap=cm.GnBu_r)
-# plt.colorbar()
-# #plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
-# #plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
-# #plt.plot(T1_coord*100, T4_coord*100)
-# plt.xlabel('T3')
-# plt.ylabel('T2')
-# plt.show()
