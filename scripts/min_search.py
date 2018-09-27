@@ -12,22 +12,24 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-# det = 'FIRST'
-det = 'THIRD'
+det = 'FIRST'
+# det = 'THIRD'
 # det = 'NONE'
 # det = 'BOTH'
 
 quant = 'EPR_X'
 
-# phases = [x * 0.25 for x in range(9)]
-phases = [x * 0.125 for x in range(17)]
+states_config = 'single(chan-1)_coher(chan-2)'
+
+phases = [x * 0.25 for x in range(9)]
+# phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
 
 size = len(phases)
 
 line = [1] * len(phases)
 
-crit_prob = 0.1
+crit_prob = 0.0
 
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
@@ -55,13 +57,13 @@ for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    # save_root = '/home/matthew/qscheme/results/res19_rough/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_rough/'
-    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    # save_root = '/home/matthew/qscheme/results/res22_rough/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
+    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 

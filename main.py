@@ -20,11 +20,6 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
-# save_root = '/home/matthew/qscheme/results/res19_rough/'
-fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(args.phase, args.det)
-print('Saving path:', save_root + fname)
-
 # Parameters for states
 series_length = 10
 input_series_length = series_length
@@ -54,6 +49,10 @@ states_config = 'single(chan-1)_coher(chan-2)'
 # DET_CONF = 'NONE'  # None of detectors were clicked
 DET_CONF = args.det
 
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
+# save_root = '/home/matthew/qscheme/results/res19_rough/'
+fname = '{}_phase-{}pi_det-{}.npy'.format(states_config, args.phase, args.det)
+print('Saving path:', save_root + fname)
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
