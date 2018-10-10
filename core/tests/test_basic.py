@@ -479,7 +479,7 @@ def test_phase_modulation():
     phase = 0.43 * np.pi
 
     rho1 = np.zeros((size,) * 4, dtype=complex)
-    rho_mod1 = phase_modulation(rho1, phase)
+    rho_mod1 = phase_modulation(rho1, phase, channel=2)
     assert_array_equal(rho1, rho_mod1)
 
     rho2 = np.zeros((size,) * 4, dtype=complex)
@@ -487,10 +487,10 @@ def test_phase_modulation():
     rho2[1, 0, 2, 2] = 3
     rho2[1, 1, 2, 2] = 7
     rho2[0, 2, 2, 0] = 2
-    rho_mod2 = phase_modulation(rho2, 0)
+    rho_mod2 = phase_modulation(rho2, 0, channel=2)
     assert_array_equal(rho2, rho_mod2)
 
-    rho_mod3 = phase_modulation(rho2, phase)
+    rho_mod3 = phase_modulation(rho2, phase, channel=2)
     rho_mod_excepted3 = np.zeros((size,) * 4, dtype=complex)
     rho_mod_excepted3[1, 0, 1, 0] = 1
     rho_mod_excepted3[1, 0, 2, 2] = 3 * np.exp(-1j * phase * 2)

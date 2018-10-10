@@ -3,12 +3,13 @@ from core.optimized import transformations as trans
 import time
 
 
-def process_all(input_state, bs_params, phase_diff, det_event):
+def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event):
     '''
     Process the whole system.
     :param input_state: input unapplied state in 2 channels
     :param bs_params: BS parameters as a dict.
     :param phase_diff: phase modulation in [rad]
+    :param phase_mod_channel: number of channel for the phase modulation
     :param det_event: detection option
     :return: applied density matrix in 2 channels
     '''
@@ -51,7 +52,7 @@ def process_all(input_state, bs_params, phase_diff, det_event):
     dens_matrix_2ch = dens_matrix_with_trace_opt(state_after_dett_unappl_norm_tr, state_after_dett_unappl_norm_tr)
 
     # Phase modulation
-    dens_matrix_2channels_withph = phase_modulation(dens_matrix_2ch, phase_diff)
+    dens_matrix_2channels_withph = phase_modulation(dens_matrix_2ch, phase_diff, channel=phase_mod_channel)
 
     # The transformation at last BS, 7 is min.
     trim_dm = 7

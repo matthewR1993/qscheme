@@ -49,7 +49,7 @@ states_config = 'single(chan-1)_coher(chan-2)'
 # DET_CONF = 'NONE'  # None of detectors were clicked
 DET_CONF = args.det
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res23_rough/'
 # save_root = '/home/matthew/qscheme/results/res19_rough/'
 fname = '{}_phase-{}pi_det-{}.npy'.format(states_config, args.phase, args.det)
 print('Saving path:', save_root + fname)
@@ -59,6 +59,9 @@ mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 # ph_inpi = 0.0
 ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
+
+# Bottom channel = 1.
+phase_mod_channel = 1
 
 # BS grids.
 r1_grid = 11
@@ -129,7 +132,14 @@ if __name__ == "__main__":
                         't3': t3_array[n3],
                     }
 
-                    final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+                    final_dens_matrix, det_prob, norm = process_all(
+                        mut_state_unappl,
+                        bs_params,
+                        phase_diff=phase_diff,
+                        phase_mod_channel=phase_mod_channel,
+                        det_event=DET_CONF
+                    )
+
                     if final_dens_matrix is None or det_prob is None:
                         print('Warning: the norm is zero.')
                         pass

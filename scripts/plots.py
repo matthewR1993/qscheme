@@ -12,11 +12,10 @@ T4_arr = np.square(fl.item().get('t4_arr'))
 epr_x = fl.item().get('epr_correl_x')
 epr_x_2d = np.real(epr_x[:, :, 0, 0])
 
-epr_x_amin = np.amin(epr_x_2d)  # 0.6729286702291375
+epr_x_amin = np.amin(epr_x_2d)
 epr_x_amin_ind = list(np.unravel_index(np.argmin(epr_x_2d, axis=None), epr_x_2d.shape))
 epr_x_amin_Tcoord = [T1_arr[epr_x_amin_ind[0]], T4_arr[epr_x_amin_ind[1]]]
 
-# min(t1, t4) : 0.632455, 0.774596
 
 # epr x plot
 plt.imshow(epr_x_2d, origin='lower', cmap=cm.GnBu_r)
@@ -73,7 +72,6 @@ plt.colorbar()
 plt.show()
 
 #
-
 phase = 0.25
 
 fpath = '/Users/matvei/PycharmProjects/qscheme/results/res21/'

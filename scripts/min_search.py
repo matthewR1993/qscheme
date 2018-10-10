@@ -29,7 +29,7 @@ size = len(phases)
 
 line = [1] * len(phases)
 
-crit_prob = 0.0
+crit_prob = 0.1
 
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
@@ -58,8 +58,8 @@ for i in range(size):
     phase = phases[i]
 
     # save_root = '/home/matthew/qscheme/results/res22_rough/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res23_rough/'
+    fname = '{}_phase-{}pi_det-{}.npy'.format(states_config, phase, det)
 
     # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
     # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
