@@ -12,24 +12,24 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-det = 'FIRST'
+# det = 'FIRST'
 # det = 'THIRD'
 # det = 'NONE'
-# det = 'BOTH'
+det = 'BOTH'
 
 quant = 'EPR_X'
 
 states_config = 'single(chan-1)_coher(chan-2)'
 
-phases = [x * 0.25 for x in range(9)]
-# phases = [x * 0.125 for x in range(17)]
+# phases = [x * 0.25 for x in range(9)]
+phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
 
 size = len(phases)
 
 line = [1] * len(phases)
 
-crit_prob = 0.0
+crit_prob = 0.1
 
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
@@ -58,12 +58,12 @@ for i in range(size):
     phase = phases[i]
 
     # save_root = '/home/matthew/qscheme/results/res22_rough/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
+    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res22_rough/'
+    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}.npy'.format(phase, det)
 
-    # save_root = '/home/matthew/qscheme/results/res19_incr_accuracy/'
+    save_root = '/home/matvei/qscheme/results/res19_incr_accuracy/'
     # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
-    # fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
 
     fl = np.load(save_root + fname)
 
@@ -128,10 +128,12 @@ plt.show()
 
 # EPR:
 plt.plot(phases, epr_x_min_arr / sqrt(1/2), 'r-o')
-plt.title(r'$\sqrt{2} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$')
+plt.title(r'$\sqrt{2} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$', fontsize=18)
 plt.plot(phases, line, '-.')
-plt.xlabel('$Phase, [\pi]$')
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.grid(True)
+plt.xlim(0, 2)
+plt.tick_params(axis='both', which='major', labelsize=16)
 plt.show()
 
 plt.plot(phases, epr_p_min_arr / sqrt(1/2), 'b-o')
@@ -192,5 +194,4 @@ df = df_epr_x_min_ind.round(4)
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
 plt.show()
-
 
