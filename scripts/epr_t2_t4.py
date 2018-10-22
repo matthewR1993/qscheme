@@ -1,7 +1,5 @@
 import numpy as np
 from time import gmtime, strftime
-import argparse
-
 
 from customutils.utils import *
 from core.basic import *
@@ -9,12 +7,6 @@ from core.sytem_setup import *
 from core.squeezing import *
 from core.state_configurations import coherent_state, single_photon, fock_state
 
-
-# parser = argparse.ArgumentParser()
-#
-# parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
-# parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
-# args = parser.parse_args()
 
 # Parameters for states
 series_length = 10
@@ -53,31 +45,33 @@ ph_inpi = 0.0
 # ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res24/'
+phase_mod_channel = 2
+
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res26/'
 save_root = '/home/matvei/qscheme/results/res26/'
-fname = '{}_phase-{:.4f}pi_det-{}.npy'.format(states_config, ph_inpi, DET_CONF)
+fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, ph_inpi, DET_CONF, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 1
-r4_grid = 30
+r1_grid = 20
+r4_grid = 20
 
-r2_grid = 30
+r2_grid = 1
 r3_grid = 1
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-T1_min = 0.7
-T1_max = 0.7
+T1_min = 0.0
+T1_max = 1.0
 T4_min = 0.0
-T4_max = 0.1
+T4_max = 1.0
 
-T2_min = min_bound
+T2_min = max_bound
 T2_max = max_bound
-T3_min = 1.0
-T3_max = 1.0
+T3_min = max_bound
+T3_max = max_bound
 
 # Varying BSs. Small t, r parameters, with step regarding to big "T".
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
@@ -116,7 +110,14 @@ for n1 in range(r1_grid):
                     't3': t3_array[n3],
                 }
 
-                final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+                final_dens_matrix, det_prob, norm = process_all(
+                    mut_state_unappl,
+                    bs_params,
+                    phase_diff=phase_diff,
+                    phase_mod_channel=phase_mod_channel,
+                    det_event=DET_CONF
+                )
+
                 if final_dens_matrix is None or det_prob is None:
                     print('Warning: the norm is zero.')
                     pass

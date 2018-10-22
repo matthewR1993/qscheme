@@ -62,7 +62,7 @@ ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # Bottom channel = 1.
-phase_mod_channel = 1
+phase_mod_channel = 2
 
 # BS grids.
 r1_grid = 1
