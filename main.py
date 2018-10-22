@@ -61,6 +61,9 @@ mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
+# Bottom channel = 1.
+phase_mod_channel = 1
+
 # BS grids.
 r1_grid = 1
 r4_grid = 1
@@ -130,7 +133,14 @@ if __name__ == "__main__":
                         't3': t3_array[n3],
                     }
 
-                    final_dens_matrix, det_prob, norm = process_all(mut_state_unappl, bs_params, phase_diff=phase_diff, det_event=DET_CONF)
+                    final_dens_matrix, det_prob, norm = process_all(
+                        mut_state_unappl,
+                        bs_params,
+                        phase_diff=phase_diff,
+                        phase_mod_channel=phase_mod_channel,
+                        det_event=DET_CONF
+                    )
+
                     if final_dens_matrix is None or det_prob is None:
                         print('Warning: the norm is zero.')
                         pass

@@ -18,6 +18,10 @@ epr_correl_x1 = fl1.item().get('epr_correl_x')
 epr_correl_p1 = fl1.item().get('epr_correl_p')
 log_negativity1 = fl1.item().get('log_negativity')
 det_prob1 = fl1.item().get('det_prob')
+# epr_x_amin = np.amin(epr_x_2d)
+# epr_x_amin_ind = list(np.unravel_index(np.argmin(epr_x_2d, axis=None), epr_x_2d.shape))
+# epr_x_amin_Tcoord = [T1_arr[epr_x_amin_ind[0]], T4_arr[epr_x_amin_ind[1]]]
+
 
 
 T4_arr = np.square(fl1.item().get('t4_arr'))
@@ -175,6 +179,7 @@ plt.grid(True)
 plt.tick_params(axis='both', which='major', labelsize=18)
 plt.show()
 
+
 # Det probabilities
 plt.plot(T4_arr, det_prob1[0, :, 0, 0], label='prob. NONE')
 plt.plot(T4_arr, det_prob2[0, :, 0, 0], label='prob. BOTTOM or TOP')
@@ -194,6 +199,8 @@ def neg(phi):
     N = (1 / np.sqrt(2)) * np.abs(- 0.5 * np.exp(1j * 2 * phi) + 0.5) * (0.5 * np.abs(np.exp(1j * 2 * phi) + 1) + (1 / np.sqrt(2)) * np.abs(0.5 * np.exp(1j * 2 * phi) - 0.5)) + (0.25 / np.sqrt(2)) * np.abs(np.exp(1j * 2 * phi) + 1) * np.abs(np.exp(1j * 2 * phi) - 1)
     return N
 
+
+phase = 0.25
 
 phi_arr = np.linspace(0, np.pi, 81)
 neg_arr = np.zeros(len(phi_arr))
