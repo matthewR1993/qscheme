@@ -6,3 +6,6 @@ pandas>=0.22.0
 pytest>=3.7.0
 qutip>=4.2.0
 scipy>=1.0.0
+dash
+dash-html-components
+dash-core-components
