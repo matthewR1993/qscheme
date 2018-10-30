@@ -164,11 +164,12 @@ def epr_x(alpha, g1, g2, g3, g4):
 
 t_grd = 100
 t1_arr = np.linspace(0, 1, t_grd)
-t2_arr = np.linspace(0, 1, t_grd)
+# t2_arr = np.linspace(0, 1, t_grd)
+t2_arr = np.array([1])
 
-phase = 1.5 * np.pi
+phase = 0.5 * np.pi
 
-alpha = 10.0
+alpha = 1.0
 
 
 epr_x_arr = np.zeros((t_grd, t_grd), dtype=complex)
@@ -196,47 +197,51 @@ plt.ylabel('T1')
 plt.show()
 
 
-# fig, ax = plt.subplots()
-# plt.subplots_adjust(left=0.25, bottom=0.25)
-# t = np.arange(0.0, 1.0, 0.001)
-# a0 = 5
-# f0 = 3
-# s = a0*np.sin(2*np.pi*f0*t)
-# l, = plt.plot(t, s, lw=2, color='red')
-# plt.axis([0, 1, -10, 10])
-#
-# axcolor = 'lightgoldenrodyellow'
-# axfreq = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
-# axamp = plt.axes([0.25, 0.15, 0.65, 0.03], facecolor=axcolor)
-#
-# sfreq = Slider(axfreq, 'Freq', 0.1, 30.0, valinit=f0)
-# samp = Slider(axamp, 'Amp', 0.1, 10.0, valinit=a0)
-#
-#
-# def update(val):
-#     amp = samp.val
-#     freq = sfreq.val
-#     l.set_ydata(amp*np.sin(2*np.pi*freq*t))
-#     fig.canvas.draw_idle()
-# sfreq.on_changed(update)
-# samp.on_changed(update)
-#
-# resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
-# button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
-#
-#
-# def reset(event):
-#     sfreq.reset()
-#     samp.reset()
-# button.on_clicked(reset)
-#
-# rax = plt.axes([0.025, 0.5, 0.15, 0.15], facecolor=axcolor)
-# radio = RadioButtons(rax, ('red', 'blue', 'green'), active=0)
-#
-#
-# def colorfunc(label):
-#     l.set_color(label)
-#     fig.canvas.draw_idle()
-# radio.on_clicked(colorfunc)
-#
-# plt.show()
+phase_arr = np.linspace(0, 2 * np.pi, t_grd)
+t1_arr = np.linspace(0, 1, t_grd)
+t2_arr = np.array([1/sqrt(2)])
+
+epr_x_arr2 = np.zeros((t_grd, t_grd), dtype=complex)
+
+
+for i in range(t_grd):
+    for j in range(t_grd):
+        g1 = gamma_1(t1_arr[i], t2_arr[0], phase_arr[j])
+        g2 = gamma_2(t1_arr[i], t2_arr[0], phase_arr[j])
+        g3 = gamma_3(t1_arr[i], t2_arr[0], phase_arr[j])
+        g4 = gamma_4(t1_arr[i], t2_arr[0], phase_arr[j])
+        epr_x_arr2[i, j] = epr_x(alpha, g1, g2, g3, g4)
+
+
+print('Minimum:', np.amin(np.real(epr_x_arr2)))
+
+plt.imshow(np.real(epr_x_arr2), origin='lower', cmap=cm.GnBu_r)
+plt.colorbar()
+plt.xlabel('phase')
+plt.ylabel('T1')
+plt.show()
+
+
+phase_arr = np.linspace(0, 2 * np.pi, t_grd)
+t2_arr = np.linspace(0, 1, t_grd)
+t1_arr = np.array([1/sqrt(2)])
+
+epr_x_arr3 = np.zeros((t_grd, t_grd), dtype=complex)
+
+
+for i in range(t_grd):
+    for j in range(t_grd):
+        g1 = gamma_1(t1_arr[0], t2_arr[i], phase_arr[j])
+        g2 = gamma_2(t1_arr[0], t2_arr[i], phase_arr[j])
+        g3 = gamma_3(t1_arr[0], t2_arr[i], phase_arr[j])
+        g4 = gamma_4(t1_arr[0], t2_arr[i], phase_arr[j])
+        epr_x_arr3[i, j] = epr_x(alpha, g1, g2, g3, g4)
+
+
+print('Minimum:', np.amin(np.real(epr_x_arr3)))
+
+plt.imshow(np.real(epr_x_arr3), origin='lower', cmap=cm.GnBu_r)
+plt.colorbar()
+plt.xlabel('phase')
+plt.ylabel('T2')
+plt.show()
