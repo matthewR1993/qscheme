@@ -11,47 +11,79 @@ DET_CONF = 'FIRST'
 states_config = 'coher(chan-1)_single(chan-2)'
 
 
-phase = 1.5
+# phase = 1.5
 
 # crit_prob = 0.1
 
 phase_mod_channel = 2
 
-save_root = '/home/matvei/qscheme/results/res26/'
-fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF, phase_mod_channel)
+phases = [0.25 * n for n in range(8)]
 
-fl = np.load(save_root + fname)
+epr_min_arr = np.zeros(len(phases))
 
-sqeez_dX = fl.item().get('squeez_dx')
-sqeez_dP = fl.item().get('squeez_dp')
-erp_correl_x = fl.item().get('epr_correl_x')
-erp_correl_p = fl.item().get('epr_correl_p')
-prob = fl.item().get('det_prob')
+indexes = []
 
-
-# TODO filter lower probability.
-# args_lower = np.argwhere(np.real(prob) < crit_prob)
-# for k in range(len(args_lower)):
-#     index = tuple(args_lower[k, :])
-#     sqeez_dX[index] = 100
-#     sqeez_dP[index] = 100
-#     erp_correl_x[index] = 100
-#     erp_correl_p[index] = 100
+for i, phase in enumerate(phases):
+    print('Phase:', phase)
+    #phase = 0
+    save_root = '/home/matvei/qscheme/results/res26/'
+    # fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF, phase_mod_channel)
+    fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF, phase_mod_channel)
 
 
-# Detection probability.
-min_index = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
-min_prob = prob[tuple(min_index)]
-print('min. prob:', min_prob)
+    fl = np.load(save_root + fname)
 
-print('EPR_X:', np.amin(np.real(erp_correl_x[0, 0, :, :] / sqrt(1/2))))
+    sqeez_dX = fl.item().get('squeez_dx')
+    sqeez_dP = fl.item().get('squeez_dp')
+    erp_correl_x = fl.item().get('epr_correl_x')
+    erp_correl_p = fl.item().get('epr_correl_p')
+    prob = fl.item().get('det_prob')
 
-plt.imshow(np.real(erp_correl_x[0, 0, :, :] / sqrt(1/2)), origin='lower', cmap=cm.GnBu_r)
+    t1_arr = fl.item().get('t1_arr')
+    t4_arr = fl.item().get('t4_arr')
+
+
+    # args_lower = np.argwhere(np.real(prob) < crit_prob)
+
+    # Detection probability.
+    min_index = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
+    # min_prob = prob[tuple(min_index)]
+    # print('min. prob:', min_prob)
+    indexes.append(min_index)
+    print(min_index)
+
+    # print('EPR_X:', np.amin(np.real(erp_correl_x[0, 0, :, :] / sqrt(1/2))))
+    print('EPR_X:', np.amin(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2))))
+
+    epr_min_arr[i] = np.amin(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2)))
+
+
+plt.plot(phases, epr_min_arr)
+plt.xlabel('PHASE')
+plt.show()
+
+# t1 = [t1_arr[i[0]] for i in indexes]
+# t4 = [t1_arr[i[1]] for i in indexes]
+#
+# plt.plot(phases, t1)
+# plt.plot(phases, t4)
+# plt.xlabel('PHASE')
+# plt.ylabel('t')
+# plt.plot()
+
+
+plt.imshow(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2)), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
-# plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
+# plt.scatter(x=[min_index[3]], y=[min_index[2]], c='r', s=80, marker='+')
 plt.xlabel('T2')
 plt.ylabel('T3')
 plt.show()
+
+# plt.imshow(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2)), origin='lower', cmap=cm.GnBu_r)
+# plt.colorbar()
+# plt.xlabel('T1')
+# plt.ylabel('T4')
+# plt.show()
 
 
 # Analytics plot of EPR_X.

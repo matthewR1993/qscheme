@@ -41,7 +41,7 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
-ph_inpi = 0.0
+ph_inpi = 1.75
 # ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
