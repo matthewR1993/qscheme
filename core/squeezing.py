@@ -244,11 +244,11 @@ def erp_squeezing_correlations(dm):
     '''
     Two modes squeezing EPR correlations.
     :param dm: Applied density matrix for 2 channels
-    :return: Two modes squeezing EPR correlations:
-    corX = D[(X_2 - X_1)]
-    corP = D[(P_1 + P_2)]
-    Where D[A] is a dispersion of A: D[A] = sqrt(<A^2> - (<A>)^2)
+    :return: EPR operator's variances:
+    corX = var[(X_2 - X_1)]
+    corP = var[(P_1 + P_2)]
+    Where var[A] is a variance of A: var[A] = <A^2> - (<A>)^2
     '''
-    cor_x = np.sqrt(coord_square_aver(dm, 1) - 2 * prod_coord_aver(dm) + coord_square_aver(dm, 2) - coord_aver(dm, 1)**2 + 2 * coord_aver(dm, 1) * coord_aver(dm, 2) - coord_aver(dm, 2)**2)
-    cor_p = np.sqrt(impulse_square_aver(dm, 1) + 2 * prod_impulse_aver(dm) + impulse_square_aver(dm, 2) - impulse_aver(dm, 1)**2 - 2 * impulse_aver(dm, 1) * impulse_aver(dm, 2) - impulse_aver(dm, 2)**2)
+    cor_x = coord_square_aver(dm, 1) - 2 * prod_coord_aver(dm) + coord_square_aver(dm, 2) - coord_aver(dm, 1)**2 + 2 * coord_aver(dm, 1) * coord_aver(dm, 2) - coord_aver(dm, 2)**2
+    cor_p = impulse_square_aver(dm, 1) + 2 * prod_impulse_aver(dm) + impulse_square_aver(dm, 2) - impulse_aver(dm, 1)**2 - 2 * impulse_aver(dm, 1) * impulse_aver(dm, 2) - impulse_aver(dm, 2)**2
     return cor_x, cor_p

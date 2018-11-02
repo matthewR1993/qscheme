@@ -162,21 +162,21 @@ def epr_x(alpha, g1, g2, g3, g4):
     return variance
 
 
-t_grd = 100
-t1_arr = np.linspace(0, 1, t_grd)
-# t2_arr = np.linspace(0, 1, t_grd)
-t2_arr = np.array([1])
-
-phase = 0.5 * np.pi
-
 alpha = 1.0
+t_grd = 100
+
+t1_arr = np.linspace(0, 1, t_grd)
+t2_arr = np.linspace(0, 1, t_grd)
+# t2_arr = np.array([1])
+
+phase = 0.0 * np.pi
 
 
 epr_x_arr = np.zeros((t_grd, t_grd), dtype=complex)
 
 
-for i in range(t_grd):
-    for j in range(t_grd):
+for i in range(len(t1_arr)):
+    for j in range(len(t2_arr)):
         g1 = gamma_1(t1_arr[i], t2_arr[j], phase)
         g2 = gamma_2(t1_arr[i], t2_arr[j], phase)
         g3 = gamma_3(t1_arr[i], t2_arr[j], phase)
@@ -187,11 +187,13 @@ print('A real part:', np.sum(np.real(epr_x_arr)))
 print('An image part:', np.sum(np.imag(epr_x_arr)))
 
 print('Minimum:', np.amin(np.real(epr_x_arr)))
+print('Maximum:', np.amax(np.real(epr_x_arr)))
+# Minimum: 0.9999999999999992
+# Maximum: 1.0000000000000009
+
 
 plt.imshow(np.real(epr_x_arr), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
-# plt.scatter(x=[epr_x_amin_ind[1]], y=[epr_x_amin_ind[0]], c='r', s=80, marker='+')
-# plt.scatter(x=[50], y=[50], c='g', s=80, marker='+')
 plt.xlabel('T2')
 plt.ylabel('T1')
 plt.show()
@@ -199,7 +201,7 @@ plt.show()
 
 phase_arr = np.linspace(0, 2 * np.pi, t_grd)
 t1_arr = np.linspace(0, 1, t_grd)
-t2_arr = np.array([1/sqrt(2)])
+t2_arr = np.array([1])
 
 epr_x_arr2 = np.zeros((t_grd, t_grd), dtype=complex)
 
@@ -214,6 +216,9 @@ for i in range(t_grd):
 
 
 print('Minimum:', np.amin(np.real(epr_x_arr2)))
+print('Maximum:', np.amax(np.real(epr_x_arr2)))
+# Minimum: 0.5000629387652862
+# Maximum: 1.4999370612347138
 
 plt.imshow(np.real(epr_x_arr2), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
@@ -239,6 +244,15 @@ for i in range(t_grd):
 
 
 print('Minimum:', np.amin(np.real(epr_x_arr3)))
+print('Maximum:', np.amax(np.real(epr_x_arr3)))
+
+# t1 = 1/sqrt(2)
+# Minimum: 0.50006293616306113
+# Maximum: 1.499937063836938
+
+# t1 = 1
+# Minimum: 1
+# Maximum: 1
 
 plt.imshow(np.real(epr_x_arr3), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()

@@ -179,7 +179,7 @@ if __name__ == "__main__":
                     sqeez_dX[n1, n4, n2, n3] = dX
                     sqeez_dP[n1, n4, n2, n3] = dP
 
-                    # ERP correlations.
+                    # ERP correlation's variance.
                     epr_x, epr_p = erp_squeezing_correlations(final_dens_matrix)
                     epr_correl_x[n1, n4, n2, n3] = epr_x
                     epr_correl_p[n1, n4, n2, n3] = epr_p
