@@ -169,7 +169,7 @@ t1_arr = np.linspace(0, 1, t_grd)
 t2_arr = np.linspace(0, 1, t_grd)
 # t2_arr = np.array([1])
 
-phase = 0.0 * np.pi
+phase = 1.5 * np.pi
 
 
 epr_x_arr = np.zeros((t_grd, t_grd), dtype=complex)
@@ -201,7 +201,7 @@ plt.show()
 
 phase_arr = np.linspace(0, 2 * np.pi, t_grd)
 t1_arr = np.linspace(0, 1, t_grd)
-t2_arr = np.array([1])
+t2_arr = np.array([1/sqrt(2)])
 
 epr_x_arr2 = np.zeros((t_grd, t_grd), dtype=complex)
 

@@ -16,39 +16,39 @@ max_power = input_series_length + auxiliary_series_length
 
 
 # INPUT - the state in the first(at the bottom) channel. (chan-1).
-# input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=1)
+input_st = single_photon(series_length)
+# input_st = coherent_state(input_series_length, alpha=1)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel. (chan-2).
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
-# states_config = 'single(chan-1)_coher(chan-2)'
-states_config = 'coher(chan-1)_single(chan-2)'
+states_config = 'single(chan-1)_coher(chan-2)'
+# states_config = 'coher(chan-1)_single(chan-2)'
 # states_config = 'single(chan-1)_single(chan-2)'
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-DET_CONF = 'FIRST'  # 1st detector is clicked
+# DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-# DET_CONF = 'NONE'  # None of detectors were clicked
+DET_CONF = 'NONE'  # None of detectors were clicked
 # DET_CONF = args.det
 
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
-ph_inpi = 1.75
+ph_inpi = 1.5
 # ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
-phase_mod_channel = 2
+phase_mod_channel = 1
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res26/'
-save_root = '/home/matvei/qscheme/results/res26/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res27/'
+# save_root = '/home/matvei/qscheme/results/res27/'
 fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, ph_inpi, DET_CONF, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
@@ -68,10 +68,10 @@ T1_max = 1.0
 T4_min = 0.0
 T4_max = 1.0
 
-T2_min = max_bound
-T2_max = max_bound
-T3_min = max_bound
-T3_max = max_bound
+T2_min = 1
+T2_max = 1
+T3_min = 1
+T3_max = 1
 
 # Varying BSs. Small t, r parameters, with step regarding to big "T".
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
