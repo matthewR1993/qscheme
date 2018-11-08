@@ -285,7 +285,9 @@ def test_erp_squeezing_correlations():
     rho2[0, 2, 1, 1] = - 4j * sqrt(2) * t * r * (t ** 2 - r ** 2)
     rho2[0, 2, 0, 2] = 2 * (t ** 2 - r ** 2) ** 2
     rho2 = 0.25 * rho2
-    assert erp_squeezing_correlations(rho2) == (sqrt(3 / 2), sqrt(3 / 2))
+    epr2 = erp_squeezing_correlations(rho2)
+    assert cmath.isclose(epr2[0], 3/2, rel_tol=1e-9)
+    assert cmath.isclose(epr2[1], 3/2, rel_tol=1e-9)
 
     rho3 = np.zeros((size,) * 4, dtype=complex)
     rho3[1, 0, 1, 0] = 2 * t**2
@@ -294,6 +296,6 @@ def test_erp_squeezing_correlations():
     rho3[0, 1, 0, 1] = 2 * r ** 2
     rho3[0, 0, 0, 0] = 1
     rho3 = rho3 / 3
-    epr = erp_squeezing_correlations(rho3)
-    assert cmath.isclose(epr[0], sqrt(5 / 6), rel_tol=1e-9)
-    assert cmath.isclose(epr[1], sqrt(5 / 6), rel_tol=1e-9)
+    epr3 = erp_squeezing_correlations(rho3)
+    assert cmath.isclose(epr3[0], 5/6, rel_tol=1e-9)
+    assert cmath.isclose(epr3[1], 5/6, rel_tol=1e-9)

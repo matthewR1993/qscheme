@@ -109,8 +109,9 @@ plt.show()
 # plt.plot(t_arr, np.real(epr_x_arr))
 # plt.show()
 
-DET_CONF = 'NONE'
-phase = 1.5
+
+DET_CONF = 'FIRST'
+phase = 0.0
 phase_mod_channel = 1
 states_config = 'single(chan-1)_coher(chan-2)'
 
@@ -123,7 +124,7 @@ fl = np.load(save_root + fname)
 epr_correl_x_4d = fl.item().get('epr_correl_x')
 
 
-epr_correl_x = epr_correl_x_4d[:, :, 0, 0]
+epr_correl_x = epr_correl_x_4d[0, :, :, 0]
 
 
 print('A real part:', np.sum(np.real(epr_correl_x)))
@@ -135,6 +136,6 @@ print('Maximum:', np.amax(np.real(epr_correl_x)))
 
 plt.imshow(np.real(epr_correl_x), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
-plt.xlabel('T1')
+plt.xlabel('T2')
 plt.ylabel('T4')
 plt.show()

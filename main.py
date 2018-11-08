@@ -34,14 +34,14 @@ input_st = single_photon(series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
-auxiliary_st = single_photon(series_length)
-# auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+# auxiliary_st = single_photon(series_length)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
-# states_config = 'single(chan-1)_coher(chan-2)'
+states_config = 'single(chan-1)_coher(chan-2)'
 # states_config = 'coher(chan-1)_single(chan-2)'
-states_config = 'single(chan-1)_single(chan-2)'
+# states_config = 'single(chan-1)_single(chan-2)'
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
@@ -50,50 +50,49 @@ states_config = 'single(chan-1)_single(chan-2)'
 # DET_CONF = 'NONE'  # None of detectors were clicked
 DET_CONF = args.det
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res24/'
-save_root = '/home/matvei/qscheme/results/res24/'
-fname = '{}_phase-{:.4f}pi_det-{}.npy'.format(states_config, args.phase, args.det)
-print('Saving path:', save_root + fname)
-mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
-
 # The phase difference before last BS
 # ph_inpi = 0.0
 ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 # Bottom channel = 1.
-phase_mod_channel = 2
+phase_mod_channel = 1
+
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+# save_root = '/home/matvei/qscheme/results/res28/'
+fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.phase, args.det, phase_mod_channel)
+print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 1
-r4_grid = 1
+r1_grid = 11
+r4_grid = 11
 
-r2_grid = 1
-r3_grid = 1
+r2_grid = 11
+r3_grid = 11
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-# T1_min = 0.0
-# T1_max = 1.0
-# T4_min = 0.0
-# T4_max = 1.0
+T1_min = 0.0
+T1_max = 1.0
+T4_min = 0.0
+T4_max = 1.0
+
+T2_min = min_bound
+T2_max = max_bound
+T3_min = min_bound
+T3_max = max_bound
+
+# T1_min = 0.5
+# T1_max = 0.5
+# T4_min = 0.5
+# T4_max = 0.5
 #
-# T2_min = min_bound
-# T2_max = max_bound
-# T3_min = min_bound
-# T3_max = max_bound
-
-T1_min = 0.5
-T1_max = 0.5
-T4_min = 0.5
-T4_max = 0.5
-
-T2_min = 1.0
-T2_max = 1.0
-T3_min = 1.0
-T3_max = 1.0
+# T2_min = 1.0
+# T2_max = 1.0
+# T3_min = 1.0
+# T3_max = 1.0
 
 # Varying BSs. Small t, r parameters, with step regarding to big "T".
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
@@ -117,6 +116,7 @@ epr_correl_p = np.zeros(sz, dtype=complex)
 norm_after_det_arr = np.zeros(sz, dtype=complex)
 final_dens_matrix_list = []
 
+mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 if __name__ == "__main__":
     # Start time.
@@ -141,9 +141,8 @@ if __name__ == "__main__":
                         det_event=DET_CONF
                     )
 
-                    if final_dens_matrix is None or det_prob is None:
+                    if norm is None:
                         print('Warning: the norm is zero.')
-                        pass
 
                     det_prob_array[n1, n4, n2, n3] = det_prob
                     norm_after_det_arr[n1, n4, n2, n3] = norm

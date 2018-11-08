@@ -4,32 +4,29 @@ import matplotlib.pyplot as plt
 from math import sqrt
 
 
-QUADR_VAR_X_VAC = 1/2
-QUADR_VAR_P_VAC = 1/2
-
 r1_grid = 11
 r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-# det = 'FIRST'
+det = 'FIRST'
 # det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
-quant = 'EPR_X'
+states_config = 'single(chan-1)_single(chan-2)'
 
-states_config = 'single(chan-1)_coher(chan-2)'
-
-# phases = [x * 0.25 for x in range(9)]
-phases = [x * 0.125 for x in range(17)]
+phases = [x * 0.25 for x in range(9)]
+# phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
 
 size = len(phases)
 
-line = [1] * len(phases)
+line = [0.5] * len(phases)
 
-crit_prob = 0.1
+phase_mod_channel = 1
+
+neg_max_arr = np.zeros(size, dtype=complex)
 
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
@@ -57,13 +54,8 @@ for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    # save_root = '/home/matthew/qscheme/results/res22_rough/'
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res23_rough/'
-    fname = '{}_phase-{}pi_det-{}.npy'.format(states_config, phase, det)
-
-    save_root = '/home/matvei/qscheme/results/res19_incr_accuracy/'
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res19_incr_accuracy/'
-    fname = 'coh(chan-1)_single(chan-2)_phase-{}pi_det-{}_quant-{}.npy'.format(phase, det, quant)
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+    fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, det, phase_mod_channel)
 
     fl = np.load(save_root + fname)
 
@@ -72,20 +64,23 @@ for i in range(size):
     erp_correl_x = fl.item().get('epr_correl_x')
     erp_correl_p = fl.item().get('epr_correl_p')
     prob = fl.item().get('det_prob')
+    neg = fl.item().get('log_negativity')
 
-    args_lower = np.argwhere(np.real(prob) < crit_prob)
-    for k in range(len(args_lower)):
-        index = tuple(args_lower[k, :])
-        sqeez_dX[index] = 100
-        sqeez_dP[index] = 100
-        erp_correl_x[index] = 100
-        erp_correl_p[index] = 100
+    # args_lower = np.argwhere(np.real(prob) < crit_prob)
+    # for k in range(len(args_lower)):
+    #     index = tuple(args_lower[k, :])
+    #     sqeez_dX[index] = 100
+    #     sqeez_dP[index] = 100
+    #     erp_correl_x[index] = 100
+    #     erp_correl_p[index] = 100
 
     uncert_min_arr[i] = np.amin(np.multiply(sqeez_dX, sqeez_dP))
     dX_min_arr[i] = np.amin(sqeez_dX)
     dP_min_arr[i] = np.amin(sqeez_dP)
     epr_x_min_arr[i] = np.amin(erp_correl_x)
     epr_p_min_arr[i] = np.amin(erp_correl_p)
+
+    neg_max_arr[i] = np.amax(neg)
 
     uncert = np.multiply(sqeez_dX, sqeez_dP)
 
@@ -104,6 +99,11 @@ for i in range(size):
     t4_arr_list[i] = fl.item().get('t4_arr')
     t2_arr_list[i] = fl.item().get('t2_arr')
     t3_arr_list[i] = fl.item().get('t3_arr')
+
+
+# Negativity.
+plt.plot(phases, neg_max_arr, 'r.')
+plt.show()
 
 
 # Uncertainty.
@@ -126,9 +126,10 @@ plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
 plt.show()
 
+
 # EPR:
-plt.plot(phases, epr_x_min_arr / sqrt(1/2), 'r-o')
-plt.title(r'$\sqrt{2} \ \Delta[X^{(1)} - X^{(2)}]^{(out)}$', fontsize=18)
+plt.plot(phases, epr_x_min_arr, 'r-o')
+plt.title(r'$VAR[X^{(1)} - X^{(2)}]^{(out)}$', fontsize=18)
 plt.plot(phases, line, '-.')
 plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.grid(True)
@@ -136,12 +137,16 @@ plt.xlim(0, 2)
 plt.tick_params(axis='both', which='major', labelsize=16)
 plt.show()
 
-plt.plot(phases, epr_p_min_arr / sqrt(1/2), 'b-o')
-plt.title(r'$\sqrt{2} \ \Delta[P^{(1)} + P^{(2)}]^{(out)}$')
+
+plt.plot(phases, epr_p_min_arr, 'b-o')
+plt.title(r'$VAR[P^{(1)} + P^{(2)}]^{(out)}$')
 plt.plot(phases, line, '-.')
 plt.xlabel('$Phase, [\pi]$')
 plt.grid(True)
+plt.xlim(0, 2)
+plt.tick_params(axis='both', which='major', labelsize=16)
 plt.show()
+
 
 # Probabilities of realisation for EPR:
 plt.plot(phases, epr_x_min_prob_arr, 'r-o')

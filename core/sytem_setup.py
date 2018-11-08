@@ -40,7 +40,8 @@ def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event
     # The normalised state.
     state_after_dett_unappl_norm = state_after_dett_unappl / norm_after_det
     if norm_after_det < 1e-12:
-        return None, None
+        print('Norm after detection is too low.')
+        return (None,) * 3
 
     # Trim the state, 8 is min.
     trim_state = 8
@@ -56,7 +57,6 @@ def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event
 
     # The transformation at last BS, 7 is min.
     trim_dm = 7
-    # final_dens_matrix = bs_densmatrix_transform(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm], t4, r4)
     final_dens_matrix = trans.bs_matrix_transform_copt(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm].copy(order='C'), t4, r4)
     # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
     # print('Dens. matr. trim norm:', sm_dm)

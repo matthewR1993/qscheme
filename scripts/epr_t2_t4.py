@@ -33,15 +33,15 @@ states_config = 'single(chan-1)_coher(chan-2)'
 
 # Measurement event, detectors configuration:
 # DET_CONF = 'BOTH'  # both 1st and 3rd detectors clicked
-# DET_CONF = 'FIRST'  # 1st detector is clicked
+DET_CONF = 'FIRST'  # 1st detector is clicked
 # DET_CONF = 'THIRD'  # 3rd detector is clicked
-DET_CONF = 'NONE'  # None of detectors were clicked
+# DET_CONF = 'NONE'  # None of detectors were clicked
 # DET_CONF = args.det
 
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
-ph_inpi = 1.5
+ph_inpi = 1.0
 # ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
@@ -53,23 +53,23 @@ fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_
 print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 20
-r4_grid = 20
+r1_grid = 1
+r4_grid = 40
 
-r2_grid = 1
+r2_grid = 40
 r3_grid = 1
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-T1_min = 0.0
-T1_max = 1.0
+T1_min = 0.5
+T1_max = 0.5
 T4_min = 0.0
 T4_max = 1.0
 
-T2_min = 1
-T2_max = 1
+T2_min = min_bound
+T2_max = max_bound
 T3_min = 1
 T3_max = 1
 
