@@ -9,12 +9,14 @@ r4_grid = 11
 r2_grid = 11
 r3_grid = 11
 
-det = 'FIRST'
+# det = 'FIRST'
 # det = 'THIRD'
 # det = 'NONE'
-# det = 'BOTH'
+det = 'BOTH'
 
-states_config = 'single(chan-1)_single(chan-2)'
+phase_mod_channel = 1
+
+states_config = 'single(chan-1)_coher(chan-2)'
 
 phases = [x * 0.25 for x in range(9)]
 # phases = [x * 0.125 for x in range(17)]
@@ -24,10 +26,7 @@ size = len(phases)
 
 line = [0.5] * len(phases)
 
-phase_mod_channel = 1
-
 neg_max_arr = np.zeros(size, dtype=complex)
-
 dX_min_arr = np.zeros(size, dtype=complex)
 dP_min_arr = np.zeros(size, dtype=complex)
 epr_x_min_arr = np.zeros(size, dtype=complex)
@@ -79,7 +78,6 @@ for i in range(size):
     dP_min_arr[i] = np.amin(sqeez_dP)
     epr_x_min_arr[i] = np.amin(erp_correl_x)
     epr_p_min_arr[i] = np.amin(erp_correl_p)
-
     neg_max_arr[i] = np.amax(neg)
 
     uncert = np.multiply(sqeez_dX, sqeez_dP)
@@ -106,26 +104,25 @@ plt.plot(phases, neg_max_arr, 'r.')
 plt.show()
 
 
-# Uncertainty.
+# Uncertainty. Should be 1/4.
 plt.plot(phases, uncert_min_arr, 'r.')
 plt.title('$dPdX^{min}$')
 plt.ylabel('$dPdX^min}$')
 plt.xlabel('$phase \ in \ \pi$')
 plt.show()
 
-# Quadratures.
-plt.plot(phases, 10*np.log10(dX_min_arr/QUADR_VAR_X_VAC), 'r-o')
-plt.title(r'$10\log_{10}{\frac{\Delta X^{(out)}}{\Delta X^{(vac)}}}$')
-plt.xlabel('$Phase, [\pi]$')
-plt.grid(True)
-plt.show()
-
-plt.plot(phases, 10*np.log10(dP_min_arr/QUADR_VAR_P_VAC), 'b-o')
-plt.title(r'$10\log_{10}{\frac{\Delta P^{(out)}}{\Delta P^{(vac)}}}$')
-plt.xlabel('$Phase, [\pi]$')
-plt.grid(True)
-plt.show()
-
+# # Quadratures.
+# plt.plot(phases, 10*np.log10(dX_min_arr/QUADR_VAR_X_VAC), 'r-o')
+# plt.title(r'$10\log_{10}{\frac{\Delta X^{(out)}}{\Delta X^{(vac)}}}$')
+# plt.xlabel('$Phase, [\pi]$')
+# plt.grid(True)
+# plt.show()
+#
+# plt.plot(phases, 10*np.log10(dP_min_arr/QUADR_VAR_P_VAC), 'b-o')
+# plt.title(r'$10\log_{10}{\frac{\Delta P^{(out)}}{\Delta P^{(vac)}}}$')
+# plt.xlabel('$Phase, [\pi]$')
+# plt.grid(True)
+# plt.show()
 
 # EPR:
 plt.plot(phases, epr_x_min_arr, 'r-o')
@@ -199,4 +196,3 @@ df = df_epr_x_min_ind.round(4)
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
 plt.show()
-

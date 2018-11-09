@@ -5,7 +5,7 @@ import matplotlib.cm as cm
 from math import sqrt
 
 
-DET_CONF = 'FIRST'
+DET_CONF = 'BOTH'
 
 # states_config = 'single(chan-1)_coher(chan-2)'
 states_config = 'coher(chan-1)_single(chan-2)'
@@ -110,28 +110,28 @@ plt.show()
 # plt.show()
 
 
-DET_CONF = 'FIRST'
-phase = 0.0
-phase_mod_channel = 1
-states_config = 'single(chan-1)_coher(chan-2)'
-
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res27/'
-fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF,
-                                                                         phase_mod_channel)
-
-fl = np.load(save_root + fname)
-
-epr_correl_x_4d = fl.item().get('epr_correl_x')
-
-
-epr_correl_x = epr_correl_x_4d[0, :, :, 0]
-
-
-print('A real part:', np.sum(np.real(epr_correl_x)))
-print('An image part:', np.sum(np.imag(epr_correl_x)))
-
-print('Minimum:', np.amin(np.real(epr_correl_x)))
-print('Maximum:', np.amax(np.real(epr_correl_x)))
+# DET_CONF = 'BOTH'
+# phase = 0.0
+# phase_mod_channel = 1
+# states_config = 'single(chan-1)_coher(chan-2)'
+#
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res27/'
+# fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF,
+#                                                                          phase_mod_channel)
+#
+# fl = np.load(save_root + fname)
+#
+# epr_correl_x_4d = fl.item().get('epr_correl_x')
+#
+#
+# epr_correl_x = epr_correl_x_4d[0, :, :, 0]
+#
+#
+# print('A real part:', np.sum(np.real(epr_correl_x)))
+# print('An image part:', np.sum(np.imag(epr_correl_x)))
+#
+# print('Minimum:', np.amin(np.real(epr_correl_x)))
+# print('Maximum:', np.amax(np.real(epr_correl_x)))
 
 
 plt.imshow(np.real(epr_correl_x), origin='lower', cmap=cm.GnBu_r)
