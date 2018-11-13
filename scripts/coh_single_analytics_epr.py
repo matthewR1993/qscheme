@@ -259,3 +259,42 @@ plt.colorbar()
 plt.xlabel('phase')
 plt.ylabel('T2')
 plt.show()
+
+
+# Varying the phase and finding the global minimum.
+phase_grd = 60
+phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
+
+epr_x_min_arr = np.zeros(phase_grd)
+
+for n, phase in enumerate(phase_arr):
+    print('phase:', phase / np.pi)
+    epr_x_arr = np.zeros((t_grd, t_grd), dtype=complex)
+
+    for i in range(len(t1_arr)):
+        for j in range(len(t2_arr)):
+            g1 = gamma_1(t1_arr[i], t2_arr[j], phase)
+            g2 = gamma_2(t1_arr[i], t2_arr[j], phase)
+            g3 = gamma_3(t1_arr[i], t2_arr[j], phase)
+            g4 = gamma_4(t1_arr[i], t2_arr[j], phase)
+            epr_x_arr[i, j] = epr_x(alpha, g1, g2, g3, g4)
+
+    print('A real part:', np.sum(np.real(epr_x_arr)))
+    print('An image part:', np.sum(np.imag(epr_x_arr)))
+
+    print('Minimum:', np.amin(np.real(epr_x_arr)))
+    print('Maximum:', np.amax(np.real(epr_x_arr)))
+
+    epr_x_min_arr[n] = np.amin(np.real(epr_x_arr))
+
+
+plt.plot(phase_arr, epr_x_min_arr)
+plt.show()
+
+fl = {
+    'epr_x_min': epr_x_min_arr,
+    'phases': phase_arr
+}
+save_root = '/home/matvei/qscheme/results/res28/'
+fname = 'epr_x_min_vs_phase_theory'
+np.save(save_root + fname, fl)
