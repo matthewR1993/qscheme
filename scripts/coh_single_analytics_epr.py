@@ -266,6 +266,115 @@ phase_grd = 60
 phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
 
 epr_x_min_arr = np.zeros(phase_grd)
+epr_x_min_ind_arr = np.zeros(phase_grd, dtype=list)
+
+for n, phase in enumerate(phase_arr):
+    print('phase:', phase / np.pi)
+    epr_x_arr = np.zeros((t_grd, t_grd), dtype=complex)
+
+    for i in range(len(t1_arr)):
+        for j in range(len(t2_arr)):
+            g1 = gamma_1(t1_arr[i], t2_arr[j], phase)
+            g2 = gamma_2(t1_arr[i], t2_arr[j], phase)
+            g3 = gamma_3(t1_arr[i], t2_arr[j], phase)
+            g4 = gamma_4(t1_arr[i], t2_arr[j], phase)
+            epr_x_arr[i, j] = epr_x(alpha, g1, g2, g3, g4)
+
+    print('A real part:', np.sum(np.real(epr_x_arr)))
+    print('An image part:', np.sum(np.imag(epr_x_arr)))
+
+    print('Minimum:', np.amin(np.real(epr_x_arr)))
+    print('Maximum:', np.amax(np.real(epr_x_arr)))
+
+    epr_x_min_arr[n] = np.amin(np.real(epr_x_arr))
+    epr_x_min_ind_arr[n] = list(np.unravel_index(np.argmin(epr_x_arr, axis=None), epr_x_arr.shape))
+    print('Min index:', epr_x_min_ind_arr[n])
+
+
+plt.plot(phase_arr / np.pi, epr_x_min_arr)
+plt.show()
+
+fl = {
+    'epr_x_min': epr_x_min_arr,
+    'min_index': epr_x_min_ind_arr,
+    'phases': phase_arr,
+    't1_arr': t1_arr,
+    't2_arr': t2_arr,
+}
+
+# save_root = '/home/matvei/qscheme/results/res28/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+fname = 'epr_x_min_vs_phase_theory'
+np.save(save_root + fname, fl)
+
+
+# Fixing one parameter t1 and looking for the minimum.
+alpha = 1.0
+t_grd = 300
+
+t1 = sqrt(0.5)
+t2_arr = np.linspace(0, 1, t_grd)
+
+phase_grd = 100
+phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
+
+epr_x_min_arr = np.zeros(phase_grd)
+epr_x_min_ind_arr = np.zeros(phase_grd, dtype=list)
+
+for n, phase in enumerate(phase_arr):
+    print('phase:', phase / np.pi)
+    epr_x_arr = np.zeros(t_grd, dtype=complex)
+
+    for j in range(len(t2_arr)):
+            g1 = gamma_1(t1, t2_arr[j], phase)
+            g2 = gamma_2(t1, t2_arr[j], phase)
+            g3 = gamma_3(t1, t2_arr[j], phase)
+            g4 = gamma_4(t1, t2_arr[j], phase)
+            epr_x_arr[j] = epr_x(alpha, g1, g2, g3, g4)
+
+    print('A real part:', np.sum(np.real(epr_x_arr)))
+    print('An image part:', np.sum(np.imag(epr_x_arr)))
+
+    print('Minimum:', np.amin(np.real(epr_x_arr)))
+    print('Maximum:', np.amax(np.real(epr_x_arr)))
+
+    epr_x_min_arr[n] = np.amin(np.real(epr_x_arr))
+    epr_x_min_ind_arr[n] = list(np.unravel_index(np.argmin(epr_x_arr, axis=None), epr_x_arr.shape))
+    print('Min index:', epr_x_min_ind_arr[n])
+
+
+# EPR plot.
+plt.plot(phase_arr / np.pi, epr_x_min_arr)
+plt.plot(phase_arr / np.pi, [0.5]*len(phase_arr), '-.')
+plt.xlim(0, 2)
+plt.grid(True)
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
+plt.show()
+
+
+t2_min_vals = np.zeros(len(epr_x_min_ind_arr))
+
+for i, item in enumerate(epr_x_min_ind_arr):
+    t2_min_vals[i] = t2_arr[item[0]]
+
+# t2 plot.
+plt.plot(phase_arr / np.pi, t2_min_vals)
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
+plt.show()
+
+
+# Different alpha.
+# Doesn't depend on alpha.
+alpha = 1.0
+phase_grd = 60
+t_grd = 100
+
+t1_arr = np.linspace(0, 1, t_grd)
+t2_arr = np.linspace(0, 1, t_grd)
+
+phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
+
+epr_x_min_arr = np.zeros(phase_grd)
 
 for n, phase in enumerate(phase_arr):
     print('phase:', phase / np.pi)
@@ -288,13 +397,9 @@ for n, phase in enumerate(phase_arr):
     epr_x_min_arr[n] = np.amin(np.real(epr_x_arr))
 
 
-plt.plot(phase_arr, epr_x_min_arr)
+plt.plot(phase_arr / np.pi, epr_x_min_arr)
+plt.plot(phase_arr / np.pi, [0.5]*len(phase_arr), '-.')
+plt.xlim(0, 2)
+plt.grid(True)
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.show()
-
-fl = {
-    'epr_x_min': epr_x_min_arr,
-    'phases': phase_arr
-}
-save_root = '/home/matvei/qscheme/results/res28/'
-fname = 'epr_x_min_vs_phase_theory'
-np.save(save_root + fname, fl)

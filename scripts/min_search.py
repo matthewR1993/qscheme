@@ -10,9 +10,9 @@ r2_grid = 11
 r3_grid = 11
 
 # det = 'FIRST'
-# det = 'THIRD'
+det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
 phase_mod_channel = 1
 
@@ -21,6 +21,8 @@ states_config = 'single(chan-1)_coher(chan-2)'
 phases = [x * 0.25 for x in range(9)]
 # phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
+
+crit_prob = 0.1
 
 size = len(phases)
 
@@ -65,13 +67,13 @@ for i in range(size):
     prob = fl.item().get('det_prob')
     neg = fl.item().get('log_negativity')
 
-    # args_lower = np.argwhere(np.real(prob) < crit_prob)
-    # for k in range(len(args_lower)):
-    #     index = tuple(args_lower[k, :])
-    #     sqeez_dX[index] = 100
-    #     sqeez_dP[index] = 100
-    #     erp_correl_x[index] = 100
-    #     erp_correl_p[index] = 100
+    args_lower = np.argwhere(np.real(prob) < crit_prob)
+    for k in range(len(args_lower)):
+        index = tuple(args_lower[k, :])
+        sqeez_dX[index] = 100
+        sqeez_dP[index] = 100
+        erp_correl_x[index] = 100
+        erp_correl_p[index] = 100
 
     uncert_min_arr[i] = np.amin(np.multiply(sqeez_dX, sqeez_dP))
     dX_min_arr[i] = np.amin(sqeez_dX)
@@ -100,16 +102,16 @@ for i in range(size):
 
 
 # Negativity.
-plt.plot(phases, neg_max_arr, 'r.')
-plt.show()
+# plt.plot(phases, neg_max_arr, 'r.')
+# plt.show()
 
 
 # Uncertainty. Should be 1/4.
-plt.plot(phases, uncert_min_arr, 'r.')
-plt.title('$dPdX^{min}$')
-plt.ylabel('$dPdX^min}$')
-plt.xlabel('$phase \ in \ \pi$')
-plt.show()
+# plt.plot(phases, uncert_min_arr, 'r.')
+# plt.title('$dPdX^{min}$')
+# plt.ylabel('$dPdX^min}$')
+# plt.xlabel('$phase \ in \ \pi$')
+# plt.show()
 
 # # Quadratures.
 # plt.plot(phases, 10*np.log10(dX_min_arr/QUADR_VAR_X_VAC), 'r-o')
@@ -195,4 +197,54 @@ df = df_epr_x_min_ind.round(4)
 # df = df_epr_p_min_ind
 ax.table(cellText=df.values, colLabels=df.columns, loc='center')
 fig.tight_layout()
+plt.show()
+
+
+# Load the result from theory.
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+fname = 'epr_x_min_vs_phase_theory.npy'
+
+fl = np.load(save_root + fname)
+
+epr_x_min_arr_th = fl.item().get('epr_x_min')
+phase_arr_th = fl.item().get('phases')
+min_indexes = fl.item().get('min_index')
+
+plt.plot(phase_arr_th / np.pi, epr_x_min_arr_th)
+plt.xlabel('$Phase, [\pi]$')
+plt.plot(phase_arr_th / np.pi, [0.5]*len(phase_arr_th), '-.')
+plt.grid(True)
+plt.show()
+
+# Theory and numer. together.
+plt.plot(phases, epr_x_min_arr, 'r-o')
+plt.title(r'$VAR[X^{(1)} - X^{(2)}]^{(out)}$', fontsize=18)
+plt.plot(phases, line, '-.')
+plt.plot(phase_arr_th / np.pi, epr_x_min_arr_th)
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
+plt.grid(True)
+plt.xlim(0, 2)
+plt.tick_params(axis='both', which='major', labelsize=16)
+plt.show()
+
+
+# Plot parameters.
+t_grd = 100
+t1_arr = np.linspace(0, 1, t_grd)
+t2_arr = np.linspace(0, 1, t_grd)
+
+t1_min_vals = np.zeros(len(min_indexes))
+t2_min_vals = np.zeros(len(min_indexes))
+
+
+for i, item in enumerate(min_indexes):
+    print(item)
+    t1_min_vals[i] = t1_arr[item[0]]
+    t2_min_vals[i] = t2_arr[item[1]]
+
+
+plt.plot(phase_arr_th, t1_min_vals, label='t1')
+plt.plot(phase_arr_th, t2_min_vals, label='t2')
+plt.title('Minimizing values.')
+plt.legend()
 plt.show()
