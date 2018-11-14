@@ -41,30 +41,30 @@ DET_CONF = 'FIRST'  # 1st detector is clicked
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 # The phase difference before last BS
-ph_inpi = 1.0
+ph_inpi = 0.0
 # ph_inpi = args.phase
 phase_diff = ph_inpi * np.pi
 
 phase_mod_channel = 1
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res27/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res30/'
 # save_root = '/home/matvei/qscheme/results/res27/'
 fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, ph_inpi, DET_CONF, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
 # BS grids.
 r1_grid = 1
-r4_grid = 40
+r4_grid = 41
 
-r2_grid = 40
+r2_grid = 41
 r3_grid = 1
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-T1_min = 0.5
-T1_max = 0.5
+T1_min = 0.7
+T1_max = 0.7
 T4_min = 0.0
 T4_max = 1.0
 

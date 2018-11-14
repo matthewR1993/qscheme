@@ -262,7 +262,7 @@ plt.show()
 
 
 # Varying the phase and finding the global minimum.
-phase_grd = 60
+phase_grd = 40
 phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
 
 epr_x_min_arr = np.zeros(phase_grd)
@@ -310,10 +310,10 @@ np.save(save_root + fname, fl)
 
 # Fixing one parameter t1 and looking for the minimum.
 alpha = 1.0
-t_grd = 300
+t_grd = 100
 
-t1 = sqrt(0.5)
-t2_arr = np.linspace(0, 1, t_grd)
+t2 = sqrt(0.5)
+t1_arr = np.linspace(0, 1, t_grd)
 
 phase_grd = 100
 phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
@@ -325,11 +325,11 @@ for n, phase in enumerate(phase_arr):
     print('phase:', phase / np.pi)
     epr_x_arr = np.zeros(t_grd, dtype=complex)
 
-    for j in range(len(t2_arr)):
-            g1 = gamma_1(t1, t2_arr[j], phase)
-            g2 = gamma_2(t1, t2_arr[j], phase)
-            g3 = gamma_3(t1, t2_arr[j], phase)
-            g4 = gamma_4(t1, t2_arr[j], phase)
+    for j in range(len(t1_arr)):
+            g1 = gamma_1(t1_arr[j], t2, phase)
+            g2 = gamma_2(t1_arr[j], t2, phase)
+            g3 = gamma_3(t1_arr[j], t2, phase)
+            g4 = gamma_4(t1_arr[j], t2, phase)
             epr_x_arr[j] = epr_x(alpha, g1, g2, g3, g4)
 
     print('A real part:', np.sum(np.real(epr_x_arr)))
@@ -352,13 +352,13 @@ plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.show()
 
 
-t2_min_vals = np.zeros(len(epr_x_min_ind_arr))
+t1_min_vals = np.zeros(len(epr_x_min_ind_arr))
 
 for i, item in enumerate(epr_x_min_ind_arr):
-    t2_min_vals[i] = t2_arr[item[0]]
+    t1_min_vals[i] = t1_arr[item[0]]
 
 # t2 plot.
-plt.plot(phase_arr / np.pi, t2_min_vals)
+plt.plot(phase_arr / np.pi, t1_min_vals)
 plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.show()
 
@@ -366,8 +366,8 @@ plt.show()
 # Different alpha.
 # Doesn't depend on alpha.
 alpha = 1.0
-phase_grd = 60
-t_grd = 100
+phase_grd = 30
+t_grd = 80
 
 t1_arr = np.linspace(0, 1, t_grd)
 t2_arr = np.linspace(0, 1, t_grd)
@@ -398,6 +398,39 @@ for n, phase in enumerate(phase_arr):
 
 
 plt.plot(phase_arr / np.pi, epr_x_min_arr)
+plt.plot(phase_arr / np.pi, [0.5]*len(phase_arr), '-.')
+plt.xlim(0, 2)
+plt.grid(True)
+plt.xlabel('$Phase, [\pi]$', fontsize=18)
+plt.show()
+
+
+# Varying only the phase.
+alpha = 1.0
+t_grd = 200
+
+t1 = sqrt(0.5)
+t2 = sqrt(0.5)
+
+phase_grd = 80
+phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
+
+epr_x_val = np.zeros(phase_grd)
+
+for n, phase in enumerate(phase_arr):
+    print('phase:', phase / np.pi)
+
+    g1 = gamma_1(t1, t2, phase)
+    g2 = gamma_2(t1, t2, phase)
+    g3 = gamma_3(t1, t2, phase)
+    g4 = gamma_4(t1, t2, phase)
+    epr_x_val[n] = epr_x(alpha, g1, g2, g3, g4)
+
+    print('EPR_X:', epr_x_val[n])
+
+
+# EPR plot.
+plt.plot(phase_arr / np.pi, epr_x_val)
 plt.plot(phase_arr / np.pi, [0.5]*len(phase_arr), '-.')
 plt.xlim(0, 2)
 plt.grid(True)

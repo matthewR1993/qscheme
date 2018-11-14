@@ -5,19 +5,19 @@ import matplotlib.cm as cm
 from math import sqrt
 
 
-DET_CONF = 'BOTH'
+DET_CONF = 'FIRST'
 
-# states_config = 'single(chan-1)_coher(chan-2)'
-states_config = 'coher(chan-1)_single(chan-2)'
+states_config = 'single(chan-1)_coher(chan-2)'
+# states_config = 'coher(chan-1)_single(chan-2)'
 
-
-# phase = 1.5
+phase = 0.0
 
 # crit_prob = 0.1
 
-phase_mod_channel = 2
+phase_mod_channel = 1
 
-phases = [0.25 * n for n in range(8)]
+# phases = [0.25 * n for n in range(8)]
+phases = [0]
 
 epr_min_arr = np.zeros(len(phases))
 
@@ -25,8 +25,8 @@ indexes = []
 
 for i, phase in enumerate(phases):
     print('Phase:', phase)
-    #phase = 0
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res26/'
+    phase = 0.0
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res30/'
     # fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF, phase_mod_channel)
     fname = 'disabled_det_{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, DET_CONF, phase_mod_channel)
 
@@ -41,9 +41,6 @@ for i, phase in enumerate(phases):
     t1_arr = fl.item().get('t1_arr')
     t4_arr = fl.item().get('t4_arr')
 
-
-    # args_lower = np.argwhere(np.real(prob) < crit_prob)
-
     # Detection probability.
     min_index = list(np.unravel_index(np.argmin(erp_correl_x, axis=None), erp_correl_x.shape))
     # min_prob = prob[tuple(min_index)]
@@ -52,9 +49,9 @@ for i, phase in enumerate(phases):
     print(min_index)
 
     # print('EPR_X:', np.amin(np.real(erp_correl_x[0, 0, :, :] / sqrt(1/2))))
-    print('EPR_X:', np.amin(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2))))
+    print('EPR_X:', np.amin(np.real(erp_correl_x[:, 0, 0, :])))
 
-    epr_min_arr[i] = np.amin(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2)))
+    epr_min_arr[i] = np.amin(np.real(erp_correl_x[:, 0, 0, :]))
 
 
 plt.plot(phases, epr_min_arr)
@@ -71,7 +68,7 @@ plt.show()
 # plt.plot()
 
 
-plt.imshow(np.real(erp_correl_x[:, :, 0, 0] / sqrt(1/2)), origin='lower', cmap=cm.GnBu_r)
+plt.imshow(np.real(erp_correl_x[:, 0, 0, :]), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
 # plt.scatter(x=[min_index[3]], y=[min_index[2]], c='r', s=80, marker='+')
 plt.xlabel('T2')
