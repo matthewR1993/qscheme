@@ -120,7 +120,6 @@ mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
 
 def main():
-    # Start time.
     print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
     for n1 in range(r1_grid):
         for n4 in range(r4_grid):
