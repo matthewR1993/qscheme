@@ -201,7 +201,8 @@ plt.show()
 
 
 # Load the result from theory.
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+save_root = '/home/matvei/qscheme/results/res28/'
 fname = 'epr_x_min_vs_phase_theory.npy'
 
 fl = np.load(save_root + fname)
