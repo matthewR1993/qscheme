@@ -118,8 +118,8 @@ final_dens_matrix_list = []
 
 mut_state_unappl = np.tensordot(input_st, auxiliary_st, axes=0)
 
-if __name__ == "__main__":
-    # Start time.
+
+def main():
     print('Started at:', strftime("%Y-%m-%d %H:%M:%S", gmtime()))
     for n1 in range(r1_grid):
         for n4 in range(r4_grid):
@@ -204,3 +204,7 @@ if __name__ == "__main__":
         'states_config': states_config
     }
     np.save(save_root + fname, fl)
+
+
+if __name__ == "__main__":
+    main()

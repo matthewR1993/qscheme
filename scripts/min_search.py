@@ -10,9 +10,9 @@ r2_grid = 11
 r3_grid = 11
 
 # det = 'FIRST'
-# det = 'THIRD'
+det = 'THIRD'
 # det = 'NONE'
-det = 'BOTH'
+# det = 'BOTH'
 
 phase_mod_channel = 1
 
