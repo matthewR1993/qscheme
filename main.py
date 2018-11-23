@@ -35,7 +35,7 @@ print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=0.5)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -58,8 +58,8 @@ phase_diff = ph_inpi * np.pi
 # Bottom channel = 1.
 phase_mod_channel = 1
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
-# save_root = '/home/matvei/qscheme/results/res28/'
+# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res31/'
+save_root = '/home/matvei/qscheme/results/res31/'
 fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.phase, args.det, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
