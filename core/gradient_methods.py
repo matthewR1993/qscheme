@@ -2,11 +2,10 @@ from core.sytem_setup import *
 from core.squeezing import *
 
 
-# TODO carefully increment nearby borders.
 def gd_with_momentum(algo_params, funct_params):
-    '''
-    A gradient descent method with the momentum.
-    '''
+    """
+    A gradient descent method.
+    """
     alpha = algo_params['alpha']
     target_prec = algo_params['target_prec']
     betta = algo_params['betta']

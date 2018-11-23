@@ -3,13 +3,13 @@ from math import sqrt
 
 
 def coord_aver(dm, channel):
-    '''
+    """
     Average value of a coordinate quadrature:
     <X> = <(a + conj(a))/2>
     :param dm: Applied density matrix in 2 channels.
     :param channel: Number of the channel.
     :return: Average value of coordinate quadrature: <X> = <(a + conj(a))/2>
-    '''
+    """
     size = len(dm)
     if channel is 1:
         sum1 = 0
@@ -36,13 +36,13 @@ def coord_aver(dm, channel):
 
 
 def impulse_aver(dm, channel):
-    '''
+    """
     The average value of an impulse quadrature:
     <P> = <(a - conj(a))/2j>
     :param dm: Applied density matrix in 2 channels.
     :param channel: Number of the channel.
     :return: Average value of an impulse quadrature: <P> = <(a - conj(a))/2j>
-    '''
+    """
     size = len(dm)
     if channel is 1:
         sum1 = 0
@@ -69,12 +69,12 @@ def impulse_aver(dm, channel):
 
 
 def prod_coord_aver(dm):
-    '''
+    """
     Average value of coordinate quadrature product in 2 channels.
     :param dm: Applied density matrix in 2 channels.
     :return: Average value of coordinate quadrature product in 2 channels:
     <X1*X2> = (1/4) * <(a1 + conj(a1))*(a2 + conj(a2))>
-    '''
+    """
     size = len(dm)
     # a1 * a2
     sum1 = 0
@@ -101,12 +101,12 @@ def prod_coord_aver(dm):
 
 
 def prod_impulse_aver(dm):
-    '''
+    """
     Average value of coordinate quadrature product in 2 channels.
     :param dm: Applied density matrix in 2 channels.
     :return:  Average value of coordinate quadrature product in 2 channels:
     <P1*P2> = (-1/4) * <(a1 - conj(a1))*(a2 - conj(a2))>
-    '''
+    """
     size = len(dm)
     # a1 * a2
     sum1 = 0
@@ -133,13 +133,13 @@ def prod_impulse_aver(dm):
 
 
 def coord_square_aver(dm, channel):
-    '''
+    """
     Average value of the square coordinate quadrature for a specific channel.
     :param dm: Applied density matrix in 2 channels
     :param channel: Number of the channel.
     :return: Average value of the square coordinate quadrature for a specific channel:
     <X^2> = (1/4) * <(a + conj(a))^2>
-    '''
+    """
     size = len(dm)
     if channel is 1:
         # -1 + 2*a*conj(a)
@@ -180,13 +180,13 @@ def coord_square_aver(dm, channel):
 
 
 def impulse_square_aver(dm, channel):
-    '''
+    """
     An average value of the square impulse quadrature for a specific channel.
     :param dm: Applied density matrix for 2 channels
     :param channel: Number of the channel.
     :return: Average value of the square impulse quadrature for a specific channel:
     <P^2> = (-1/4) * <(a - conj(a))^2>
-    '''
+    """
     size = len(dm)
     if channel is 1:
         # -1 + 2*a*conj(a)
@@ -227,28 +227,28 @@ def impulse_square_aver(dm, channel):
 
 
 def squeezing_quadratures(dm, channel):
-    '''
+    """
     Coordinate and impulse quadratures for a chosen channel:
     :param dm: Applied density matrix for 2 channels
     :param channel: Number of the channel.
     :return: Coordinate and impulse quadratures for a chosen channel:
     D[X] = sqrt(<X^2> - (<X>)^2)
     D[P] = sqrt(<P^2> - (<P>)^2)
-    '''
+    """
     dx = np.sqrt(coord_square_aver(dm, channel) - coord_aver(dm, channel)**2)
     dp = np.sqrt(impulse_square_aver(dm, channel) - impulse_aver(dm, channel)**2)
     return dx, dp
 
 
 def erp_squeezing_correlations(dm):
-    '''
+    """
     Two modes squeezing EPR correlations.
     :param dm: Applied density matrix for 2 channels
     :return: EPR operator's variances:
     corX = var[(X_2 - X_1)]
     corP = var[(P_1 + P_2)]
     Where var[A] is a variance of A: var[A] = <A^2> - (<A>)^2
-    '''
+    """
     cor_x = coord_square_aver(dm, 1) - 2 * prod_coord_aver(dm) + coord_square_aver(dm, 2) - coord_aver(dm, 1)**2 + 2 * coord_aver(dm, 1) * coord_aver(dm, 2) - coord_aver(dm, 2)**2
     cor_p = impulse_square_aver(dm, 1) + 2 * prod_impulse_aver(dm) + impulse_square_aver(dm, 2) - impulse_aver(dm, 1)**2 - 2 * impulse_aver(dm, 1) * impulse_aver(dm, 2) - impulse_aver(dm, 2)**2
     return cor_x, cor_p

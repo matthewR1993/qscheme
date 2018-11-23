@@ -4,7 +4,7 @@ import time
 
 
 def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event):
-    '''
+    """
     Process the whole system.
     :param input_state: input unapplied state in 2 channels
     :param bs_params: BS parameters as a dict.
@@ -12,7 +12,7 @@ def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event
     :param phase_mod_channel: number of channel for the phase modulation
     :param det_event: detection option
     :return: applied density matrix in 2 channels
-    '''
+    """
     t1, r1 = bs_params['t1'], sqrt(1 - bs_params['t1']**2)
     t2, r2 = bs_params['t2'], sqrt(1 - bs_params['t2']**2)
     t3, r3 = bs_params['t3'], sqrt(1 - bs_params['t3']**2)

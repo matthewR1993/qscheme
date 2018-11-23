@@ -18,8 +18,8 @@ phase_mod_channel = 1
 
 states_config = 'single(chan-1)_coher(chan-2)'
 
-phases = [x * 0.25 for x in range(9)]
-# phases = [x * 0.125 for x in range(17)]
+# phases = [x * 0.25 for x in range(9)]
+phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
 
 crit_prob = 0.1
@@ -55,8 +55,8 @@ for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
-    save_root = '/home/matvei/qscheme/results/res31/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+    # save_root = '/home/matvei/qscheme/results/res31/'
     fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, det, phase_mod_channel)
 
     fl = np.load(save_root + fname)

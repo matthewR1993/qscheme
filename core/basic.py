@@ -5,14 +5,14 @@ from math import sqrt, factorial
 
 
 def bs2x2_transform(t, r, input_state):
-    '''
+    """
     Two channels (2x2) beam splitter transformation.
     With: t^2 + r^2 = 1.
     :param t: Transmission coefficient.
     :param r: Reflection coefficient.
     :param input_state: Unapplied state in two channels(modes).
     :return: Transformed unapplied state in two channels(modes).
-    '''
+    """
     size = len(input_state)
     output_state = np.zeros((size*2 - 1, size*2 - 1), dtype=complex)
 
@@ -30,7 +30,7 @@ def bs2x2_transform(t, r, input_state):
 
 
 def two_bs2x4_transform(t1, r1, t2, r2, input_state):
-    '''
+    """
     Transformation at 2 beam splitters.
     Two input channels and four output channles - 2x4 transformation.
     Creation operators transformation:
@@ -45,7 +45,7 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
     :param r2: BS2 reflection.
     :param input_state: Two channels(modes) unapllied state.
     :return: Four channels(modes) unapllied state.
-    '''
+    """
     size = len(input_state)
     output_state = np.zeros((size,) * 4, dtype=complex)
     for m in range(size):
@@ -65,7 +65,7 @@ def two_bs2x4_transform(t1, r1, t2, r2, input_state):
 
 
 def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
-    '''
+    """
     Transformation at 2 beam splitters. Optimised version
     Two input channels and four output channles - 2x4 transformation.
     Creation operators transformation:
@@ -80,7 +80,7 @@ def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
     :param r2: BS2 reflection.
     :param input_state: Two channels(modes) unapllied state.
     :return: Four channels(modes) unapllied state.
-    '''
+    """
     size = len(input_state)
     out = np.zeros((size,) * 4, dtype=complex)
 
@@ -96,12 +96,12 @@ def two_bs2x4_transform_opt(t1, r1, t2, r2, input_state):
 
 
 def detection(input_state, detection_event):
-    '''
+    """
     Tranformation of the state with POVM operator.
     :param input_state: Applied/unapplied state in 4 channels(modes).
     :param detection_event: Detection event.
     :return: Applied/unapplied state in 4 channels(modes).
-    '''
+    """
     size = len(input_state)
     output_state = np.zeros((size,) * 4, dtype=complex)
     if detection_event == 'BOTH':
@@ -139,12 +139,12 @@ def detection(input_state, detection_event):
 
 
 def det_probability(input_state, detection_event):
-    '''
+    """
     Calculating a probability of an event realisation.
     :param input_state: Unapplied state in 4 channels.
     :param detection_event: Detection event.
     :return: Probability of the detection.
-    '''
+    """
     st_aft_det_unappl = detection(input_state, detection_event)
     st_aft_det_conj_app = np.conj(make_state_appliable_4ch(st_aft_det_unappl))
     input_state_appl = make_state_appliable_4ch(input_state)
@@ -153,11 +153,11 @@ def det_probability(input_state, detection_event):
 
 
 def state_norm(state):
-    '''
+    """
     A norm of the state.
     :param state: Unapplied state in 4 channels.
     :return: Norm of the state.
-    '''
+    """
     size = len(state)
     norm_ = 0
     for p1 in range(size):
@@ -169,11 +169,11 @@ def state_norm(state):
 
 
 def state_norm_opt(state):
-    '''
+    """
     Optimized function for the norm of the state.
     :param state: Unapplied state in 4 channels.
     :return: Norm of the state.
-    '''
+    """
     fact_arr = np.array([factorial(x) for x in range(len(state))])
     tf2 = np.tensordot(fact_arr, fact_arr, axes=0)
     tf4 = np.tensordot(tf2, tf2, axes=0)
@@ -183,12 +183,12 @@ def state_norm_opt(state):
 
 
 def dens_matrix_with_trace(left_vector, right_vector):
-    '''
+    """
     Composing density matrix from projected vectors and partially trace.
     :param left_vector: Ket unapplied state in 4 channels.
     :param right_vector: Bra unapplied state in 4 channels.
     :return: Applied dens matrix for 2 channels.
-    '''
+    """
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
         raise ValueError('Incorrect dimensions')
@@ -210,13 +210,13 @@ def dens_matrix_with_trace(left_vector, right_vector):
 
 
 def dens_matrix_with_trace_opt(left_vector, right_vector):
-    '''
+    """
     Optimized version.
     Composing density matrix from projected vectors and partially trace.
     :param left_vector: Ket unapplied state in 4 channels.
     :param right_vector: Bra unapplied state in 4 channels.
     :return: Applied dens matrix for 2 channels.
-    '''
+    """
     size = len(left_vector)
     if len(left_vector) != len(right_vector):
         raise ValueError('Incorrect dimensions')
@@ -239,11 +239,11 @@ def dens_matrix_with_trace_opt(left_vector, right_vector):
 
 
 def dens_matrix(state):
-    '''
+    """
     Build a density matrix in 2 channels.
     :param state: Applied state in 2 channels.
     :return: Applied density matrix for 2 channels.
-    '''
+    """
     size = len(state)
     state_conj = np.conj(state)
     dm = np.zeros((size,) * 4, dtype=complex)
@@ -258,11 +258,11 @@ def dens_matrix(state):
 
 
 def dens_matrix_4ch(state):
-    '''
+    """
     Build a density matrix in 4 channels.
     :param state: Applied state in 4 channels.
     :return: Applied density matrix for 4 channels.
-    '''
+    """
     size = len(state)
     state_conj = np.conj(state)
     dens_matrix = np.zeros((size,) * 8, dtype=complex)
@@ -281,12 +281,12 @@ def dens_matrix_4ch(state):
 
 
 def trace_channel(input_matrix, channel=4):
-    '''
+    """
     Tracing one channel of density matrix in 2 channels(modes).
     :param input_matrix: Applied density matrix in 2 channels.
     :param channel: Number of the channel.
     :return: Applied reduced density matrix of one channel.
-    '''
+    """
     size = len(input_matrix)
     reduced_matrix = np.zeros((size, size), dtype=complex)
     if channel == 4:
@@ -309,7 +309,7 @@ def trace_channel(input_matrix, channel=4):
 
 
 def bs_densmatrix_transform(input_matrix, t, r):
-    '''
+    """
     Beam splitter transformation of density matrix in 2 channels.
     Mapping of creation operators:
     a2 => t b1 + i r b2.
@@ -318,7 +318,7 @@ def bs_densmatrix_transform(input_matrix, t, r):
     :param t: Transmission coefficient.
     :param r: Reflection coefficient.
     :return: Applied density matrix in 2 channels.
-    '''
+    """
     size = len(input_matrix)
     output_matrix = np.zeros((size*2,) * 4, dtype=complex)
 
@@ -345,11 +345,11 @@ def bs_densmatrix_transform(input_matrix, t, r):
 
 
 def prob_distr(input_matrix):
-    '''
+    """
     Photons distribution probability from final density matrix.
     :param input_matrix: Applied density matrix in 2 channels.
     :return: Probability distribution for 2 channels.
-    '''
+    """
     size = len(input_matrix)
     prob_matrix = np.zeros((size, size), dtype=complex)
     for m in range(size):
@@ -360,11 +360,11 @@ def prob_distr(input_matrix):
 
 
 def log_entropy(dm):
-    '''
+    """
     Calculating logarithmic Fon Neuman entropy / entanglement.
     :param dm: Applied reduced density matrix.
     :return: Entropy.
-    '''
+    """
     size = len(dm)
     entropy = 0
     w, v = np.linalg.eig(dm)
@@ -375,11 +375,11 @@ def log_entropy(dm):
 
 
 def partial_transpose(matrix):
-    '''
+    """
     Partial transpose of 2 channels density matrix.
     :param matrix: Density matrix in 2 channels.
     :return: Density matrix in 2 channels.
-    '''
+    """
     size = len(matrix)
     res_matrix = np.zeros((size,) * 4, dtype=complex)
     for p1 in range(size):
@@ -391,22 +391,22 @@ def partial_transpose(matrix):
 
 
 def linear_entropy(dm):
-    '''
+    """
     Linear entropy.
     :param dm: Reduced density matrix.
     :return: Linear entropy.
-    '''
+    """
     entropy = 1 - np.trace(dm @ dm)
     return entropy
 
 
 def reorganise_dens_matrix(rho):
-    '''
+    """
     Reorganise density matrix in 2 channels:
     rho[m, n, m_, n_] ==> rho_out[k, k_].
     :param rho: Density matrix in 2 channels.
     :return: Reorganised density matrix in two channels.
-    '''
+    """
     size = len(rho)
     rho_out = np.zeros((size**2,)*2, dtype=complex)
     for m in range(size):
@@ -420,12 +420,12 @@ def reorganise_dens_matrix(rho):
 
 
 def negativity(rho, neg_type='logarithmic'):
-    '''
+    """
     Calculating negativity for 2 channels.
     :param rho: Applied density matrix in 2 channels.
     :param neg_type: Negativity type.
     :return: Negativity.
-    '''
+    """
     part_transposed = partial_transpose(rho)
     reorg_rho = reorganise_dens_matrix(part_transposed)
     w, v = np.linalg.eig(reorg_rho)
@@ -442,13 +442,13 @@ def negativity(rho, neg_type='logarithmic'):
 
 
 def phase_modulation(rho, phase, channel):
-    '''
+    """
     A phase modulation for the density matrix in 2 channels.
     :param rho: Density matrix in 2 channels.
     :param phase: Phase.
     :param channe: Channel (1 or 2)
     :return: Modulated density matrix in 2 channels.
-    '''
+    """
     if phase == 0:
         return rho
     size = len(rho)
@@ -471,12 +471,12 @@ def phase_modulation(rho, phase, channel):
 
 
 def phase_modulation_state(state, phase):
-    '''
+    """
     A phase modulation for the state in two channels.
     :param state: Unapplied state in 2 channels.
     :param phase: Phase.
     :return: Modulated unapplied state in 2 channels.
-    '''
+    """
     size = len(state)
     st_mod = np.zeros((size, size), dtype=complex)
     for p1 in range(size):

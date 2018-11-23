@@ -15,7 +15,7 @@ cdef complex[:] fact_sqrt_arr = fact_sqrt_arr_
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef bs_matrix_transform_copt(cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] rho_in, double t, double r):
-    '''
+    """
     Beam splitter transformation of density matrix in 2 channels.
     Mapping of creation operators:
     a2 => t b1 + i r b2.
@@ -24,7 +24,7 @@ cpdef bs_matrix_transform_copt(cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] rho_
     :param t: Transmission coefficient.
     :param r: Reflection coefficient.
     :return: Applied density matrix in 2 channels.
-    '''
+    """
     cdef int sz = len(rho_in)
     cdef cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] rho_out = np.zeros((sz*2,) * 4, dtype=np.complex)
 
@@ -62,7 +62,7 @@ cpdef bs_matrix_transform_copt(cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] rho_
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef two_bs2x4_transform_copt(double t1, double r1, double t2, double r2, cnp.ndarray[cnp.complex_t, ndim=2, mode='c'] state_in):
-    '''
+    """
     Transformation at 2 beam splitters. Optimised version
     Two input channels and four output channles - 2x4 transformation.
     Creation operators transformation:
@@ -77,7 +77,7 @@ cpdef two_bs2x4_transform_copt(double t1, double r1, double t2, double r2, cnp.n
     :param r2: BS2 reflection.
     :param state_in: Two channels(modes) unapllied state.
     :return: Four channels(modes) unapllied state.
-    '''
+    """
     cdef int sz = len(state_in)
     cdef cnp.ndarray[cnp.complex_t, ndim=4, mode='c'] state_out = np.zeros((sz,) * 4, dtype=np.complex)
     cdef cnp.complex128_t tc1 = t1
