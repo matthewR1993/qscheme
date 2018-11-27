@@ -438,3 +438,35 @@ plt.xlim(0, 2)
 plt.grid(True)
 plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.show()
+
+
+# A constant C with the wave.
+alpha = 1.0
+# phase = 0.5 * np.pi
+
+t1_arr = np.linspace(0, 1, t_grd)
+t2 = sqrt(0.33)
+phase_grd = 100
+phase_arr = np.linspace(0, 2 * np.pi, phase_grd)
+
+epr_arr = np.zeros((t_grd, phase_grd), dtype=complex)
+
+for i in range(len(t1_arr)):
+    for p in range(len(phase_arr)):
+        t1 = t1_arr[i]
+        phase = phase_arr[p]
+        g1 = gamma_1(t1, t2, phase)
+        g2 = gamma_2(t1, t2, phase)
+        # cc = 1 - np.real(np.conj(g1) * g2)
+        cc = 1 - np.sin(phase) * t1 * np.sqrt(1 - t1**2)
+        epr_arr[i, p] = cc
+
+print('Minimum:', np.amin(np.real(epr_arr)))
+print('Maximum:', np.amax(np.real(epr_arr)))
+
+plt.imshow(np.real(epr_arr), origin='lower', cmap=cm.GnBu_r)
+plt.colorbar()
+plt.xlabel('phase')
+plt.ylabel('T2')
+plt.show()
+
