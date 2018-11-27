@@ -35,7 +35,7 @@ print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=0.1)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=1.0)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
@@ -60,24 +60,24 @@ phase_mod_channel = 1
 
 
 # save_root = '/Users/matvei/PycharmProjects/qscheme/results/res31/'
-save_root = '/home/matvei/qscheme/results/res31/'
+save_root = '/home/matvei/qscheme/results/res32/'
 fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.phase, args.det, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 11
-r4_grid = 11
+r1_grid = 13
+r4_grid = 13
 
-r2_grid = 11
-r3_grid = 11
+r2_grid = 13
+r3_grid = 13
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
 
 # BS values range.
-T1_min = 0.0
+T1_min = 0.5
 T1_max = 1.0
-T4_min = 0.0
+T4_min = 0.5
 T4_max = 1.0
 
 T2_min = min_bound

@@ -165,6 +165,7 @@ def epr_x(alpha, g1, g2, g3, g4):
 alpha = 1.0
 t_grd = 100
 
+# delta(T1, T2)
 t1_arr = np.linspace(0, 1, t_grd)
 t2_arr = np.linspace(0, 1, t_grd)
 # t2_arr = np.array([1])
@@ -199,9 +200,10 @@ plt.ylabel('T1')
 plt.show()
 
 
+# delta(T1, phase)
 phase_arr = np.linspace(0, 2 * np.pi, t_grd)
 t1_arr = np.linspace(0, 1, t_grd)
-t2_arr = np.array([1/sqrt(2)])
+t2_arr = np.array([1])
 
 epr_x_arr2 = np.zeros((t_grd, t_grd), dtype=complex)
 
