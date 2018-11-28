@@ -467,6 +467,5 @@ print('Maximum:', np.amax(np.real(epr_arr)))
 plt.imshow(np.real(epr_arr), origin='lower', cmap=cm.GnBu_r)
 plt.colorbar()
 plt.xlabel('phase')
-plt.ylabel('T2')
+plt.ylabel('T1')
 plt.show()
-
