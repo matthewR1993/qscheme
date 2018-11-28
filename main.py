@@ -59,8 +59,8 @@ phase_diff = ph_inpi * np.pi
 phase_mod_channel = 1
 
 
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res31/'
-save_root = '/home/matvei/qscheme/results/res32/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res32/'
+# save_root = '/home/matvei/qscheme/results/res32/'
 fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.phase, args.det, phase_mod_channel)
 print('Saving path:', save_root + fname)
 

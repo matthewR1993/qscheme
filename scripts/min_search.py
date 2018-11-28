@@ -18,8 +18,8 @@ phase_mod_channel = 1
 
 states_config = 'single(chan-1)_coher(chan-2)'
 
-# phases = [x * 0.25 for x in range(9)]
-phases = [x * 0.125 for x in range(17)]
+phases = [x * 0.25 for x in range(9)]
+# phases = [x * 0.125 for x in range(17)]
 # phases = [0.25]
 
 crit_prob = 0.1
@@ -55,7 +55,7 @@ for i in range(size):
     print('step:', i)
     phase = phases[i]
 
-    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+    save_root = '/Users/matvei/PycharmProjects/qscheme/results/res32/'
     # save_root = '/home/matvei/qscheme/results/res31/'
     fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, phase, det, phase_mod_channel)
 
@@ -202,8 +202,8 @@ plt.show()
 
 
 # Load the result from theory.
-# save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
-save_root = '/home/matvei/qscheme/results/res28/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res28/'
+# save_root = '/home/matvei/qscheme/results/res28/'
 fname = 'epr_x_min_vs_phase_theory.npy'
 
 fl = np.load(save_root + fname)
@@ -219,14 +219,15 @@ plt.grid(True)
 plt.show()
 
 # Theory and numer. together.
-plt.plot(phases, epr_x_min_arr, 'r-o')
+plt.plot(phases, epr_x_min_arr, 'r-o', label='With detection.')
 plt.title(r'$VAR[X^{(1)} - X^{(2)}]^{(out)}$', fontsize=18)
 plt.plot(phases, line, '-.')
-plt.plot(phase_arr_th / np.pi, epr_x_min_arr_th)
+plt.plot(phase_arr_th / np.pi, epr_x_min_arr_th, label='Without detection.')
 plt.xlabel('$Phase, [\pi]$', fontsize=18)
 plt.grid(True)
 plt.xlim(0, 2)
 plt.tick_params(axis='both', which='major', labelsize=16)
+plt.legend()
 plt.show()
 
 
