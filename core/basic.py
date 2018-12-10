@@ -486,11 +486,11 @@ def phase_modulation_state(state, phase):
 
 
 def make_state_appliable(state):
-    '''
+    """
     Apply operators to the state in 2 channels.
     :param state: Unapplied state in 2 channels.
     :return: Applied state in 2 channels.
-    '''
+    """
     size = len(state)
     st_appl = np.zeros((size, size), dtype=complex)
     for p1 in range(size):
@@ -500,11 +500,11 @@ def make_state_appliable(state):
 
 
 def make_state_appliable_4ch(state):
-    '''
+    """
     Apply operators to state in 4 channels.
     :param state: Unapplied state in 4 channels.
     :return: Applied state in 4 channels.
-    '''
+    """
     size = len(state)
     st_appl = np.zeros((size,)*4, dtype=complex)
     for p1 in range(size):
@@ -516,14 +516,14 @@ def make_state_appliable_4ch(state):
 
 
 def bs_parameters(T_min, T_max, num):
-    '''
+    """
     Generating BS's t and r parameters arrays.
     The step is taken in relation to "big" T coordinate.
     :param T_min: T min.
     :param T_max: T max.
     :param num: length.
     :return: BS's t and r small coefficients.
-    '''
+    """
     T_array = np.linspace(T_min, T_max, num)
     t_array = np.sqrt(T_array)
     rf = np.vectorize(lambda t: sqrt(1 - pow(t, 2)))
@@ -532,14 +532,14 @@ def bs_parameters(T_min, T_max, num):
 
 
 def bs_parameters_small(t_min, t_max, num):
-    '''
+    """
     Generating BS's t and r parameters arrays.
     The step is taken in relation to "small" t coordinate.
     :param t_min: t min.
     :param t_max: t max.
     :param num: length.
     :return: BS's t and r small coefficients.
-    '''
+    """
     t_array = np.linspace(t_min, t_max, num)
     rf = np.vectorize(lambda t: sqrt(1 - pow(t, 2)))
     r_array = rf(t_array)

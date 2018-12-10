@@ -1,20 +1,7 @@
-<<<<<<< HEAD
-Cython>=0.28.5
-matplotlib>=2.1.2
-nose>=1.3.7
-numpy>=1.14.2
-pandas>=0.22.0
-pytest>=3.7.0
-qutip>=4.2.0
-scipy>=1.0.0
-dash
-dash-html-components
-dash-core-components
-=======
+nose
 Cython
 matplotlib
 numpy
 pandas
 pytest
 scipy
->>>>>>> bef47d62cee1c41c65dfbdad383d242566433076

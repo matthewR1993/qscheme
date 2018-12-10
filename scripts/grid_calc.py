@@ -24,7 +24,7 @@ max_power = input_series_length + auxiliary_series_length
 
 # INPUT - the state in the first(at the bottom) channel
 # input_st = single_photon(series_length)
-input_st = coherent_state(input_series_length, alpha=0.5)
+input_st = coherent_state(input_series_length, alpha=1.0)
 # input_st = fock_state(n=2, series_length=input_series_length)
 print('Input state norm:', get_state_norm(input_st))
 

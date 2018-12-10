@@ -1,0 +1,159 @@
+
+\title{}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{color, soul}
+
+\usepackage{amsmath}
+
+\usepackage{xcolor}
+\newcommand{\highlight}[1]{%
+  \colorbox{yellow!50}{$\displaystyle#1$}}
+
+\begin{document}
+\maketitle
+
+
+\begin{enumerate}
+
+\item Input states.
+
+\begin{align*}
+& |\psi_{1}^{in}\rangle = |\alpha\rangle  = e^{-\frac{|\alpha|^2}{2}}  \sum_{n=0} \frac{\alpha^{n}}{n!}(a_{1}^{\dag})^{n} |0\rangle  \\ 
+& |\psi_{2}^{in}\rangle = |1\rangle = a_{2}^{\dag} |0\rangle  \\
+\\
+& |\psi_{in}\rangle = |\alpha\rangle    \otimes   |1\rangle  = \sum_{m,n} \alpha_{m,n} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2}  \\
+& \alpha_{m,n} - \textit{defines the mutual state and will be transformed}.
+\end{align*}
+
+\item 1st beam splitter transformation (very fast).
+
+\begin{align*}
+&  T_{n} +  R_{n} = r_{n}^2 + t_{n}^2 = 1 \\
+\\
+&  a_{1}^{\dag} \rightarrow  t_{1}a_{1}^{\dag} + ir_{1}a_{2}^{\dag} \\
+\\
+&  a_{2}^{\dag} \rightarrow  t_{1}a_{2}^{\dag} + ir_{1}a_{1}^{\dag} \\
+\\
+& \alpha_{m,n}^{in} \rightarrow \alpha_{m,n}^{out} \\
+\\
+& |\psi_{1}\rangle = \sum_{m,n} \alpha_{m,n}^{out} (a_{1}^{\dag})^{m} (a_{2}^{\dag})^{n} |0\rangle^{\otimes 2} \\
+\end{align*}
+
+\item 2nd and 3rd beam splitters transformations (very fast).
+\begin{align*}
+&  a_{1}^{\dag} \rightarrow  t_{2}a_{2}^{\dag} + ir_{2}a_{1}^{\dag} \\
+\\
+&  a_{2}^{\dag} \rightarrow  t_{3}a_{4}^{\dag} + ir_{3}a_{3}^{\dag} \\
+\\
+& \alpha_{m,n}^{(1)} \rightarrow \beta_{p_{1},p_{2},p_{3},p_{4}} \\
+\\
+& |\psi_2\rangle = \sum_{p_{1},p_{2},p_{3},p_{4}} \beta_{p_{1},p_{2},p_{3},p_{4}} (b_{1}^{\dag})^{p_{1}}  (b_{2}^{\dag})^{p_{2}} (b_{3}^{\dag})^{p_{3}}  (b_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 4} 
+\end{align*}
+
+\item POVM acts on the state.
+\begin{align*}
+& |\psi_{in}\rangle = \sum_{p_{1},p_{2},p_{3},p_{4}} \beta_{p_{1},p_{2},p_{3},p_{4}} (b_{1}^{\dag})^{p_{1}}  (b_{2}^{\dag})^{p_{2}} (b_{3}^{\dag})^{p_{3}}  (b_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 4} \\
+& \hat{\Pi}_{both} |\psi_{in}\rangle = \sum_{\substack{p_{1},p_{2},p_{3},p_{4} \\ p_{1} \neq 0, p_{3} \neq 0}} \beta_{p_{1},p_{2},p_{3},p_{4}} (b_{2}^{\dag})^{p_{2}} (b_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 2}  \\
+& \hat{\Pi}_{none} |\psi_{in}\rangle = \sum_{\substack{p_{2},p_{4} \\ p_{1}=0, p_{3}=0}} \beta_{0,p_{2},0,p_{4}} (b_{2}^{\dag})^{p_{2}} (b_{4}^{\dag})^{p_{4}} |0\rangle^{\otimes 2}  \\
+& \hat{\Pi}_{top} |\psi_{in}\rangle = \sum_{\substack{p_{1},p_{2},p_{4} \\ p_{3} \neq 0, p_{1}=0}} \beta_{0,p_{2},p_{3},p_{4}} (b_{2}^{\dag})^{p_{2}} (b_{4}^{\dag})^{p_{4}} \\ 
+& \hat{\Pi}_{bottom} |\psi_{in}\rangle = \sum_{\substack{p_{1},p_{2},p_{4} \\ p_{1} \neq 0, p_{3}=0}} \beta_{p_{1},p_{2},0,p_{4}} (b_{2}^{\dag})^{p_{2}} (b_{4}^{\dag})^{p_{4}}  |0\rangle^{\otimes 2}  \\
+\end{align*}
+
+\item Detection (computationally heavy).
+\begin{align*}
+& \rho_{\text{\textit{after det.}}} =  Tr_{1,3}(\hat{\Pi} |\psi_{in}\rangle \langle \psi_{in}|   \hat{\Pi}^{\dag}) \\
+\\
+& Tr_{1,3}() - \textit{a partial trace over 1st and 3rd channels}. \\
+\\
+& Tr_{1,3}(\rho) = \sum_{p_{1} = p'_{1}, p_{3} = p'_{3}} \sum_{\substack{p_{2},p_{4} \\ p'_{2}, p'_{4}}} \rho_{p_{1},p_{2},p_{3},p_{4}}^{p'_{1},p'_{2},p'_{3},p'_{4}} |p_{2}\rangle \langle p'_{2}| \otimes |p_{4}\rangle \langle p'_{4}|
+\end{align*}
+
+\item Detection probability.
+\begin{align*}
+& P_{event} =  Tr(  \rho_{in}  \hat{\Pi}^{\dag}_{event})
+\end{align*}
+
+
+\item dens matrix after detection.
+\begin{align*}
+& \rho = \sum_{\substack{p_{2},p_{4} \\ p'_{2}, p'_{4}}}  \rho_{p_{2},p_{4}, p'_{2}, p'_{4}} |p_{2}\rangle \langle p'_{2}| \otimes |p_{4}\rangle \langle p'_{4}|
+\end{align*}
+
+\item Phase modulation (very fast):
+\begin{align*} 
+&  a_{2}^{\dag} \rightarrow   a_{2}^{\dag} e^{i\phi} \\
+& \rho_{m,n,m',n'} \rightarrow \rho_{m,n,m',n'} \exp[i \phi (n - n')]
+\end{align*}
+
+\item Last, 4th BS (computationally heavy).
+\begin{align*}
+& \rho = \sum_{\substack{p_{2},p_{4} \\ p'_{2}, p'_{4}}}  \rho_{p_{2},p_{4}, p'_{2}, p'_{4}} |p_{2},p_{4}\rangle \langle p'_{2},p'_{4}| \\
+\\
+& \textit{Each density matrix element is tansformed:} \\
+\\
+& |p_{2},p_{4}\rangle \langle p'_{2},p'_{4}| = \frac{1}{\sqrt{p_{2}!p_{4}!p'_{2}!p'_{4}!}} (a_{2}^{\dag})^{p_{2}} (a_{4}^{\dag})^{p_{4}} |0,0\rangle \langle 0,0| (a_{2})^{p'_{2}} (a_{4})^{p'_{4}} \\ 
+\\
+&  a_{2}^{\dag} \rightarrow  t_{4}b_{4}^{\dag} + ir_{4}b_{2}^{\dag} \\
+\\
+&  a_{4}^{\dag} \rightarrow  t_{4}b_{2}^{\dag} + ir_{4}b_{4}^{\dag} \\
+\\
+\textit{Pseudo code:} \\
+\\
+& Input: [\rho_{in}, t, r] \\
+&   for  \ p_{1} \in [0, N]: \\
+&   for \ p_{2} \in [0, N]: \\
+&   for  \ p'_{1} \in [0, N]: \\
+&   for \ p'_{2} \in [0, N]: \\
+&   for \ n \in [0,p_{1}]: \\
+&   for \ k \in [0,p_{2}]: \\
+&   for  \ n' \in [0, p'_{1}]: \\
+&   for \ k' \in [0, p'_{2}]: \\
+&   \ \ \ \ d_{1} = p_{1} - n + k \\
+&   \ \ \ \ d_{2} = n + p_{2} - k \\ 
+&   \ \ \ \ d'_{1} = p'_{1} - n' + k' \\ 
+&   \ \ \ \ d'_{2} = n' + p'_{2} - k' \\
+&   \ \ \ \  c_{1} = t^{p1 - n + p2 - k} (ir)^{n + k} \sqrt{d_{1}! d_{2}! p_{1}! p_{2}!} / (n! (p1 - n)!  k!  (p2 - k)!) \\
+&   \ \ \ \  c_{2} = t^{p'_{1} - n' + p'_{2} - k'} (-ir)^{n' + k'} \sqrt{d'_{1}! d'_{2}! p'_{1}! p'_{2}!} / (n'! (p'_{1} - n')! k'! (p'_{2} - k')!) \\
+&  \ \ \ \    \rho_{out}[d_{1}, d_{2}, d'_{1}, d'_{2}] = \rho_{out}[d_{1}, d_{2}, d'_{1}, d'_{2}] + \rho_{in}[p_{1}, p_{2}, p'_{1}, p'_{2}]  c_{1} c_{2} \\
+& return \ \rho_{out}
+\end{align*}
+
+
+\item Density matrix as output.
+\begin{align*}
+& \rho^{out} = \sum_{\substack{p_{1},p_{2} \\ p'_{1}, p'_{2}}}  \rho^{out}_{p_{1},p_{2}, p'_{1}, p'_{2}} |p_{1}\rangle \langle p'_{1}| \otimes |p_{2}\rangle \langle p'_{2}|
+\end{align*}
+
+\item Calculating negativity (very fast).
+\begin{align*}
+& \textbf{\textit{N}}(\rho_{AB}) = \frac{||\rho^{T_{A}}||_{1} - 1}{2}  =\sum_{n}  \frac{|\lambda_{n}| - \lambda_{n}}{2} \\
+& \rho^{T_{A}}   \rightarrow  \{ \lambda_{n} \}, \ eigenvalues  \\
+\\
+& \textbf{\textit{LN}}(\rho_{AB}) := \log_{2}(2N + 1) \\
+\end{align*}
+
+
+\item Calculating EPR variance (very fast).
+\begin{align*}
+& epr = EPR(\rho_{out}) \\
+\end{align*}
+
+\item The result is one function F that takes input state and all parameters and returns final density matrix form which we can directly calculate one of variables that we need to minimize, for example EPR, see description below.
+\begin{align*}
+& F(T_{1}, R_{1}, T_{2}, R_{2}, T_{3}, R_{3}, T_{4}, R_{4}, \phi, detection) \rightarrow \rho_{out} \\
+& epr = EPR(\rho_{out})
+\end{align*}
+
+
+\end{enumerate}
+
+\begin{verbatim}
+In the code, function F() is called:
+process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event).
+EPR() fuction is called: erp_squeezing_correlations(final_dens_matrix)
+\end{verbatim}
+
+
+\end{document}

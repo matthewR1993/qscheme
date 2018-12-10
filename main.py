@@ -35,11 +35,14 @@ print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1.0)
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=0.3)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
-states_config = 'single(chan-1)_coher(chan-2)'
+states_config = 'single(chan-1)_coher(alpha_0.3_chan-2)'
+# states_config = 'single(chan-1)_coher(alpha_0.5_chan-2)'
+# states_config = 'single(chan-1)_coher(alpha_0.75_chan-2)'
+# states_config = 'single(chan-1)_coher(alpha_1.0_chan-2)'
 # states_config = 'coher(chan-1)_single(chan-2)'
 # states_config = 'single(chan-1)_single(chan-2)'
 
@@ -59,17 +62,17 @@ phase_diff = ph_inpi * np.pi
 phase_mod_channel = 1
 
 
-save_root = '/Users/matvei/PycharmProjects/qscheme/results/res32/'
-# save_root = '/home/matvei/qscheme/results/res32/'
+save_root = '/Users/matvei/PycharmProjects/qscheme/results/res34/'
+# save_root = '/home/matvei/qscheme/results/res34/'
 fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.phase, args.det, phase_mod_channel)
 print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 13
-r4_grid = 13
+r1_grid = 21
+r4_grid = 21
 
-r2_grid = 13
-r3_grid = 13
+r2_grid = 21
+r3_grid = 21
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
@@ -148,6 +151,11 @@ def main():
                     det_prob_array[n1, n4, n2, n3] = det_prob
                     norm_after_det_arr[n1, n4, n2, n3] = norm
                     # final_dens_matrix_list.append({'dm': final_dens_matrix, 'keys': [n1, n4, n2, n3]})
+
+                    # sum = 0
+                    # for n in range(14):
+                    #     sum += final_dens_matrix[n, n, n, n]
+                    # print('Sum:', sum)
 
                     # Trace one channel out of final state
                     # final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
