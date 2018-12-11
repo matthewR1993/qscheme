@@ -35,15 +35,12 @@ print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=0.3)
+alpha = 0.2
+auxiliary_st = coherent_state(auxiliary_series_length, alpha=alpha)
 # auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
-states_config = 'single(chan-1)_coher(alpha_0.3_chan-2)'
-# states_config = 'single(chan-1)_coher(alpha_0.5_chan-2)'
-# states_config = 'single(chan-1)_coher(alpha_0.75_chan-2)'
-# states_config = 'single(chan-1)_coher(alpha_1.0_chan-2)'
-# states_config = 'coher(chan-1)_single(chan-2)'
+states_config = f'single(chan-1)_coher(alpha_{alpha}_chan-2)'
 # states_config = 'single(chan-1)_single(chan-2)'
 
 # Measurement event, detectors configuration:

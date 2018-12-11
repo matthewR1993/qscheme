@@ -61,9 +61,4 @@ def process_all(input_state, bs_params, phase_diff, phase_mod_channel, det_event
     # sm_dm = np.sum(np.abs(dens_matrix_2channels_withph)) - np.sum(np.abs(dens_matrix_2channels_withph[:trim_dm, :trim_dm, :trim_dm, :trim_dm]))
     # print('Dens. matr. trim norm:', sm_dm)
 
-    # sum = 0
-    # for n in range(len(final_dens_matrix)):
-    #     sum += final_dens_matrix[n, n, n, n]
-    # print("Sum:", sum)
-
     return final_dens_matrix, det_prob, norm_after_det
