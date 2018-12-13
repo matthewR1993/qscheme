@@ -92,7 +92,7 @@ def bs_transformation_tf(input_state, T1):
 
 state_out = bs_transformation_tf(mut_state, T1)
 
-state_trace = tf.trace(state_out)
+state_trace = tf.trace(tf.abs(state_out))
 J = tf.cast(state_trace, tf.float64)
 
 
@@ -104,16 +104,16 @@ J = tf.cast(state_trace, tf.float64)
 
 
 # WORKS.
-# opt = tf.train.GradientDescentOptimizer(0.01)
-# grads_and_vars = opt.compute_gradients(J, [T1])
-# train = opt.apply_gradients(grads_and_vars)
-#
-# sess = tf.Session()
-# sess.run(tf.global_variables_initializer())
-#
-# for i in range(200):
-#     print(sess.run([T1]))
-#     sess.run(train)
+opt = tf.train.GradientDescentOptimizer(0.0005)
+grads_and_vars = opt.compute_gradients(J, [T1])
+train = opt.apply_gradients(grads_and_vars)
+
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+
+for i in range(400):
+    print(sess.run([T1]))
+    sess.run(train)
 
 
 init = tf.global_variables_initializer()
