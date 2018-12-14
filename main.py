@@ -20,23 +20,19 @@ parser.add_argument("-d", "--det", help="Detection", type=str, required=True)
 parser.add_argument("-p", "--phase", help="Phase in pi", type=float, required=True)
 args = parser.parse_args()
 
-# Parameters for states
+# Parameters for states.
 series_length = 10
-input_series_length = series_length
-auxiliary_series_length = series_length
-max_power = input_series_length + auxiliary_series_length
-
 
 # INPUT - the state in the first(at the bottom) channel
 input_st = single_photon(series_length)
-# input_st = coherent_state(input_series_length, alpha=1)
-# input_st = fock_state(n=2, series_length=input_series_length)
+# input_st = coherent_state(series_length, alpha=1)
+# input_st = fock_state(n=2, series_length=series_length)
 print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-auxiliary_st = coherent_state(auxiliary_series_length, alpha=1.0)
-# auxiliary_st = fock_state(n=2, series_length=auxiliary_series_length)
+auxiliary_st = coherent_state(series_length, alpha=1.0)
+# auxiliary_st = fock_state(n=2, series_length=series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
 
 states_config = 'single(chan-1)_coher(chan-2)'
@@ -65,11 +61,11 @@ fname = '{}_phase-{:.4f}pi_det-{}_phase_chan-{}.npy'.format(states_config, args.
 print('Saving path:', save_root + fname)
 
 # BS grids.
-r1_grid = 13
-r4_grid = 13
+r1_grid = 11
+r4_grid = 11
 
-r2_grid = 13
-r3_grid = 13
+r2_grid = 11
+r3_grid = 11
 
 min_bound = 1e-5
 max_bound = 1 - 1e-5
@@ -85,15 +81,6 @@ T2_max = max_bound
 T3_min = min_bound
 T3_max = max_bound
 
-# T1_min = 0.5
-# T1_max = 0.5
-# T4_min = 0.5
-# T4_max = 0.5
-#
-# T2_min = 1.0
-# T2_max = 1.0
-# T3_min = 1.0
-# T3_max = 1.0
 
 # Varying BSs. Small t, r parameters, with step regarding to big "T".
 t1_array, r1_array = bs_parameters(T1_min, T1_max, r1_grid)
@@ -133,6 +120,7 @@ def main():
                         't2': t2_array[n2],
                         't3': t3_array[n3],
                     }
+                    print("BS params: ", bs_params)
 
                     final_dens_matrix, det_prob, norm = process_all(
                         mut_state_unappl,
@@ -148,6 +136,7 @@ def main():
                     det_prob_array[n1, n4, n2, n3] = det_prob
                     norm_after_det_arr[n1, n4, n2, n3] = norm
                     # final_dens_matrix_list.append({'dm': final_dens_matrix, 'keys': [n1, n4, n2, n3]})
+                    # print("prob:", det_prob)
 
                     # Trace one channel out of final state
                     # final_traced_subs1 = trace_channel(final_dens_matrix, channel=4)
