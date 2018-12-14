@@ -1,6 +1,5 @@
 tensorflow
 Cython
-Cython
 matplotlib
 numpy
 pandas

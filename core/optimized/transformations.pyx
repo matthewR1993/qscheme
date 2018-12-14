@@ -1,3 +1,5 @@
+# Cython optimized transformations.
+
 import numpy as np
 from math import factorial
 
