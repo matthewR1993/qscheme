@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
@@ -10,11 +11,9 @@ from core.state_configurations import coherent_state, single_photon, squeezed_va
 L = 10
 
 
-# INPUT
-# state1 = single_photon(ser_len)
+# state1 = single_photon(L)
 state1 = coherent_state(L, alpha=1.0)
 
-# AUXILIARY
 # state2 = coherent_state(L, alpha=1.0)
 state2 = single_photon(L)
 
@@ -23,13 +22,8 @@ I = tf.constant(1j, tf.complex128)
 st1_tf = tf.constant(state1, tf.complex128)
 st2_tf = tf.constant(state2, tf.complex128)
 
-# Unapplied state
-mut_state = tf.tensordot(
-    st1_tf,
-    st2_tf,
-    axes=0,
-    name=None
-)
+# Unapplied input state.
+mut_state = tf.tensordot(st1_tf, st2_tf, axes=0)
 
 T1 = tf.Variable(0.7, trainable=True, dtype=tf.float64)
 # R1 = tf.Variable(0.5, trainable=True)
@@ -93,42 +87,76 @@ def bs_transformation_tf(input_state, T1):
 state_out = bs_transformation_tf(mut_state, T1)
 
 state_trace = tf.trace(tf.abs(state_out))
-J = tf.cast(state_trace, tf.float64)
-
-
-# Minimizer
-# with tf.Session() as sess:
-#     opt = tf.train.GradientDescentOptimizer(0.01)
-#     opt_op = opt.minimize(J, var_list=[T1])
-#     opt_op.run()
+# Cost function.
+cost = tf.cast(state_trace, tf.float64)
 
 
 # WORKS.
-opt = tf.train.GradientDescentOptimizer(0.0005)
-grads_and_vars = opt.compute_gradients(J, [T1])
-train = opt.apply_gradients(grads_and_vars)
+# opt = tf.train.GradientDescentOptimizer(0.0005)
+# grads_and_vars = opt.compute_gradients(J, [T1])
+# train = opt.apply_gradients(grads_and_vars)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# for i in range(400):
+#     print(sess.run([T1]))
+#     sess.run(train)
+
+
+# init = tf.global_variables_initializer()
+# with tf.Session() as sess:
+#     sess.run(init)
+#     # m1_arr = m1.eval()
+#     # m2_arr = m2.eval()
+#     # t1_tf.eval()
+#     # t_pows_tf.eval()
+#     # d = tf.sqrt(T1).eval()
+#     #r1_tf.eval()
+#
+#     state_out_val = state_out.eval()
+#     J_val = J.eval()
+#
+#
+# plt.imshow(np.abs(state_out_val))
+# plt.show()
+
+
+# Todo: visualise
+# tf.summary.scalar('cost', cost)
+# tf.summary.scalar('T1', T1)
+
+
+optimizer = tf.train.AdamOptimizer()
+minimize_op = optimizer.minimize(cost)
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-for i in range(400):
-    print(sess.run([T1]))
-    sess.run(train)
+
+reps = 400
+display_step = 20
+
+cost_progress = []
+
+for i in range(reps):
+
+    [_, cost_val, T1_val] = sess.run([minimize_op, cost, T1])
+    cost_progress.append({'cost': cost_val, 'par_value': T1_val})
+    # cost_progress.append(cost_val)
+
+    # Prints progress.
+    if i % display_step == 0:
+        print("Rep: {} Cost: {} T1_value: {}".format(i, cost_val, T1_val))
 
 
-init = tf.global_variables_initializer()
-with tf.Session() as sess:
-    sess.run(init)
-    # m1_arr = m1.eval()
-    # m2_arr = m2.eval()
-    # t1_tf.eval()
-    # t_pows_tf.eval()
-    # d = tf.sqrt(T1).eval()
-    #r1_tf.eval()
-
-    state_out_val = state_out.eval()
-    J_val = J.eval()
-
-
-plt.imshow(np.abs(state_out_val))
+plt.plot([c['cost'] for c in cost_progress])
 plt.show()
+
+plt.plot([c['par_value'] for c in cost_progress])
+plt.show()
+
+pd.DataFrame(cost_progress).plot()
+
+
+
