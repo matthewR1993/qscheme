@@ -8,27 +8,27 @@ def coord_aver(dm, channel):
     <X> = <(a + conj(a))/2>
     :param dm: Applied density matrix in 2 channels.
     :param channel: Number of the channel.
-    :return: Average value of coordinate quadrature: <X> = <(a + conj(a))/2>
+    :return: Average value of coordinate quadrature: <X> = (1/2)*<(a + conj(a))>
     """
     size = len(dm)
     if channel is 1:
         sum1 = 0
         for m in range(1, size):
             for n in range(size):
-                sum1 = sum1 + sqrt(m) * dm[m, n, m - 1, n]
+                sum1 += sqrt(m) * dm[m, n, m - 1, n]
         sum2 = 0
         for m in range(size - 1):
             for n in range(size):
-                sum2 = sum2 + sqrt(m + 1) * dm[m, n, m + 1, n]
+                sum2 += sqrt(m + 1) * dm[m, n, m + 1, n]
     elif channel is 2:
         sum1 = 0
         for m in range(size):
             for n in range(1, size):
-                sum1 = sum1 + sqrt(n) * dm[m, n, m, n - 1]
+                sum1 += sqrt(n) * dm[m, n, m, n - 1]
         sum2 = 0
         for m in range(size):
             for n in range(size - 1):
-                sum2 = sum2 + sqrt(n + 1) * dm[m, n, m, n + 1]
+                sum2 += sqrt(n + 1) * dm[m, n, m, n + 1]
     else:
         raise ValueError('Wrong configuration')
     dx = 0.5 * (sum1 + sum2)
@@ -48,20 +48,20 @@ def impulse_aver(dm, channel):
         sum1 = 0
         for m in range(1, size):
             for n in range(size):
-                sum1 = sum1 + sqrt(m) * dm[m, n, m - 1, n]
+                sum1 += sqrt(m) * dm[m, n, m - 1, n]
         sum2 = 0
         for m in range(size - 1):
             for n in range(size):
-                sum2 = sum2 + sqrt(m + 1) * dm[m, n, m + 1, n]
+                sum2 += sqrt(m + 1) * dm[m, n, m + 1, n]
     elif channel is 2:
         sum1 = 0
         for m in range(size):
             for n in range(1, size):
-                sum1 = sum1 + sqrt(n) * dm[m, n, m, n - 1]
+                sum1 += sqrt(n) * dm[m, n, m, n - 1]
         sum2 = 0
         for m in range(size):
             for n in range(size - 1):
-                sum2 = sum2 + sqrt(n + 1) * dm[m, n, m, n + 1]
+                sum2 += sqrt(n + 1) * dm[m, n, m, n + 1]
     else:
         raise ValueError('Wrong configuration')
     dp = (1 / 2j) * (sum1 - sum2)
@@ -80,22 +80,22 @@ def prod_coord_aver(dm):
     sum1 = 0
     for m in range(1, size):
         for n in range(1, size):
-            sum1 = sum1 + sqrt(m * n) * dm[m, n, m - 1, n - 1]
+            sum1 += sqrt(m * n) * dm[m, n, m - 1, n - 1]
     # a1 * conj(a2)
     sum2 = 0
     for m in range(1, size):
         for n in range(size - 1):
-            sum2 = sum2 + sqrt(m * (n + 1)) * dm[m, n, m - 1, n + 1]
+            sum2 += sqrt(m * (n + 1)) * dm[m, n, m - 1, n + 1]
     # conj(a1) * a2
     sum3 = 0
     for m in range(size - 1):
         for n in range(1, size):
-            sum3 = sum3 + sqrt((m + 1) * n) * dm[m, n, m + 1, n - 1]
+            sum3 += sqrt((m + 1) * n) * dm[m, n, m + 1, n - 1]
     # conj(a1) * conj(a2)
     sum4 = 0
     for m in range(size - 1):
         for n in range(size - 1):
-            sum4 = sum4 + sqrt((m + 1) * (n + 1)) * dm[m, n, m + 1, n + 1]
+            sum4 += sqrt((m + 1) * (n + 1)) * dm[m, n, m + 1, n + 1]
     d = 0.25 * (sum1 + sum2 + sum3 + sum4)
     return d
 
@@ -112,22 +112,22 @@ def prod_impulse_aver(dm):
     sum1 = 0
     for m in range(1, size):
         for n in range(1, size):
-            sum1 = sum1 + sqrt(m * n) * dm[m, n, m - 1, n - 1]
+            sum1 += sqrt(m * n) * dm[m, n, m - 1, n - 1]
     # a1 * conj(a2)
     sum2 = 0
     for m in range(1, size):
         for n in range(size - 1):
-            sum2 = sum2 + sqrt(m * (n + 1)) * dm[m, n, m - 1, n + 1]
+            sum2 += sqrt(m * (n + 1)) * dm[m, n, m - 1, n + 1]
     # conj(a1) * a2
     sum3 = 0
     for m in range(size - 1):
         for n in range(1, size):
-            sum3 = sum3 + sqrt((m + 1) * n) * dm[m, n, m + 1, n - 1]
+            sum3 += sqrt((m + 1) * n) * dm[m, n, m + 1, n - 1]
     # conj(a1) * conj(a2)
     sum4 = 0
     for m in range(size - 1):
         for n in range(size - 1):
-            sum4 = sum4 + sqrt((m + 1) * (n + 1)) * dm[m, n, m + 1, n + 1]
+            sum4 += sqrt((m + 1) * (n + 1)) * dm[m, n, m + 1, n + 1]
     d = - 0.25 * (sum1 - sum2 - sum3 + sum4)
     return d
 
@@ -146,33 +146,33 @@ def coord_square_aver(dm, channel):
         sum1 = 0
         for m in range(size):
             for n in range(size):
-                sum1 = sum1 + (2*(m + 1) - 1) * dm[m, n, m, n]
+                sum1 += (2*(m + 1) - 1) * dm[m, n, m, n]
         # a^2
         sum2 = 0
         for m in range(2, size):
             for n in range(size):
-                sum2 = sum2 + sqrt(m*(m - 1)) * dm[m, n, m - 2, n]
+                sum2 += sqrt(m*(m - 1)) * dm[m, n, m - 2, n]
         # conj(a)^2
         sum3 = 0
         for m in range(size - 2):
             for n in range(size):
-                sum3 = sum3 + sqrt((m + 1)*(m + 2)) * dm[m, n, m + 2, n]
+                sum3 += sqrt((m + 1)*(m + 2)) * dm[m, n, m + 2, n]
     elif channel is 2:
         # -1 + 2*a*conj(a)
         sum1 = 0
         for m in range(size):
             for n in range(size):
-                sum1 = sum1 + (2*(n + 1) - 1) * dm[m, n, m, n]
+                sum1 += (2*(n + 1) - 1) * dm[m, n, m, n]
         # a^2
         sum2 = 0
         for m in range(size):
             for n in range(2, size):
-                sum2 = sum2 + sqrt(n*(n - 1)) * dm[m, n, m, n - 2]
+                sum2 += sqrt(n*(n - 1)) * dm[m, n, m, n - 2]
         # conj(a)^2
         sum3 = 0
         for m in range(size):
             for n in range(size - 2):
-                sum3 = sum3 + sqrt((n + 1)*(n + 2)) * dm[m, n, m, n + 2]
+                sum3 += sqrt((n + 1)*(n + 2)) * dm[m, n, m, n + 2]
     else:
         raise ValueError('Wrong configuration')
     dx2 = 0.25 * (sum1 + sum2 + sum3)
@@ -193,33 +193,33 @@ def impulse_square_aver(dm, channel):
         sum1 = 0
         for m in range(size):
             for n in range(size):
-                sum1 = sum1 + (2*(m + 1) - 1) * dm[m, n, m, n]
+                sum1 += (2*(m + 1) - 1) * dm[m, n, m, n]
         # a^2
         sum2 = 0
         for m in range(2, size):
             for n in range(size):
-                sum2 = sum2 + sqrt(m*(m - 1)) * dm[m, n, m - 2, n]
+                sum2 += sqrt(m*(m - 1)) * dm[m, n, m - 2, n]
         # conj(a)^2
         sum3 = 0
         for m in range(size - 2):
             for n in range(size):
-                sum3 = sum3 + sqrt((m + 1)*(m + 2)) * dm[m, n, m + 2, n]
+                sum3 += sqrt((m + 1)*(m + 2)) * dm[m, n, m + 2, n]
     elif channel is 2:
         # -1 + 2*a*conj(a)
         sum1 = 0
         for m in range(size):
             for n in range(size):
-                sum1 = sum1 + (2*(n + 1) - 1) * dm[m, n, m, n]
+                sum1 += (2*(n + 1) - 1) * dm[m, n, m, n]
         # a^2
         sum2 = 0
         for m in range(size):
             for n in range(2, size):
-                sum2 = sum2 + sqrt(n*(n - 1)) * dm[m, n, m, n - 2]
+                sum2 += sqrt(n*(n - 1)) * dm[m, n, m, n - 2]
         # conj(a)^2
         sum3 = 0
         for m in range(size):
             for n in range(size - 2):
-                sum3 = sum3 + sqrt((n + 1)*(n + 2)) * dm[m, n, m, n + 2]
+                sum3 += sqrt((n + 1)*(n + 2)) * dm[m, n, m, n + 2]
     else:
         raise ValueError('Wrong configuration')
     dp2 = - 0.25 * (- sum1 + sum2 + sum3)

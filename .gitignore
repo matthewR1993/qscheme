@@ -17,3 +17,4 @@ build
 *.o
 /tf_implementation/logs/
 /tf_implementation/logs
+tf_implementation/logs/

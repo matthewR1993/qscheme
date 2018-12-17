@@ -7,6 +7,8 @@ from customutils.utils import *
 from core.basic import *
 from core.state_configurations import coherent_state, single_photon, squeezed_vacuum
 
+from tf_implementation.core.squeezing import *
+
 
 L = 10
 
@@ -108,48 +110,20 @@ with tf.name_scope('system') as scope:
     s2 = phase_mod(phase, s1[:L, :L], input_type='state', channel=2)
     state_out = bs_transformation_tf(s2, T2)
 
+    dm_out = tf.einsum('kl,mn->klmn', state_out, tf.conj(state_out))
+
     # Cost function.
-    cost = tf.cast(tf.trace(tf.abs(state_out)), tf.float64, name='cost')
+    # cost = tf.cast(tf.trace(tf.abs(state_out)), tf.float64, name='cost')
+
+    # Cost function.
+    cor_x, _ = erp_squeezing_correlations_tf(dm_out)
+    cost = tf.cast(cor_x, tf.float64)
 
     # Register summaries.
-    # tf.summary.scalar('cost', cost)
-    # tf.summary.scalar('T1', T1)
-    # tf.summary.scalar('T1', T2)
-    # tf.summary.scalar('phase', phase)
-
-
-# WORKS.
-# opt = tf.train.GradientDescentOptimizer(0.0005)
-# grads_and_vars = opt.compute_gradients(J, [T1])
-# train = opt.apply_gradients(grads_and_vars)
-#
-# sess = tf.Session()
-# sess.run(tf.global_variables_initializer())
-#
-# for i in range(400):
-#     print(sess.run([T1]))
-#     sess.run(train)
-
-
-# init = tf.global_variables_initializer()
-# with tf.Session() as sess:
-#     sess.run(init)
-#     # m1_arr = m1.eval()
-#     # m2_arr = m2.eval()
-#     # t1_tf.eval()
-#     # t_pows_tf.eval()
-#     # d = tf.sqrt(T1).eval()
-#     #r1_tf.eval()
-#
-#     state_out_val = state_out.eval()
-#     J_val = J.eval()
-#
-#
-# plt.imshow(np.abs(state_out_val))
-# plt.show()
-
-# tensorboard --logdir=/Users/matvei/PycharmProjects/qscheme/tf_implementation/logs/summaries/log
-# http://localhost:6006
+    tf.summary.scalar('cost', cost)
+    tf.summary.scalar('T1', T1)
+    tf.summary.scalar('T2', T2)
+    tf.summary.scalar('phase', phase)
 
 
 optimizer = tf.train.AdamOptimizer()
@@ -158,26 +132,28 @@ minimize_op = optimizer.minimize(cost)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
+# tensorboard --logdir=/home/matvei/qscheme/tf_implementation/logs/summaries/log
+# http://localhost:6006
+summaries_dir = '/home/matvei/qscheme/tf_implementation/logs/summaries'
+merged = tf.summary.merge_all()
+writer = tf.summary.FileWriter(summaries_dir + '/log', sess.graph)
 
-reps = 400
+max_steps = 800
 display_step = 20
+summarize_step = 10
 
 cost_progress = []
 
-for i in range(reps):
-
-    [_, cost_val, T1_val, T2_val, phase_val] = sess.run([minimize_op, cost, T1, T2, phase])
+for i in range(max_steps):
+    [_, summary, cost_val, T1_val, T2_val, phase_val] = sess.run([minimize_op, merged, cost, T1, T2, phase])
     cost_progress.append({'cost': cost_val, 'T1': T1_val, 'T2': T2_val, 'phase': phase_val})
     # cost_progress.append(cost_val)
 
     # Prints progress.
     if i % display_step == 0:
         print("Rep: {} Cost: {} T1: {} T2: {} phase: {}".format(i, cost_val, T1_val, T2_val, phase_val))
-
-
-# summaries_dir = '/Users/matvei/PycharmProjects/qscheme/tf_implementation/logs/summaries'
-# merged = tf.summary.merge_all()
-# train_writer = tf.summary.FileWriter(summaries_dir + '/log', sess.graph)
+    if i % summarize_step == 0:
+        writer.add_summary(summary, i)
 
 
 plt.plot([c['cost'] for c in cost_progress])
@@ -191,13 +167,6 @@ plt.show()
 # pd.DataFrame(cost_progress).plot()
 
 
-# Detection:
-# def detection(state, type):
-#     return 0
-
-
-def bs_2x4_transform(T1, T2, input_state):
-    return 0
 
 
 # def two_bs2x4_transform(t1, r1, t2, r2, input_state):
@@ -233,3 +202,23 @@ def bs_2x4_transform(T1, T2, input_state):
 #                     output_state[ind1, ind2, ind3, ind4] = output_state[ind1, ind2, ind3, ind4] + coeff
 #
 #     return output_state
+
+# L = 10
+# dm = tf.constant(np.random.rand(L, L, L, L), tf.complex128)
+#
+# sess = tf.Session()
+#
+# res = erp_squeezing_correlations_tf(dm)
+# print(res[0].eval(session=sess), res[1].eval(session=sess))
+#
+# print(erp_squeezing_correlations(dm.eval(session=sess)))
+
+
+# Detection:
+# def detection(state, type):
+#     return 0
+
+
+# def bs_2x4_transform(T1, T2, input_state):
+#     return 0
+
