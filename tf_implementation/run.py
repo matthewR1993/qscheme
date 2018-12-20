@@ -134,11 +134,13 @@ sess.run(tf.global_variables_initializer())
 
 # tensorboard --logdir=/home/matvei/qscheme/tf_implementation/logs/summaries/log
 # http://localhost:6006
-summaries_dir = '/home/matvei/qscheme/tf_implementation/logs/summaries'
+sum_path = '/Users/matvei/PycharmProjects/qscheme'
+# sum_path = '/home/matvei/qscheme'
+summaries_dir = sum_path + '/tf_implementation/logs/summaries'
 merged = tf.summary.merge_all()
 writer = tf.summary.FileWriter(summaries_dir + '/log', sess.graph)
 
-max_steps = 800
+max_steps = 500
 display_step = 20
 summarize_step = 10
 
