@@ -121,7 +121,6 @@ def main():
                         't2': t2_array[n2],
                         't3': t3_array[n3],
                     }
-                    print("BS params: ", bs_params)
 
                     final_dens_matrix, det_prob, norm = process_all(
                         mut_state_unappl,
