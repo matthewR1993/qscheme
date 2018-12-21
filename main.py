@@ -31,7 +31,7 @@ print('Input state norm:', get_state_norm(input_st))
 
 # AUXILIARY - the state in the second(on top) channel
 # auxiliary_st = single_photon(series_length)
-alpha = 0.2
+alpha = 1.0
 auxiliary_st = coherent_state(series_length, alpha=alpha)
 # auxiliary_st = fock_state(n=2, series_length=series_length)
 print('Auxiliary state norm:', get_state_norm(auxiliary_st))
@@ -121,7 +121,6 @@ def main():
                         't2': t2_array[n2],
                         't3': t3_array[n3],
                     }
-                    print("BS params: ", bs_params)
 
                     final_dens_matrix, det_prob, norm = process_all(
                         mut_state_unappl,

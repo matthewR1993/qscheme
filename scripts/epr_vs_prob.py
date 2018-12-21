@@ -16,7 +16,14 @@ phase = 1.5
 # states_config = 'single(chan-1)_coher(alpha_0.5_chan-2)'
 # states_config = 'single(chan-1)_coher(alpha_1_chan-2)'
 
-configs = ['single(chan-1)_coher(alpha_0.3_chan-2)', 'single(chan-1)_coher(alpha_0.5_chan-2)', 'single(chan-1)_coher(alpha_0.75_chan-2)', 'single(chan-1)_coher(chan-2)']
+configs = [
+    'single(chan-1)_coher(alpha_0.1_chan-2)',
+    'single(chan-1)_coher(alpha_0.2_chan-2)',
+    'single(chan-1)_coher(alpha_0.3_chan-2)',
+    'single(chan-1)_coher(alpha_0.5_chan-2)',
+    'single(chan-1)_coher(alpha_0.75_chan-2)',
+    'single(chan-1)_coher(chan-2)'
+]
 
 prob_array = np.linspace(0.005, 0.53, 50)   # 0.622, 0.53
 
@@ -58,7 +65,7 @@ for j, cnf in enumerate(configs):
 
     epr_x_all.append(epr_x_min_arr)
 
-lables = ['alpha=0.3', 'alpha=0.5', 'alpha=0.75', 'alpha=1']
+lables = ['alpha=0.1', 'alpha=0.2', 'alpha=0.3', 'alpha=0.5', 'alpha=0.75', 'alpha=1']
 
 for j, cnf in enumerate(configs):
     m = np.trim_zeros(np.real(epr_x_all[j]))
@@ -71,6 +78,33 @@ plt.ylabel('$VAR[X_{1} - X_{2}]$')
 plt.grid(True)
 plt.legend()
 plt.show()
+
+
+
+# P = 0.1
+# P = 0.2
+# P = 0.3
+alph_arr = np.array([0.1, 0.2, 0.3, 0.5, 0.75, 1])
+epr_vs_aplha_p0_1 = np.zeros(len(configs))
+epr_vs_aplha_p0_2 = np.zeros(len(configs))
+epr_vs_aplha_p0_3 = np.zeros(len(configs))
+for j, cnf in enumerate(configs):
+    m = np.trim_zeros(np.real(epr_x_all[j]))
+    epr_vs_aplha_p0_1[j] = m[9]  # 0.1
+    epr_vs_aplha_p0_2[j] = m[19]  # 0.2
+    epr_vs_aplha_p0_3[j] = m[28]  # 0.3
+
+
+plt.plot(alph_arr, epr_vs_aplha_p0_1, label='P=0.1')
+plt.plot(alph_arr, epr_vs_aplha_p0_2, label='P=0.2')
+plt.plot(alph_arr, epr_vs_aplha_p0_3, label='P=0.3')
+plt.xlabel('$Alpha$')
+plt.ylabel('$VAR[X_{1} - X_{2}]$')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
 
 
 with open('/Users/matvei/PycharmProjects/qscheme/results/res34/coh_single_DET-F_full.txt') as f:
